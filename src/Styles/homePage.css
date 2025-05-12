@@ -1,7 +1,7 @@
 /* Estilo para o container principal */
 .container-principal {
     flex: 1;
-    padding: 40px 40px 40px 290px; /* Ajusta o espaçamento geral, compensando o menu lateral */
+    padding: 40px 199px 40px 290px; /* Ajusta o espaçamento geral, compensando o menu lateral */
     box-sizing: border-box;
     color: #ffffff;
     overflow-y: auto;
@@ -11,7 +11,7 @@
 /* Estilo para o título */
 .header-container {
     position: absolute; /* Permite posicionar o título em qualquer lugar */
-    top: 40px; /* Ajusta a posição vertical */
+    top: 50px; /* Ajusta a posição vertical */
     left: 320px; /* Encosta o título na linha do Hub */
     color: #ffffff;
     font-size: 28px;
@@ -49,8 +49,8 @@ h1 {
 .course-card {
     background-color: #1e2430;
     border-radius: 12px;
-    padding: 20px;
-    width: 120px;
+    padding: 80px;
+    width: 140px;
     height: 120px;
     display: flex;
     flex-direction: column;
