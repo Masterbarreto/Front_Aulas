@@ -1,5 +1,5 @@
 /* Estilo para o container principal */
-.container-principal {
+.container-título {
     flex: 1;
     padding: 40px 199px 40px 290px; /* Ajusta o espaçamento geral, compensando o menu lateral */
     box-sizing: border-box;
