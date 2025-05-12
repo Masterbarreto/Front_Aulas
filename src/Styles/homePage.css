@@ -1,0 +1,83 @@
+/* Estilo para o container principal */
+.container-principal {
+    flex: 1;
+    padding: 40px 40px 40px 290px; /* Ajusta o espaçamento geral, compensando o menu lateral */
+    box-sizing: border-box;
+    color: #ffffff;
+    overflow-y: auto;
+    background-color: #0e1117;
+}
+
+/* Estilo para o título */
+.header-container {
+    position: absolute; /* Permite posicionar o título em qualquer lugar */
+    top: 40px; /* Ajusta a posição vertical */
+    left: 320px; /* Encosta o título na linha do Hub */
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+    text-align: left; /* Alinha o texto à esquerda */
+}
+
+h1 {
+    font-size: 28px;
+    margin: 0;
+    text-align: left; /* Alinha o texto à esquerda */
+}
+
+/* Estilo para o restante do conteúdo */
+.content-container {
+    margin-top: 20px; /* Espaçamento entre o título e o restante do conteúdo */
+    padding: 0 40px; /* Espaçamento interno para o conteúdo */
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px; /* Espaçamento abaixo do título */
+    color: #ffffff;
+}
+
+.courses-container {
+    display: flex;
+    gap: 20px; /* Espaçamento entre os cartões */
+    flex-wrap: wrap; /* Permite que os cartões quebrem linha, se necessário */
+    margin-top: 20px;
+}
+
+.course-card {
+    background-color: #1e2430;
+    border-radius: 12px;
+    padding: 20px;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 16px;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.course-card:hover {
+    transform: translateY(-4px);
+    background-color: #2a2f3d;
+}
+
+.sections-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.card-item {
+    background-color: #1e2430;
+    height: 40px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
