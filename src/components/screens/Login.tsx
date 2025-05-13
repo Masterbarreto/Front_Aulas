@@ -25,9 +25,13 @@ export function LoginPages() {
   } = useForm<LoginData>({ resolver: yupResolver(schema) });
 
   const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false); // Estado para controlar o carregamento
   const navigate = useNavigate();
 
   const onSubmit = async (data: LoginData) => {
+    setLoading(true); // Ativa o estado de carregamento
+    setServerError(""); // Limpa mensagens de erro anteriores
+
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, data);
       console.log("Login bem-sucedido:", response.data);
@@ -44,7 +48,16 @@ export function LoginPages() {
       }
     } catch (error: any) {
       console.error("Erro ao fazer login:", error);
-      setServerError(error?.response?.data?.message || "Erro desconhecido.");
+      const errorMessage = error?.response?.data?.message || "Erro desconhecido.";
+
+      // Redireciona para a rota de validação se a conta não estiver verificada
+      if (errorMessage === "Conta não verificada. Verifique seu e-mail.") {
+        navigate("/validate-account", { state: { email: data.email } });
+      } else {
+        setServerError(errorMessage);
+      }
+    } finally {
+      setLoading(false); // Desativa o estado de carregamento
     }
   };
 
@@ -60,7 +73,7 @@ export function LoginPages() {
         <Controller
           control={control}
           name="email"
-          defaultValue="" // Define um valor padrão vazio
+          defaultValue=""
           render={({ field }) => (
             <input type="email" placeholder="Digite seu email" className="input" {...field} />
           )}
@@ -71,7 +84,7 @@ export function LoginPages() {
         <Controller
           control={control}
           name="password"
-          defaultValue="" // Define um valor padrão vazio
+          defaultValue=""
           render={({ field }) => (
             <input type="password" placeholder="Digite sua senha" className="input" {...field} />
           )}
@@ -79,11 +92,15 @@ export function LoginPages() {
 
         {serverError && <p className="error-message">{serverError}</p>}
 
+        {loading && <p className="loading-message">Carregando...</p>} {/* Indicador de carregamento */}
+
         <div className="container-forgot-password">
-          <a href="/">Esqueceu a senha?</a>
+          <a href="/reset-password">Esqueceu a senha?</a>
         </div>
 
-        <button type="submit" className="btn-login">Entrar</button>
+        <button type="submit" className="btn-login" disabled={loading}>
+          {loading ? "Entrando..." : "Entrar"} {/* Botão muda de texto durante o carregamento */}
+        </button>
 
         <div className="container-register-text">
           <p className="register-text">

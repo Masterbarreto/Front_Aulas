@@ -36,7 +36,8 @@ export function RegisterScreen() {
 
     if (result.success) {
       console.log("Registro bem-sucedido!");
-      navigate("/");
+      // Redireciona para a tela de validação com o e-mail do usuário
+      navigate("/validate-account", { state: { email: data.email } });
     } else {
       console.error(result.error);
       setServerError(result.error || "Erro desconhecido.");
