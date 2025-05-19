@@ -62,52 +62,52 @@ export function LoginPages() {
   };
 
   return (
-    <div className="container-principal">
-      <div className="container-logo">
+    <div className="home-principal">
+      <div className="home-logo">
         <img src={Logo} alt="Logo" />
       </div>
 
-      <form className="container-form" onSubmit={handleSubmit(onSubmit)}>
-        {errors.email && <p className="error-message">{errors.email.message}</p>}
-        <label className="input-label">Email</label>
+      <form className="home-form" onSubmit={handleSubmit(onSubmit)}>
+        {errors.email && <p className="home-error-message">{errors.email.message}</p>}
+        <label className="home-input-label">Email</label>
         <Controller
           control={control}
           name="email"
           defaultValue=""
           render={({ field }) => (
-            <input type="email" placeholder="Digite seu email" className="input" {...field} />
+            <input type="email" placeholder="Digite seu email" className="home-input" {...field} />
           )}
         />
 
-        {errors.password && <p className="error-message">{errors.password.message}</p>}
-        <label className="input-label">Senha</label>
+        {errors.password && <p className="home-error-message">{errors.password.message}</p>}
+        <label className="home-input-label">Senha</label>
         <Controller
           control={control}
           name="password"
           defaultValue=""
           render={({ field }) => (
-            <input type="password" placeholder="Digite sua senha" className="input" {...field} />
+            <input type="password" placeholder="Digite sua senha" className="home-input" {...field} />
           )}
         />
 
-        {serverError && <p className="error-message">{serverError}</p>}
+        {serverError && <p className="home-error-message">{serverError}</p>}
 
-        {loading && <p className="loading-message">Carregando...</p>} {/* Indicador de carregamento */}
+        {loading && <p className="home-loading-message">Carregando...</p>}
 
-        <div className="container-forgot-password">
+        <div className="home-forgot-password">
           <a href="/reset-password">Esqueceu a senha?</a>
         </div>
 
-        <button type="submit" className="btn-login" disabled={loading}>
-          {loading ? "Entrando..." : "Entrar"} {/* Botão muda de texto durante o carregamento */}
+        <button type="submit" className="home-btn-login" disabled={loading}>
+          {loading ? "Entrando..." : "Entrar"}
         </button>
 
-        <div className="container-register-text">
-          <p className="register-text">
+        <div className="home-register-text">
+          <p className="home-register-text">
             Não tem uma conta?{" "}
             <button
               type="button"
-              className="register-link"
+              className="home-register-link"
               onClick={() => navigate("/register")}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {

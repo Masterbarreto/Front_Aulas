@@ -9,7 +9,7 @@ body {
   overflow: hidden; /* Remove qualquer barra de rolagem */
 }
 
-.container-principal {
+.home-principal {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,7 +19,7 @@ body {
   box-sizing: border-box; /* Inclui padding e border no tamanho total */
 }
 
-.container-logo img {
+.home-logo img {
   width: 110px;
   height: 110px;
   border-radius: 20px;
@@ -31,7 +31,7 @@ body {
   padding: 8px;
 }
 
-.input-label {
+.home-input-label {
   display: block;
   color: #ffffff;
   font-size: 1rem;
@@ -39,7 +39,7 @@ body {
   text-align: left;
 }
 
-.container-form {
+.home-form {
   background-color: #151922;
   padding: 2rem;
   border-radius: 15px;
@@ -52,13 +52,13 @@ body {
   text-align: center;
 }
 
-.container-form p {
+.home-form p {
   color: #ffffff;
   font-size: 1rem;
   margin-bottom: 0.9rem;
 }
 
-.input {
+.home-input {
   width: 100%;
   padding: 0.8rem;
   margin-bottom: 1.2rem;
@@ -69,11 +69,11 @@ body {
   font-size: 1rem;
 }
 
-.input::placeholder {
+.home-input::placeholder {
   color: #888888;
 }
 
-.btn-login {
+.home-btn-login {
   width: 100%;
   background-color: #245ad3;
   border-radius: 8px;
@@ -86,42 +86,42 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.btn-login:hover {
+.home-btn-login:hover {
   background-color: #1d47a8;
 }
 
-.container-forgot-password {
+.home-forgot-password {
   margin-top: 2rem; /* Espaçamento acima do link */
   margin-bottom: 2rem; /* Espaçamento abaixo do link */
   text-align: right; /* Alinha o link à direita */
 }
 
-.container-forgot-password a {
+.home-forgot-password a {
   color: #007bff;
   text-decoration: none;
   font-size: 0.9rem;
 }
 
-.container-forgot-password a:hover {
+.home-forgot-password a:hover {
   text-decoration: underline;
 }
 
-.error-message {
+.home-error-message {
   color: #ff4d4d;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
-.container-register-text {
+.home-container-register-text {
   margin-top: 1rem;
 }
 
-.register-text {
+.home-register-text {
   color: #ffffff;
   font-size: 0.9rem;
 }
 
-.register-link {
+.home-register-link {
   background: none;
   border: none;
   color: #007bff;
