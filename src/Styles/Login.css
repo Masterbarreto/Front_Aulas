@@ -129,3 +129,13 @@ body {
   text-decoration: underline;
   font-size: 0.9rem;
 }
+
+/* Torna o ícone do calendário branco nos navegadores baseados em Webkit (Chrome, Edge, Safari) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+/* Para Firefox */
+input[type="date"]::-moz-calendar-picker-indicator {
+  filter: invert(1);
+}

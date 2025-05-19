@@ -8,11 +8,17 @@
     background-color: #0e1117;
 }
 
+.home-container {
+    display: flex;
+    height: 1vh;
+    background-color: #0e1117;
+}
+
 /* Estilo para o título */
 .header-container {
     position: absolute; /* Permite posicionar o título em qualquer lugar */
-    top: 50px; /* Ajusta a posição vertical */
-    left: 320px; /* Encosta o título na linha do Hub */
+    top: 32px; /* Ajusta a posição vertical */
+    left: 330px; /* Encosta o título na linha do Hub */
     color: #ffffff;
     font-size: 28px;
     font-weight: bold;
@@ -35,13 +41,13 @@ h1 {
 .section-title {
     font-size: 18px;
     font-weight: 500;
-    margin-bottom: 20px; /* Espaçamento abaixo do título */
+    margin-bottom: 10px; /* Espaçamento abaixo do título */
     color: #ffffff;
 }
 
 .courses-container {
     display: flex;
-    gap: 20px; /* Espaçamento entre os cartões */
+    gap: 2px; /* Espaçamento entre os cartões */
     flex-wrap: wrap; /* Permite que os cartões quebrem linha, se necessário */
     margin-top: 20px;
 }
@@ -80,4 +86,17 @@ h1 {
     height: 40px;
     border-radius: 8px;
     margin-bottom: 10px;
+}
+
+.container-icone {
+    position: absolute;
+    margin-top: -410px;
+    left: 330px; /* Alinha com o título */
+}
+
+/* Texto "Seus Cursos" */
+.text-curos {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 500;
 }

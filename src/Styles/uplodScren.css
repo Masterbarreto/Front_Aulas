@@ -1,0 +1,125 @@
+/* Ícone branco para input date */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+/* Ícone branco para input time */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.container-principal {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  background: #181b23;
+  align-items: flex-start;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* ou center para centralizar tudo */
+  margin-left: 350px; /* igual à largura do menu lateral */
+  margin-top: 40px;
+}
+
+.container-form {
+  background: #23262f;
+  border-radius: 28px;
+  margin: 40px 48px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.title {
+  text-align: left;
+  font-size: 1.4rem;
+  margin-bottom: 24px;
+  color: #fff;
+}
+
+.main-title {
+  font-size: 2rem;
+  margin-bottom: 34px; /* ajuste aqui para mais ou menos espaço */
+  color: #fff;
+}
+.input,
+.textarea-descricao {
+  background: #181b23;
+  border: 1px solid #393c49;
+  border-radius: 8px;
+  color: #fff;
+  padding: 12px;
+  margin-bottom: 18px;
+  font-size: 1rem;
+}
+
+.input::placeholder,
+.textarea-descricao::placeholder {
+  color: #888;
+}
+
+.input[type="date"]::-webkit-calendar-picker-indicator,
+.input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.input-label {
+  color: #fff;
+  margin-bottom: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.container-selects {
+  width: 800px;
+  margin-bottom: 32px;
+  margin-left: 0; /* pode ajustar para mais se quiser mais à direita */
+}
+
+.input {
+  width: 100%;
+  background: #181b23;
+  border: none;
+  border-radius: 16px;
+  color: #fff;
+  padding: 18px 16px;
+  font-size: 1.1rem;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+}
+
+.btn-cancelar{
+  background: #23262f;
+  border-radius: 8px;
+  padding: 13px 24px;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  margin-right: 620px; /* Espaço entre os botões */
+}
+
+.btn-enviar{
+  background: #573bff;
+  border-radius: 8px;
+  padding: 12px 24px;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+select.input {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%226%22%20viewBox%3D%220%200%2010%206%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%206%205-6z%22%20fill%3D%22%23FFFFFF%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 0.625rem;
+}
+
+.textarea-descricao {
+  min-height: 120px; /* ou outro valor desejado */
+  resize: vertical;  /* permite o usuário aumentar/diminuir */
+}

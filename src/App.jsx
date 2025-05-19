@@ -6,6 +6,7 @@ import { RegisterScreen } from "../src/components/screens/ResiterScreen";
 import { RenderPassword } from "../src/components/screens/renderPasword";
 import { ValidateAccount } from "../src/components/screens/ValidateAccount";
 import { ResetPasswordScreen } from "../src/components/screens/ResetPasswordScreen"; // Importa a nova tela
+import { UplodScreen } from "../src/components/screens/UplodScreen";
 
 import "./App.css";
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/reset-password" element={<RenderPassword />} />
         <Route path="/validate-account" element={<ValidateAccount />} />
         <Route path="/reset-password-confirm" element={<ResetPasswordScreen />} /> {/* Nova rota */}
+        <Route path="/upload" element={<UplodScreen />} /> {/* Nova rota */}
       </Routes>
       <main className="content"></main>
     </Router>

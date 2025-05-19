@@ -1,0 +1,24 @@
+.anos-container {
+    display: flex;
+    gap: 42px;
+    margin-top: 70px;
+    justify-content: center;
+}
+
+.ano-card {
+    background-color: #151a23;
+    width: 140px;
+    height: 140px;
+    border-radius: 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    transition: transform 0.2s ease;
+}
+
+.ano-card:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}

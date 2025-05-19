@@ -1,0 +1,109 @@
+.uploader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+.dropzone {
+  position: relative;
+  width: 820px;         /* ou defina um valor fixo, ex: 600px */
+  max-width: 900px;    /* limite máximo de largura */
+  height: 220px;       /* ajuste a altura conforme desejar */
+  padding: 0;          /* remova o padding se usar height fixa */
+    border: 2px dashed #4B5563;
+    border-radius: 0.5rem;
+    text-align: center;
+    background-color: #1E1E2E;
+    transition: border-color 0.2s, background-color 0.2s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 2.5rem;    /* Espaço do conteúdo até a borda inferior */
+    padding-top: 0;  
+}
+
+.dropzone--active {
+  border-color: #3B82F6;
+  background-color: #29293D;
+}
+
+.icon {
+  width: 2rem;
+  height: 2rem;
+  fill: #9CA3AF;
+  margin-bottom: 1rem;
+}
+.icon-upload{
+    width: 2rem;
+    height: 2rem;
+    fill: #9CA3AF;
+    margin-top : 5rem;
+    margin-bottom: 1rem;
+}
+
+.text {
+  margin: 0;
+  font-size: 1rem;
+  color: #9CA3AF;
+}
+
+.btn-choose {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  color: #fff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.btn-choose:hover {
+  color: #3B82F6;
+}
+
+.hint {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #6B7280;
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0 0;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #23262f;
+  border-radius: 6px;
+  padding: 8px 14px;
+  margin-bottom: 8px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  transition: background 0.2s;
+}
+
+.remove-btn:hover {
+  background: #2a2f3d;
+  border-radius: 50%;
+}
