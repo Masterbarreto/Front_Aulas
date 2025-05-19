@@ -9,7 +9,7 @@ export function Hub() {
     return (
         <div className="sidebar">
             <div className="container-hub">
-                <div onClick={() => navigate("/dashboard")}>
+                <div onClick={() => navigate("/home")}>
                     <HubItens icon={<LayoutDashboard size={24} />} text="Dashboard" />
                 </div>
                 <div onClick={() => navigate("/upload")}>
