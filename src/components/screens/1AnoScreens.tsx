@@ -26,7 +26,7 @@ export function YearScreen() {
   ];
 
   const handleCursoClick = (cursoId: string) => {
-    navigate(`/${ano}/${cursoId}`);
+    navigate(`/${ano}/${cursoId}/materias`);
   };
 
   return (
@@ -34,9 +34,9 @@ export function YearScreen() {
       <Hub />
       <div className="main-ano-content">
         <div
-          className="conteiner-Titulos"
+          className="conteiner-Titulos-ano"
           style={{ cursor: "pointer" }}
-          onClick={() => navigate("/home")}
+          onClick={() => navigate(-1)}
         >
           <ArrowLeft size={32} color="#fff" />
           <h1>Turmas do  {ano}   – Senac</h1>

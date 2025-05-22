@@ -5,7 +5,7 @@
     width: 100%;
 }
 
-.conteiner-Titulos {
+.conteiner-Titulos-ano {
     margin-left: 320px; /* Garante que não há margem à esquerda */
     display: flex;
     align-items: center;
