@@ -61,7 +61,8 @@ export function AulasList() {
     normalize(aula.Materia) === normalize(materia)
   );
 
-  const handleClick = (id: string) => {
+  const handleClick = (aula: Aula) => {
+    const id = aula.aulaId || aula._id; // pega o id certo
     navigate(`/${ano}/${curso}/${turma}/${materia}/aulas/${id}`);
   };
 
@@ -83,7 +84,7 @@ export function AulasList() {
               <p style={{ color: "#fff" }}>Nenhuma aula encontrada para este filtro.</p>
             ) : (
               aulasFiltradas.map((aula) => (
-                <div key={aula._id} className="aulaCard" onClick={() => handleClick(aula._id)}>
+                <div key={aula._id || aula.aulaId} className="aulaCard" onClick={() => handleClick(aula)}>
                   <h3 className="aulaCardH3">{aula.titulo || "Tema da Aula"}</h3>
                   <p className="aulaCardP">{aula.Horario || "13:15 – 14:30"}</p>
                   <small className="aulaCardSmall">Breve descrição: {aula.DesAula || ""}</small>

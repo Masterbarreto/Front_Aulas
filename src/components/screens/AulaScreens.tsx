@@ -99,7 +99,6 @@ const AulaScreens: React.FC = () => {
                 {(() => {
                   const hoje = new Date();
                   const dataAula = new Date(aula.DayAula);
-                  // Zera horas para comparar só a data
                   hoje.setHours(0,0,0,0);
                   dataAula.setHours(0,0,0,0);
                   const diffTime = dataAula.getTime() - hoje.getTime();
@@ -114,23 +113,27 @@ const AulaScreens: React.FC = () => {
             </div>
             <div className="aula-details-links-title">Links e Arquivos</div>
             <div className="aula-details-links">
-              {aula.arquivos.map((arq, idx) => (
-                <a
-                  key={idx}
-                  className="aula-details-link"
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span className="aula-details-link-label">
-                    <FileText size={20} style={{ marginRight: 8 }} />
-                    {arq.nome}
-                  </span>
-                  <span>
-                    <svg width="20" height="20" fill="#fff"><path d="M5 13l4 4 4-4M12 17V7m-4 10V7"/></svg>
-                  </span>
-                </a>
-              ))}
+              {Array.isArray(aula.arquivos) && aula.arquivos.length > 0 ? (
+                aula.arquivos.map((arq, idx) => (
+                  <a
+                    key={idx}
+                    className="aula-details-link"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="aula-details-link-label">
+                      <FileText size={20} style={{ marginRight: 8 }} />
+                      {arq.nome}
+                    </span>
+                    <span>
+                      <svg width="20" height="20" fill="#fff"><path d="M5 13l4 4 4-4M12 17V7m-4 10V7"/></svg>
+                    </span>
+                  </a>
+                ))
+              ) : (
+                <span style={{ color: "#aaa", fontSize: 14 }}>Nenhum arquivo disponível</span>
+              )}
             </div>
             <button className="aula-details-btn">Concluir Aula</button>
           </div>
