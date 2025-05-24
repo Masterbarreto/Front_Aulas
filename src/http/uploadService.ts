@@ -7,6 +7,7 @@ export async function enviarParaApi({
   descricao,
   files = [],
   links = [],
+  titulo, // Adicionado aqui
 }: {
   values: any;
   dataAula: string;
@@ -14,11 +15,12 @@ export async function enviarParaApi({
   descricao: string;
   files?: File[];
   links?: string[];
+  titulo?: string; // Adicionado aqui
 }) {
   const formData = new FormData();
 
   formData.append("anoEscolar", values["ano-escolar"] || "");
-  formData.append("titulo", values["curso"] || "");
+  formData.append("titulo", titulo || values["titulo"] || ""); // Usa o campo separado se existir
   formData.append("Turma", values["turma"] || "");
   formData.append("curso", values["curso"] || "");
   formData.append("Materia", values["materia"] || "");
@@ -27,7 +29,7 @@ export async function enviarParaApi({
   formData.append("DesAula", descricao);
 
   // Envia só o primeiro link (ou vazio)
-  formData.append("LinkAula", links[0]?.trim() || null);
+  formData.append("LinkAula", links[0]?.trim() || "");
 
   // Envia todos os arquivos como campos separados (um campo arquivos para cada arquivo)
   (files ?? []).forEach((file) => {

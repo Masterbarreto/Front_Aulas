@@ -35,7 +35,7 @@ const AulaScreens: React.FC = () => {
 
   useEffect(() => {
     if (!id) return;
-    fetch(`https://apisubaulas.onrender.com/api/v1/aulas/aula-id/${id}`)
+    fetch(`http://localhost:3000/api/v1/aulas/aula-id/${id}`)
       .then(res => res.json())
       .then(data => {
         setAula(data);
@@ -115,12 +115,25 @@ const AulaScreens: React.FC = () => {
             <div className="aula-details-links">
               {Array.isArray(aula.arquivos) && aula.arquivos.length > 0 ? (
                 aula.arquivos.map((arq, idx) => (
-                  <a
+                  <button
                     key={idx}
                     className="aula-details-link"
-                    href="#"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                    onClick={() => {
+                      const arquivoId = aula.arquivosIds[idx];
+                      if (arquivoId) {
+                        fetch(`http://localhost:3000/api/v1/aulas/${arquivoId}/pdf`)
+                          .then(res => res.blob())
+                          .then(blob => {
+                            const urlBlob = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = urlBlob;
+                            a.download = arq.nome;
+                            a.click();
+                            window.URL.revokeObjectURL(urlBlob);
+                          });
+                      }
+                    }}
                   >
                     <span className="aula-details-link-label">
                       <FileText size={20} style={{ marginRight: 8 }} />
@@ -129,7 +142,7 @@ const AulaScreens: React.FC = () => {
                     <span>
                       <svg width="20" height="20" fill="#fff"><path d="M5 13l4 4 4-4M12 17V7m-4 10V7"/></svg>
                     </span>
-                  </a>
+                  </button>
                 ))
               ) : (
                 <span style={{ color: "#aaa", fontSize: 14 }}>Nenhum arquivo disponível</span>

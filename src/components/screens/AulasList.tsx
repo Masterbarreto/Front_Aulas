@@ -72,7 +72,7 @@ export function AulasList() {
       <div className="main-content">
         <div className="aulasList">
           <div
-            className="aulasTitulos"
+            className="aulasTitulos1"
             style={{ cursor: "pointer" }}
             onClick={() => navigate(-1)}
           >

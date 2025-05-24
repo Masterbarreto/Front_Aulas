@@ -44,7 +44,8 @@ export function UplodScreen() {
                 descricao,
                 values,
                 files,
-                links, // <-- agora envia os links preenchidos
+                links,
+                titulo: values.titulo // Adiciona o campo titulo
             });
             alert("Enviado com sucesso!");
             handleCancelar();

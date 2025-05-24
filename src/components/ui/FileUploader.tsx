@@ -40,10 +40,6 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ onFilesSelected, cle
     onDrop,
     noClick: true,
     multiple: true,
-    accept: {
-      'image/png': ['.png'],
-      'image/jpeg': ['.jpg', '.jpeg']
-    },
     maxSize: 4 * 1024 * 1024 // 4MB
   });
 
@@ -81,7 +77,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ onFilesSelected, cle
           ))}
         </ul>
       )}
-      <p className="hint">Only PNG and JPG (4mb max)</p>
+      <p className="hint">Only PNG and JPG , Pdf  (4mb max)</p>
     </div>
   );
 };

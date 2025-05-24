@@ -55,7 +55,7 @@ body {
 
 .main-content {
   margin-left: 220px;
-  padding: 40px 48px 0 48px;
+  padding: 40px 8px 0 48px;
   min-height: 100vh;
   background: #181A20;
 }
@@ -75,13 +75,16 @@ body {
   width: 100%;
 }
 
-.aulasTitulos {
+.aulasTitulos1 {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-left: 0;
-  margin-top: 40px;
-  margin-bottom: 32px;
+  margin-top: 300;         /* Deixe no topo */
+  margin-bottom: 54px;   /* Menor espaço abaixo */
+  position: relative;
+  top: -1px;            /* Sobe mais */
+  left: -2px;           /* Vai mais para a esquerda */
 }
 
 .aulasH1 {
@@ -89,6 +92,7 @@ body {
   font-size: 1.2rem;
   font-weight: 500;
   margin: 0;
+  padding-left: 0;       /* Remove espaçamento extra à esquerda */
 }
 
 .filtros-aulas {

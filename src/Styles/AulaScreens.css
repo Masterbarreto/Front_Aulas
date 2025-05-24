@@ -25,64 +25,16 @@
 .aula-content-container {
     background: #23242a;
     border-radius: 36px;
-    padding: 22px 34px;
-    min-width: 800px;
+    padding: 32px 24px;
+    min-width: 400px;
     max-width: 1700px;
-    min-height: 700px; /* AUMENTE ESTE VALOR */
-    margin: 10px 40px 40px 270px;
+    min-height: 600px;
+    margin: 48px 50px 40px 260px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-}
-
-.aula-sidebar-menu {
-    margin-bottom: 32px;
-}
-
-.aula-sidebar-title {
-    font-weight: 700;
-    font-size: 18px;
-    margin-bottom: 32px;
-}
-
-.aula-sidebar-item {
-    margin-bottom: 16px;
-    opacity: 0.7;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-
-.aula-sidebar-item.active,
-.aula-sidebar-item:hover {
-    opacity: 1;
-    font-weight: 700;
-}
-
-.aula-sidebar-bottom {
-    margin-top: auto;
-    opacity: 0.7;
-}
-
-.aula-main {
-    flex: 1;
-    padding: 40px;
-}
-
-.aula-title {
-    color: #fff;
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin: 0;
-}
-
-.aula-subtitle {
-    color: #aaa;
-    font-size: 1rem;
-    margin-left: 204px; /* 260px (sidebar) + 44px (ícone + gap) */
-    margin-bottom: 24px;
-    display: block;
 }
 
 .aula-content {
@@ -108,7 +60,7 @@
     margin-bottom: 0;
     display: flex;
     align-items: center;
-    gap: 13px;
+    gap: 12px;
     position: relative;
     padding-bottom: 12px;
 }
@@ -120,7 +72,7 @@
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 3px;
+    height: 2px;
     background: #fff2;
     border-radius: 2px;
 }
@@ -144,7 +96,7 @@
 .aula-section-desc-title {
     font-weight: 600;
     font-size: 16px;
-    margin-bottom: 8px;
+    margin: 24px 0 8px 0;
 }
 
 .aula-section-desc {
@@ -207,6 +159,8 @@
     font-weight: 600;
     justify-content: space-between;
     transition: background 0.2s;
+    cursor: pointer;
+    border: none;
 }
 
 .aula-details-link:hover {
@@ -250,4 +204,17 @@
     font-size: 1.4rem;
     font-weight: 500;
     margin: 0;
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+    .aula-content {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .aula-section,
+    .aula-details {
+        min-width: unset;
+        width: 100%;
+    }
 }
