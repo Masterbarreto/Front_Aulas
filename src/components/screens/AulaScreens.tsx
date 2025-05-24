@@ -35,7 +35,7 @@ const AulaScreens: React.FC = () => {
 
   useEffect(() => {
     if (!id) return;
-    fetch(`http://localhost:3000/api/v1/aulas/aula-id/${id}`)
+    fetch(`https://apisubaulas.onrender.com/api/v1/aulas/aula-id/${id}`)
       .then(res => res.json())
       .then(data => {
         setAula(data);
@@ -122,7 +122,7 @@ const AulaScreens: React.FC = () => {
                     onClick={() => {
                       const arquivoId = aula.arquivosIds[idx];
                       if (arquivoId) {
-                        fetch(`http://localhost:3000/api/v1/aulas/${arquivoId}/pdf`)
+                        fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${arquivoId}/pdf`)
                           .then(res => res.blob())
                           .then(blob => {
                             const urlBlob = window.URL.createObjectURL(blob);

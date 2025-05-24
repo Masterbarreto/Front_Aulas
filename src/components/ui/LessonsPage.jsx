@@ -10,7 +10,7 @@ export default function AulasList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/v1/aulas/MostarAulas")
+    fetch("https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas")
       .then((res) => res.json())
       .then((data) => {
         setLessons(data);
