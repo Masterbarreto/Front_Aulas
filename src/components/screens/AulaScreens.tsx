@@ -148,7 +148,26 @@ const AulaScreens: React.FC = () => {
                 <span style={{ color: "#aaa", fontSize: 14 }}>Nenhum arquivo disponível</span>
               )}
             </div>
-            <button className="aula-details-btn">Concluir Aula</button>
+            <button 
+              className="aula-details-btn"
+              type="button"
+              onClick={async () => {
+                if (!aula?._id) return;
+                try {
+                  await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/concluir`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ concluida: true }),
+                  });
+                  alert("Aula concluída com sucesso!");
+                  navigate(-1);
+                } catch (err) {
+                  alert("Erro ao concluir aula!");
+                }
+              }}
+            >
+              Concluir Aula
+            </button>
           </div>
         </div>
       </div>
