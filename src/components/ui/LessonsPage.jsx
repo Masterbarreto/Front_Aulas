@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Hub } from "../ui/hub";
 import Breadcrumbs from "../ui/Breadcrumbs";
 import LessonsPage from "../ui/LessonsPage";
+import { Download } from "react-feather";
 
 export default function AulasList() {
   const { ano, curso, turma, materia } = useParams();
@@ -38,6 +39,19 @@ export default function AulasList() {
           loading={loading}
           emptyMessage="Nenhuma aula encontrada para este filtro."
         />
+        {aulasFiltradas.map((aula) =>
+          aula.arquivos.map((arq) => (
+            <a
+              href={`https://apisubaulas.onrender.com/api/v1/aulas/${arq._id}/pdf`}
+              download={arq.nome}
+              className="aula-link-download"
+              title="Baixar PDF"
+              key={arq._id}
+            >
+              <Download size={20} />
+            </a>
+          ))
+        }
       </div>
     </div>
   );
