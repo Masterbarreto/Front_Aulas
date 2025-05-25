@@ -3,6 +3,7 @@ import { Hub } from '../ui/hub';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, FileText, Download, Link2 } from 'lucide-react';
 import '../../Styles/AulaScreens.css';
+import axios from 'axios';
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
@@ -160,6 +161,19 @@ const AulaScreens: React.FC = () => {
                     body: JSON.stringify({ concluida: true }),
                   });
                   alert("Aula concluída com sucesso!");
+                  
+                  const userId = localStorage.getItem("userId");
+                  
+                  await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
+                      userId: userId,
+                      action: "Atividade concluída",
+                      detalhes: {
+                        titulo: aula.titulo,
+                        turma: aula.Turma,
+                        curso: aula.curso,
+                      },
+                      data: new Date().toISOString(),
+                    });
                   navigate(-1);
                 } catch (err) {
                   alert("Erro ao concluir aula!");

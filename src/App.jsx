@@ -9,6 +9,7 @@ import { ResetPasswordScreen } from "../src/components/screens/ResetPasswordScre
 import { UplodScreen } from "../src/components/screens/UplodScreen";
 import { YearScreen } from "../src/components/screens/1AnoScreens";
 import { AulasList } from "./components/screens/AulasList";
+import RelatorioAulas from "./components/screens/RelatoriAulas";
 import MateriasScrenms from "./components/screens/MateriasScrenms";
 import AulaScreens from "./components/screens/AulaScreens";
 
@@ -31,6 +32,7 @@ function App() {
         <Route path="/:ano/:curso/materias" element={<MateriasScrenms />} /> {/* Nova rota */}
         <Route path="/:ano/:curso/:turma/:materia/aulas" element={<AulasList />} />
         <Route path="/:ano/:curso/:turma/:materia/aulas/:id" element={<AulaScreens />} />
+        <Route path="/RelatorioAulas" element={<RelatorioAulas />} />
         {/* Nova rota */}
       </Routes>
       <main className="content"></main>

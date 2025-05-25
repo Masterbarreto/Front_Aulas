@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import "../../Styles/Login.css"; // Reutilizando o CSS da tela de login
+import "../../Styles/Validation.css"; // Reutilizando o CSS da tela de login
 
 export function ValidateAccount() {
     const [code, setCode] = useState("");
@@ -26,24 +26,24 @@ export function ValidateAccount() {
     };
 
     return (
-        <div className="container-principal">
-            <div className="container-logo">
+        <div className="validation-container-principal">
+            <div className="validation-container-logo">
                 <h1>Validação de Conta</h1>
             </div>
 
-            <form className="container-form" onSubmit={handleSubmit}>
-                <label className="input-label">Código de Validação</label>
+            <form className="validation-container-form" onSubmit={handleSubmit}>
+                <label className="validation-input-label">Código de Validação</label>
                 <input
                     type="text"
                     placeholder="Digite o código de validação"
-                    className="input"
+                    className="validation-input"
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                 />
-                <button type="submit" className="btn-login">Validar</button>
+                <button type="submit" className="validation-btn-login">Validar</button>
             </form>
 
-            {message && <p className="error-message">{message}</p>}
+            {message && <p className="validation-error-message">{message}</p>}
         </div>
     );
 }

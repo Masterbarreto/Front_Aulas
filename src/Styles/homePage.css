@@ -100,3 +100,46 @@ h1 {
     font-size: 22px;
     font-weight: 500;
 }
+
+.aula-card {
+  background: #23262e;
+  border-radius: 8px;
+  margin: 8px 0;
+  padding: 12px 16px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.resumo-aulas-home {
+  margin-top: 88px;
+  margin-bottom: 40px;
+  padding: 12px;
+  border-radius: 12px;
+  background-color: #11151d; /* cor de fundo, ajuste se quiser */
+  display: flex;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.resumo-coluna {
+  flex: 1;
+}
+
+.resumo-coluna h2 {
+  color: white;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.resumo-item {
+  background-color: #1a1f29;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.resumo-item:hover {
+  background-color: #242a36;
+}

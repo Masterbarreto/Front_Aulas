@@ -34,12 +34,14 @@ export function AulaSelects({ control }: AulaSelectsProps) {
           render={({ field }) => (
             <select className="input" {...field}>
               <option value="">Selecione o curso</option>
+              <option value="all">Todos os cursos</option> 
               <option value="iot">iot</option>
               <option value="MMD">MMD</option>
               <option value="ADM">ADM</option>
               <option value="TI">t.i</option>
               <option value="CDD">cdd</option>
               <option value="MKT">mkt</option>
+              <option value="IA">IA</option>
             </select>
           )}
         />
@@ -53,6 +55,7 @@ export function AulaSelects({ control }: AulaSelectsProps) {
           render={({ field }) => (
             <select className="input" {...field}>
               <option value="">Selecione a turma</option>
+              <option value="all">Todas As Turmas</option> 
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>

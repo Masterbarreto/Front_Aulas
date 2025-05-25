@@ -27,10 +27,17 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 .container-form {
   background: #23262f;
   border-radius: 28px;
-  margin: 40px 48px 0 0;
+  margin: 40px 48px 0 0; /* Troque para: */
+  /* margin: 40px 48px 0 0; */
+  margin: 40px 48px 0 0; /* Remove qualquer margin-bottom */
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  box-shadow: 0 4px 24px #0002;
+  /* Se necessário, adicione: */
+  height: auto;
+  min-height: unset;
+  overflow: hidden;
 }
 
 .title {

@@ -35,11 +35,15 @@ export function LoginPages() {
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, data);
       console.log("Login bem-sucedido:", response.data);
+      
+      // Armazena os dados do usuário no localStorage
+      localStorage.setItem("userId", response.data.userId);
+      localStorage.setItem("cargo", response.data.cargo);
 
       // Verifica o cargo do usuário e redireciona
       const { cargo } = response.data;
       if (cargo === "admin") {
-        navigate("/admin"); // Redireciona para a rota de admin
+        navigate("/home"); // Redireciona para a rota de admin
       } else if (cargo === "Professor") {
         navigate("/home"); // Redireciona para a rota de usuário
       } else {

@@ -6,6 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { AulaSelects } from "../ui/AulaSelects";
 import { FileUploader } from "../ui/FileUploader";
 import { enviarParaApi } from "../../http/uploadService.ts";
+import axios from "axios";
 
 export function UplodScreen() {
     const [dataAula, setDataAula] = useState("");
@@ -37,6 +38,15 @@ export function UplodScreen() {
     const handleEnviar = async (e: React.FormEvent) => {
         e.preventDefault();
         const values = getValues();
+        console.log({
+            dataAula,
+            horaAula,
+            descricao,
+            values,
+            files,
+            links,
+            titulo: values.titulo
+        });
         try {
             await enviarParaApi({
                 dataAula,
@@ -45,12 +55,27 @@ export function UplodScreen() {
                 values,
                 files,
                 links,
-                titulo: values.titulo // Adiciona o campo titulo
+                titulo: values.titulo
             });
             alert("Enviado com sucesso!");
+
+            const userId = localStorage.getItem("userId");
+
+            await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
+            userId: userId,
+            action: "Upload de atividade",
+            data: new Date().toISOString(),
+            detalhes: {
+                titulo: values.titulo,
+                turma: values.turma,
+                curso: values.curso
+            }
+        });
+
             handleCancelar();
-        } catch (error) {
-            alert("Erro ao enviar!");
+        } catch (error: any) {
+            alert("Erro ao enviar! " + (error?.response?.data?.message || ""));
+            console.error(error);
         }
     };
 

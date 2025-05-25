@@ -149,6 +149,25 @@
 }
 
 .aula-details-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 16px;
+  padding: 18px 60px; /* 18px em cima/baixo, 60px nas laterais */
+  color: #fff;
+  font-size: 1.2rem;
+  margin-bottom: 58px;
+  border: none;
+  width: 100%;
+  min-width: 140px;
+  min-height: 50px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px 0 #0008;
+  gap: 18px;
+}
+.aula-details-link {
     display: flex;
     align-items: center;
     background: #2D214B;

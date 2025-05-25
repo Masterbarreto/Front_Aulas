@@ -9,6 +9,7 @@ import imageMkt from "../../assets/imageMkt.png";
 import imageAdm from "../../assets/imageAdm.png";
 import imageTi from "../../assets/imageTi.png";
 import imageCdd from "../../assets/imageCdd.png";
+import imageIA  from "../../assets/imageIA.png"
 
 import "../../Styles/AnoSceens.css";
 
@@ -23,6 +24,7 @@ export function YearScreen() {
     { image: imageCdd, title: "CDD – Ciências de Dados", id: "cdd" },
     { image: imageAdm, title: "ADM – Administração", id: "adm" },
     { image: imageMkt, title: "MKT – Marketing", id: "mkt" },
+    { image: imageIA, title: "IA – Inteligência Artificial", id: "ia" },
   ];
 
   const handleCursoClick = (cursoId: string) => {

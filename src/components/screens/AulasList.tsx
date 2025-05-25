@@ -55,10 +55,10 @@ export function AulasList() {
 
   // Filtra as aulas conforme os parâmetros da URL, normalizando tudo
   const aulasFiltradas = aulas.filter((aula) =>
-    normalize(aula.anoEscolar) === normalize(ano) &&
-    normalize(aula.curso) === normalize(curso) &&
-    normalize(aula.Turma) === normalize(turma) &&
-    normalize(aula.Materia) === normalize(materia)
+    (normalize(ano) === "all"     || normalize(aula.anoEscolar) === normalize(ano)||normalize(aula.anoEscolar) === normalize(ano)) &&
+    (normalize(curso) === "all"   || normalize(aula.curso) === normalize(curso)) &&
+    (normalize(turma) === "all"   || normalize(aula.Turma) === "all" ||normalize(aula.Turma) === normalize(turma)) &&
+    (normalize(materia) === "all" || normalize(aula.Materia) === normalize(materia))
   );
 
   const handleClick = (aula: Aula) => {
