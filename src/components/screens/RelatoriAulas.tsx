@@ -16,8 +16,10 @@ export default function RelatorioAulas() {
     }, []);
 
     const handleRowClick = (aula: any) => {
-        const { anoEscolar, curso, Turma, Materia, aulaId } = aula;
-        navigate(`/${anoEscolar}/${curso}/${Turma}/${Materia}/aulas/${aulaId}`);
+        const { anoEscolar, curso, Turma, Materia, aulaId, _id } = aula;
+        const id = aulaId || _id;
+        if (!id) return; // não navega se não houver id
+        navigate(`/${anoEscolar}/${curso}/${Turma}/${Materia}/aulas/${id}`);
     };
 
     function formatarData(dataString: string) {
