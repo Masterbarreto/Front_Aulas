@@ -121,7 +121,7 @@ const AulaScreens: React.FC = () => {
               {Array.isArray(aula.arquivos) && aula.arquivos.length > 0 ? (
                 aula.arquivos.map((arq, idx) => (
                   <button
-                    key={idx}
+                    key={`arquivo-${idx}`}
                     className="aula-details-link"
                     style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer" }}
                     onClick={() => {
@@ -151,6 +151,27 @@ const AulaScreens: React.FC = () => {
                 ))
               ) : (
                 <span style={{ color: "#aaa", fontSize: 14 }}>Nenhum arquivo disponível</span>
+              )}
+
+              {/* Adicionando os links */}
+              {aula.LinkAula ? (
+                <button
+                  className="aula-details-link"
+                  style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                  onClick={() => {
+                    window.open(aula.LinkAula, "_blank");
+                  }}
+                >
+                  <span className="aula-details-link-label">
+                    <Link2 size={20} style={{ marginRight: 8 }} />
+                    {aula.LinkAula}
+                  </span>
+                  <span>
+                    <svg width="20" height="20" fill="#fff"><path d="M5 13l4 4 4-4M12 17V7m-4 10V7"/></svg>
+                  </span>
+                </button>
+              ) : (
+                <span style={{ color: "#aaa", fontSize: 14 }}>Nenhum link disponível</span>
               )}
             </div>
             <button 

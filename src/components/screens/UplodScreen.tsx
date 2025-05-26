@@ -36,73 +36,43 @@ export function UplodScreen() {
     };
 
     // Envia os dados para a API
-    const handleEnviar = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const values = getValues();
 
-        // Junta data e hora no formato ISO
-        const dataCompleta = dataAula && horaAula ? `${dataAula}T${horaAula}:00` : "";
+const handleEnviar = async (e: React.FormEvent) => {
+  e.preventDefault();
+  const values = getValues();
+  const nomeProf = localStorage.getItem("name") || "";
 
-        try {
-            const nome = localStorage.getItem("name");
+  const form = new FormData();
+  form.append("anoEscolar", values["ano-escolar"]);
+  form.append("curso", values.curso);
+  form.append("titulo", values.titulo);
+  form.append("Turma", values.turma);
+  form.append("Materia", values.materia);
+  form.append("DayAula", dataAula); // ex: "2025-05-29"
+  form.append("Horario", horaAula); // ex: "14:30"
+  form.append("DesAula", descricao);
+  form.append("LinkAula", links[0] || ""); // ou null se preferir
+  form.append("professor", nomeProf);
 
-            // Certifique-se de que todos os campos obrigatórios estão sendo enviados
-            const payload = {
-                dataAula: dataCompleta,
-                descricao,
-                titulo: values.titulo,
-                anoEscolar: values["ano-escolar"], // Certifique-se de que o nome do campo está correto
-                curso: values.curso,
-                turma: values.turma,
-                materia: values.materia,
-                professor: nome,
-                files,
-                links,
-            };
+  // Os teus arquivos *têm* de ser enviados com a mesma chave que o servidor espera:
+  files.forEach((file) => form.append("arquivos", file));
 
-            console.log("Payload enviado:", payload);
+  try {
+    await axios.post(
+      "https://apisubaulas.onrender.com/api/v1/aulas",
+      form,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    alert("Enviado com sucesso!");
 
-            const formData = new FormData();
-            formData.append("dataAula", dataCompleta);
-            formData.append("descricao", descricao);
-            formData.append("titulo", values.titulo);
-            formData.append("anoEscolar", values["ano-escolar"]);
-            formData.append("curso", values.curso);
-            formData.append("turma", values.turma);
-            formData.append("materia", values.materia);
-            const nomeProf = localStorage.getItem("name") || "";  
-            formData.append("professor", nomeProf);
+    // Limpa todos os campos após o envio bem-sucedido
+    handleCancelar();
+  } catch (err: any) {
+    console.error("Erro do servidor:", err.response?.data);
+    alert("Falha: " + JSON.stringify(err.response?.data));
+  }
+};
 
-            files.forEach((file) => {
-                formData.append("files", file);
-            });
-
-            links.forEach((link) => {
-                formData.append("links", link);
-            });
-
-            await enviarParaApi(formData);
-            alert("Enviado com sucesso!");
-
-            const userId = localStorage.getItem("userId");
-
-            await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
-                userId: userId,
-                action: "Upload de atividade",
-                data: new Date().toISOString(),
-                detalhes: {
-                    titulo: values.titulo,
-                    turma: values.turma,
-                    curso: values.curso,
-                },
-            });
-
-            handleCancelar();
-        } catch (error: any) {
-            alert("Erro ao enviar! " + (error?.response?.data?.message || ""));
-            console.error(error);
-        }
-    };
 
     return (
         <div className="container-principal">

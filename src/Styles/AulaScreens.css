@@ -144,7 +144,7 @@
 .aula-details-links {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: -30px;
     margin-bottom: 24px;
     width: 100%;
 }
