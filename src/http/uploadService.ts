@@ -43,7 +43,7 @@ export async function enviarParaApi({
     formData.append("arquivos", file);
   });
 
-  return axios.post("http://localhost:3000/api/v1/aulas", formData, {
+  return axios.post("https://apisubaulas.onrender.com/api/v1/aulas", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 }

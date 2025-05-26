@@ -161,7 +161,7 @@ const AulaScreens: React.FC = () => {
                 try {
                   if (aula.concluida) {
                     // Rota para "Desconcluir Aula"
-                    await fetch(`http://localhost:3000/api/v1/aulas/${aula._id}/desconcluir`, {
+                    await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/desconcluir`, {
                       method: "PATCH",
                       headers: { "Content-Type": "application/json" },
                     });
