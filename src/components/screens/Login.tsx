@@ -28,18 +28,30 @@ export function LoginPages() {
   const [loading, setLoading] = useState(false); // Estado para controlar o carregamento
   const navigate = useNavigate();
 
+  // Função utilitária para salvar dados no localStorage
+  const saveUserDataToLocalStorage = (userData: { userId: string; cargo: string; name: string }) => {
+    localStorage.setItem("userId", userData.userId);
+    localStorage.setItem("cargo", userData.cargo);
+    localStorage.setItem("name", userData.name);
+  };
+
   const onSubmit = async (data: LoginData) => {
     setLoading(true); // Ativa o estado de carregamento
     setServerError(""); // Limpa mensagens de erro anteriores
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, data);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/users/login`,
+        data
+      );
       console.log("Login bem-sucedido:", response.data);
-      
-      // Armazena os dados do usuário no localStorage
-      localStorage.setItem("userId", response.data.userId);
-      localStorage.setItem("cargo", response.data.cargo);
-      localStorage.setItem("name", response.data.name);
+
+      // Armazena os dados do usuário no localStorage usando a função utilitária
+      saveUserDataToLocalStorage({
+        userId: response.data.userId,
+        cargo: response.data.cargo,
+        name: response.data.name,
+      });
 
       // Verifica o cargo do usuário e redireciona
       const { cargo } = response.data;

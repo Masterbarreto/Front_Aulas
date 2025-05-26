@@ -46,15 +46,42 @@ export function UplodScreen() {
         try {
             const nome = localStorage.getItem("name");
 
-            await enviarParaApi({
+            // Certifique-se de que todos os campos obrigatórios estão sendo enviados
+            const payload = {
                 dataAula: dataCompleta,
                 descricao,
-                values,
+                titulo: values.titulo,
+                anoEscolar: values["ano-escolar"], // Certifique-se de que o nome do campo está correto
+                curso: values.curso,
+                turma: values.turma,
+                materia: values.materia,
+                professor: nome,
                 files,
                 links,
-                titulo: values.titulo,
-                professor: nome,// ou outro campo que sua API espera
+            };
+
+            console.log("Payload enviado:", payload);
+
+            const formData = new FormData();
+            formData.append("dataAula", dataCompleta);
+            formData.append("descricao", descricao);
+            formData.append("titulo", values.titulo);
+            formData.append("anoEscolar", values["ano-escolar"]);
+            formData.append("curso", values.curso);
+            formData.append("turma", values.turma);
+            formData.append("materia", values.materia);
+            const nomeProf = localStorage.getItem("name") || "";  
+            formData.append("professor", nomeProf);
+
+            files.forEach((file) => {
+                formData.append("files", file);
             });
+
+            links.forEach((link) => {
+                formData.append("links", link);
+            });
+
+            await enviarParaApi(formData);
             alert("Enviado com sucesso!");
 
             const userId = localStorage.getItem("userId");
@@ -66,8 +93,8 @@ export function UplodScreen() {
                 detalhes: {
                     titulo: values.titulo,
                     turma: values.turma,
-                    curso: values.curso
-                }
+                    curso: values.curso,
+                },
             });
 
             handleCancelar();

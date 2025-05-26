@@ -84,13 +84,18 @@ const AulaScreens: React.FC = () => {
             <div className="aula-details-title">Detalhes da Aula</div>
             <div className="aula-details-item">
               <span className="aula-details-label">Criador da atividade :</span>
-              <span className="aula-details-value"> Professor Vitor</span>
+              <span className="aula-details-value">
+                {aula.professor
+                  ? aula.professor.split(" ").slice(0, 2).join(" ") // Exibe apenas o primeiro e o segundo nomes
+                  : "Não informado"}
+              </span>
             </div>
             <div className="aula-details-item">
               <span className="aula-details-label">Data de Criação :</span>
+
               <span className="aula-details-value">
-                {aula.createdAt
-                  ? new Date(aula.createdAt).toLocaleDateString('pt-BR')
+                {aula.DayAula
+                  ? new Date(aula.DayAula).toLocaleDateString('pt-BR')
                   : "Não informado"}
               </span>
             </div>
@@ -100,14 +105,13 @@ const AulaScreens: React.FC = () => {
                 {(() => {
                   const hoje = new Date();
                   const dataAula = new Date(aula.DayAula);
-                  hoje.setHours(0,0,0,0);
-                  dataAula.setHours(0,0,0,0);
+                  hoje.setHours(0, 0, 0, 0);
+                  dataAula.setHours(0, 0, 0, 0);
                   const diffTime = dataAula.getTime() - hoje.getTime();
                   const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
                   if (diffDays === 0) return "Hoje";
                   if (diffDays === 1) return "Amanhã";
                   if (diffDays > 1) return `${diffDays} dias para a aula`;
-                  // Se já passou, mostra só a data
                   return dataAula.toLocaleDateString('pt-BR');
                 })()}
               </span>
@@ -155,18 +159,22 @@ const AulaScreens: React.FC = () => {
               onClick={async () => {
                 if (!aula?._id) return;
                 try {
-                  // Alterna o valor de concluida
-                  const novoStatus = !aula.concluida;
-                  await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/concluir`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ concluida: novoStatus }),
-                  });
-                  alert(novoStatus ? "Aula concluída com sucesso!" : "Aula marcada como não concluída!");
+                  if (aula.concluida) {
+                    // Rota para "Desconcluir Aula"
+                    await fetch(`http://localhost:3000/api/v1/aulas/${aula._id}/desconcluir`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                    });
+                    alert("Aula marcada como não concluída!");
+                  } else {
+                    // Rota para "Concluir Aula"
+                    await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/concluir`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ concluida: true }),
+                    });
+                    alert("Aula concluída com sucesso!");
 
-                  setAula({ ...aula, concluida: novoStatus });
-
-                  if (novoStatus) {
                     const userId = localStorage.getItem("userId");
                     await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
                       userId: userId,
@@ -179,6 +187,9 @@ const AulaScreens: React.FC = () => {
                       data: new Date().toISOString(),
                     });
                   }
+
+                  // Atualiza o estado da aula
+                  setAula({ ...aula, concluida: !aula.concluida });
 
                   // Volta para a tela anterior após concluir/desconcluir
                   navigate(-1);
