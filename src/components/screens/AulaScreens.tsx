@@ -155,16 +155,20 @@ const AulaScreens: React.FC = () => {
               onClick={async () => {
                 if (!aula?._id) return;
                 try {
+                  // Alterna o valor de concluida
+                  const novoStatus = !aula.concluida;
                   await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/concluir`, {
                     method: "PATCH",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ concluida: true }),
+                    body: JSON.stringify({ concluida: novoStatus }),
                   });
-                  alert("Aula concluída com sucesso!");
-                  
-                  const userId = localStorage.getItem("userId");
-                  
-                  await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
+                  alert(novoStatus ? "Aula concluída com sucesso!" : "Aula marcada como não concluída!");
+
+                  setAula({ ...aula, concluida: novoStatus });
+
+                  if (novoStatus) {
+                    const userId = localStorage.getItem("userId");
+                    await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
                       userId: userId,
                       action: "Atividade concluída",
                       detalhes: {
@@ -174,13 +178,17 @@ const AulaScreens: React.FC = () => {
                       },
                       data: new Date().toISOString(),
                     });
+                  }
+
+                  // Volta para a tela anterior após concluir/desconcluir
                   navigate(-1);
+
                 } catch (err) {
-                  alert("Erro ao concluir aula!");
+                  alert("Erro ao atualizar status da aula!");
                 }
               }}
             >
-              Concluir Aula
+              {aula.concluida ? "Desconcluir Aula" : "Concluir Aula"}
             </button>
           </div>
         </div>

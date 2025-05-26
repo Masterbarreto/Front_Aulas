@@ -1,0 +1,129 @@
+.container-relatorio {
+    position: absolute; /* Permite posicionar o título em qualquer lugar */
+    top: 32px; /* Ajusta a posição vertical */
+    left: 330px; /* Encosta o título na linha do Hub */
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 40px auto;
+    padding: 22px 0 12px 0;
+    max-width: 3900px;
+    border-radius: 18px;
+    text-align: left; /* Alinha o texto à esquerda */
+}
+
+h1 {
+    color: #fff;
+    font-size: 2.2rem;
+    font-weight: 400;
+    margin-bottom: 24px;
+    margin-left: 18px;
+    letter-spacing: 1px;
+}
+
+.Sub-Titulo-Relatorio {
+  margin: 40px 40px 0px; /* top, right, bottom, left */
+  flex-shrink: 0;
+  color: #FFF;
+  font-family: Poppins, sans-serif;
+  font-size: 21px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.Container-AulasRelatorio {
+    max-width: 1800px; /* aumente conforme desejar, ou use 100% */
+    width: 76vw;       /* opcional: faz ocupar 90% da largura da tela */
+    height: 700px; /* altura fixa para a área da tabela */
+    margin: 0 auto;
+    flex-shrink: 0;
+    border-radius: 21px;
+    background: #292d33;
+    box-shadow: 0 2px 12px #0005;
+    padding: 24px;
+    overflow-y: auto; /* barra de rolagem vertical */
+    position: static; /* remove o absolute */
+    scrollbar-width: thin;
+    scrollbar-color: #23272f #181a1f;
+}
+
+/* Para Chrome, Edge e Safari */
+.Container-AulasRelatorio::-webkit-scrollbar {
+    width: 10px;
+    background: #181a1f;
+    border-radius: 8px;
+}
+
+.Container-AulasRelatorio::-webkit-scrollbar-thumb {
+    background: #23272f;
+    border-radius: 8px;
+}
+
+.Container-AulasRelatorio::-webkit-scrollbar-thumb:hover {
+    background: #393e46;
+}
+
+.relatorio-header {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.btn-voltar, .btn-editar {
+    background: none;
+    border: 1px solid #ffb366;
+    color: #ffb366;
+    border-radius: 20px;
+    padding: 6px 22px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-voltar:hover, .btn-editar:hover {
+    background: #ffb36622;
+    color: #fff;
+}
+
+.relatorio-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    background: #23272f;
+    color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 1rem;
+}
+
+.relatorio-tabela th, .relatorio-tabela td {
+    padding: 18px 12px;
+    text-align: left;
+}
+
+.relatorio-tabela th {
+    color: #bdbdbd;
+    font-weight: 600;
+    background: #23272f;
+    border-bottom: 1px solid #393e46;
+}
+
+.relatorio-row {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.relatorio-row:hover {
+    background: #2d313a;
+}
+
+@media (max-width: 800px) {
+    .container-relatorio, .Container-AulasRelatorio {
+        padding: 10px;
+    }
+    .relatorio-tabela th, .relatorio-tabela td {
+        padding: 10px 4px;
+        font-size: 0.95rem;
+    }
+}

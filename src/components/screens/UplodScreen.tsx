@@ -8,6 +8,7 @@ import { FileUploader } from "../ui/FileUploader";
 import { enviarParaApi } from "../../http/uploadService.ts";
 import axios from "axios";
 
+
 export function UplodScreen() {
     const [dataAula, setDataAula] = useState("");
     const [horaAula, setHoraAula] = useState("");
@@ -38,39 +39,36 @@ export function UplodScreen() {
     const handleEnviar = async (e: React.FormEvent) => {
         e.preventDefault();
         const values = getValues();
-        console.log({
-            dataAula,
-            horaAula,
-            descricao,
-            values,
-            files,
-            links,
-            titulo: values.titulo
-        });
+
+        // Junta data e hora no formato ISO
+        const dataCompleta = dataAula && horaAula ? `${dataAula}T${horaAula}:00` : "";
+
         try {
+            const nome = localStorage.getItem("name");
+
             await enviarParaApi({
-                dataAula,
-                horaAula,
+                dataAula: dataCompleta,
                 descricao,
                 values,
                 files,
                 links,
-                titulo: values.titulo
+                titulo: values.titulo,
+                professor: nome,// ou outro campo que sua API espera
             });
             alert("Enviado com sucesso!");
 
             const userId = localStorage.getItem("userId");
 
             await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
-            userId: userId,
-            action: "Upload de atividade",
-            data: new Date().toISOString(),
-            detalhes: {
-                titulo: values.titulo,
-                turma: values.turma,
-                curso: values.curso
-            }
-        });
+                userId: userId,
+                action: "Upload de atividade",
+                data: new Date().toISOString(),
+                detalhes: {
+                    titulo: values.titulo,
+                    turma: values.turma,
+                    curso: values.curso
+                }
+            });
 
             handleCancelar();
         } catch (error: any) {

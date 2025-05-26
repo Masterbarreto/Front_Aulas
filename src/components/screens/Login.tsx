@@ -39,6 +39,7 @@ export function LoginPages() {
       // Armazena os dados do usuário no localStorage
       localStorage.setItem("userId", response.data.userId);
       localStorage.setItem("cargo", response.data.cargo);
+      localStorage.setItem("name", response.data.name);
 
       // Verifica o cargo do usuário e redireciona
       const { cargo } = response.data;
