@@ -6,6 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { AulaSelects } from "../ui/AulaSelects";
 import { FileUploader } from "../ui/FileUploader";
 import { enviarParaApi } from "../../http/uploadService.ts";
+import { TODOS_CURSOS, TODAS_TURMAS } from "../../constant/aula";
 import axios from "axios";
 
 
@@ -42,34 +43,37 @@ const handleEnviar = async (e: React.FormEvent) => {
   const values = getValues();
   const nomeProf = localStorage.getItem("name") || "";
 
-  const form = new FormData();
-  form.append("anoEscolar", values["ano-escolar"]);
-  form.append("curso", values.curso);
-  form.append("titulo", values.titulo);
-  form.append("Turma", values.turma);
-  form.append("Materia", values.materia);
-  form.append("DayAula", dataAula); // ex: "2025-05-29"
-  form.append("Horario", horaAula); // ex: "14:30"
-  form.append("DesAula", descricao);
-  form.append("LinkAula", links[0] || ""); // ou null se preferir
-  form.append("professor", nomeProf);
+  // Se "all", expande; senão, pega só o selecionado
+  const cursos = values.curso === "all" ? TODOS_CURSOS : [values.curso];
+  const turmas = values.turma === "all" ? TODAS_TURMAS : [values.turma];
 
-  // Os teus arquivos *têm* de ser enviados com a mesma chave que o servidor espera:
-  files.forEach((file) => form.append("arquivos", file));
+  // Para cada par (curso, turma), cria uma aula
+  const promises = cursos.flatMap((curso) =>
+    turmas.map((turma) => {
+      const form = new FormData();
+      form.append("anoEscolar", values["ano-escolar"]);
+      form.append("curso", curso);
+      form.append("titulo", values.titulo);
+      form.append("Turma", turma);
+      form.append("Materia", values.materia);
+      form.append("DayAula", dataAula); // ex: "2025-05-29"
+      form.append("Horario", horaAula); // ex: "14:30"
+      form.append("DesAula", descricao);
+      form.append("LinkAula", links[0] || ""); // ou null se preferir
+      form.append("professor", nomeProf);
+      files.forEach((f) => form.append("arquivos", f));
+      return enviarParaApi(form);
+    })
+  );
 
   try {
-    await axios.post(
-      "https://apisubaulas.onrender.com/api/v1/aulas",
-      form,
-      { headers: { "Content-Type": "multipart/form-data" } }
-    );
-    alert("Enviado com sucesso!");
-
-    // Limpa todos os campos após o envio bem-sucedido
+    // Executa todas as requisições em paralelo
+    await Promise.all(promises);
+    alert("Todas as aulas criadas com sucesso!");
     handleCancelar();
   } catch (err: any) {
-    console.error("Erro do servidor:", err.response?.data);
-    alert("Falha: " + JSON.stringify(err.response?.data));
+    console.error(err.response?.data || err);
+    alert("Erro ao criar as aulas: " + JSON.stringify(err.response?.data));
   }
 };
 
