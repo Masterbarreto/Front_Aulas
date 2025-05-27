@@ -1,145 +1,168 @@
-/* Estilo para o container principal */
-.container-título {
-    flex: 1;
-    padding: 40px 199px 40px 290px; /* Ajusta o espaçamento geral, compensando o menu lateral */
-    box-sizing: border-box;
-    color: #ffffff;
-    overflow-y: auto;
-    background-color: #0e1117;
-}
-
+/* -----------------------------------
+   1. Container geral e sidebar (Hub)
+------------------------------------ */
 .home-container {
-    display: flex;
-    height: 1vh;
-    background-color: #0e1117;
-}
-
-/* Estilo para o título */
-.header-container {
-    position: absolute; /* Permite posicionar o título em qualquer lugar */
-    top: 32px; /* Ajusta a posição vertical */
-    left: 330px; /* Encosta o título na linha do Hub */
-    color: #ffffff;
-    font-size: 28px;
-    font-weight: bold;
-    margin: 0;
-    text-align: left; /* Alinha o texto à esquerda */
-}
-
-h1 {
-    font-size: 28px;
-    margin: 0;
-    text-align: left; /* Alinha o texto à esquerda */
-}
-
-/* Estilo para o restante do conteúdo */
-.content-container {
-    margin-top: 20px; /* Espaçamento entre o título e o restante do conteúdo */
-    padding: 0 40px; /* Espaçamento interno para o conteúdo */
-}
-
-.section-title {
-    font-size: 18px;
-    font-weight: 500;
-    margin-bottom: 10px; /* Espaçamento abaixo do título */
-    color: #ffffff;
-}
-
-.courses-container {
-    display: flex;
-    gap: 2px; /* Espaçamento entre os cartões */
-    flex-wrap: wrap; /* Permite que os cartões quebrem linha, se necessário */
-    margin-top: 20px;
-}
-
-.course-card {
-    background-color: #1e2430;
-    border-radius: 12px;
-    padding: 80px;
-    width: 140px;
-    height: 120px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
-    font-size: 16px;
-    gap: 10px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.course-card:hover {
-    transform: translateY(-4px);
-    background-color: #2a2f3d;
-}
-
-.sections-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    margin-top: 20px;
-}
-
-.card-item {
-    background-color: #1e2430;
-    height: 40px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.container-icone {
-    position: absolute;
-    margin-top: -410px;
-    left: 330px; /* Alinha com o título */
-}
-
-/* Texto "Seus Cursos" */
-.text-curos {
-    color: #ffffff;
-    font-size: 22px;
-    font-weight: 500;
-}
-
-.aula-card {
-  background: #23262e;
-  border-radius: 8px;
-  margin: 8px 0;
-  padding: 12px 16px;
-  color: #fff;
-  font-size: 1rem;
-}
-
-.resumo-aulas-home {
-  margin-top: 88px;
-  margin-bottom: 40px;
-  padding: 12px;
-  border-radius: 12px;
-  background-color: #11151d; /* cor de fundo, ajuste se quiser */
   display: flex;
-  justify-content: space-between;
-  gap: 32px;
+  min-height: 100vh;
+  background-color: #0f1115;
 }
 
-.resumo-coluna {
+/* -----------------------------------
+   2. Conteúdo principal
+------------------------------------ */
+.container-título {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Alinha o conteúdo ao topo */
+  align-items: flex-start;    /* Alinha o conteúdo à esquerda */
+  margin-left: -450px;   
+  padding: 1rem 1rem 1rem 0; /* Move o conteúdo mais para cima */
+}
+
+/* Cabeçalho */
+.header-container h1 {
+  color: #ffffff;
+  font-size: 2.5rem;
+  margin: 0 0 2rem 0; /* Reduz o espaço abaixo do título */
+}
+
+/* Subtítulo */
+.text-cursos {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0; /* Reduz o espaço abaixo do subtítulo */
+}
+
+/* -----------------------------------
+   3. Seus Cursos (cards)
+------------------------------------ */
+.anos-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem; /* Reduz o espaçamento entre os cards */
+  margin-bottom: 2rem; /* Reduz o espaço abaixo dos cards */
+  justify-content: flex-start; /* Mantém os cards alinhados à esquerda */
+}
+
+.ano-card {
+  background-color: #1f1f1f;
+  border-radius: 16px;
+  padding: 0.75rem; /* Reduz o padding interno */
+  width: 130px;     /* Reduz o tamanho dos cards */
+  height: 130px;    /* Reduz o tamanho dos cards */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.ano-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+/* -----------------------------------
+   4. Resumo de Atividades e Aulas
+------------------------------------ */
+.resumo-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
 .resumo-coluna h2 {
-  color: white;
-  margin-bottom: 16px;
-  font-size: 18px;
+  color: #ffffff;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .resumo-item {
   background-color: #1a1f29;
   border-radius: 8px;
-  padding: 12px 16px;
-  margin-bottom: 12px;
-  color: white;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  color: #ffffff;
   transition: background-color 0.2s;
 }
 
 .resumo-item:hover {
   background-color: #242a36;
+}
+
+/* -----------------------------------
+   5. Responsividade
+------------------------------------ */
+/* 📱 Mobile até 600px */
+@media (max-width: 600px) {
+  .container-título {
+    margin-left: 0; /* Remove o deslocamento para a esquerda */
+    padding: 1rem; /* Ajusta o padding para telas menores */
+  }
+  .header-container h1 {
+    font-size: 2rem;
+    text-align: center; /* Centraliza o título */
+  }
+  .text-cursos {
+    font-size: 1.2rem;
+    text-align: center; /* Centraliza o subtítulo */
+  }
+  .anos-container {
+    justify-content: center; /* Centraliza os cards */
+    gap: 1rem; /* Reduz o espaçamento entre os cards */
+  }
+  .ano-card {
+    width: 100%; /* Cards ocupam toda a largura disponível */
+    height: 120px; /* Ajusta a altura dos cards */
+  }
+  .resumo-container {
+    grid-template-columns: 1fr; /* Uma coluna para telas menores */
+  }
+}
+
+/* 💻 Tablet 601px–1024px */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .container-título {
+    margin-left: -200px; /* Ajusta o deslocamento para tablets */
+    padding: 1rem 2rem; /* Ajusta o padding para tablets */
+  }
+  .anos-container {
+    justify-content: center; /* Centraliza os cards */
+  }
+  .ano-card {
+    width: 140px; /* Ajusta o tamanho dos cards */
+    height: 140px;
+  }
+}
+
+/* 🖥️ Desktop acima de 1025px */
+@media (min-width: 1025px) {
+  .container-título {
+    margin-left: -450px; /* Mantém o deslocamento para desktops */
+    padding: 2rem 4rem; /* Ajusta o padding para desktops */
+  }
+}
+
+/* 🖥️ Telas grandes acima de 1440px */
+@media (min-width: 1440px) {
+  .container-título {
+    margin-left: -930px; /* Ajusta o deslocamento para telas maiores */
+    padding: 2rem 5rem; /* Ajusta o padding para dar mais espaço */
+  }
+
+  .anos-container {
+    justify-content: flex-start; /* Mantém os cards alinhados à esquerda */
+    gap: 2rem; /* Aumenta o espaçamento entre os cards */
+  }
+
+  .ano-card {
+    width: 150px; /* Aumenta o tamanho dos cards */
+    height: 150px;
+  }
+
+  .resumo-container {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ajusta o tamanho das colunas */
+    gap: 2.5rem; /* Aumenta o espaçamento entre os itens */
+  }
 }

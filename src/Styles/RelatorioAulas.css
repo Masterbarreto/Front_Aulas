@@ -1,6 +1,6 @@
 .container-relatorio {
     position: absolute; /* Permite posicionar o título em qualquer lugar */
-    top: 32px; /* Ajusta a posição vertical */
+    top: -52px; /* Ajusta a posição vertical */
     left: 330px; /* Encosta o título na linha do Hub */
     color: #ffffff;
     font-size: 28px;
