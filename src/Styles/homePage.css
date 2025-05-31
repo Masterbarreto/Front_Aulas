@@ -1,168 +1,61 @@
-/* -----------------------------------
-   1. Container geral e sidebar (Hub)
------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+}
+
 .home-container {
   display: flex;
-  min-height: 100vh;
-  background-color: #0f1115;
-}
-
-/* -----------------------------------
-   2. Conteúdo principal
------------------------------------- */
-.container-título {
-  flex: 1;
-  display: flex;
+  justify-content: flex-start;
   flex-direction: column;
-  justify-content: flex-start; /* Alinha o conteúdo ao topo */
-  align-items: flex-start;    /* Alinha o conteúdo à esquerda */
-  margin-left: -450px;   
-  padding: 1rem 1rem 1rem 0; /* Move o conteúdo mais para cima */
+  flex-wrap: wrap;
+  margin-left: 220px;
+  /* Mesmo valor da largura do Hub */
+  width: calc(100% - 155px);
+  /* Largura total menos a largura do Hub */
+  min-height: 100vh;
+  box-sizing: border-box;
+
+  padding: 20px;
+  /* Adicionar padding para espaçamento interno */
 }
 
-/* Cabeçalho */
-.header-container h1 {
-  color: #ffffff;
-  font-size: 2.5rem;
-  margin: 0 0 2rem 0; /* Reduz o espaço abaixo do título */
+.Text-container {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  text-align: left;
+  margin: 2vh 0;
+  /* Remover margin lateral */
+  padding: 20px;
+  border-radius: 8px;
 }
 
-/* Subtítulo */
-.text-cursos {
-  color: #ffffff;
+.Title {
+  color: white;
+  margin-bottom: 10px;
+  margin-left: 0rem;
+  font-size: 3.8rem;
+}
+
+.subTitle {
+  color: white;
+  margin-bottom: 15px;
+  margin-left: 0rem;
   font-size: 1.5rem;
-  margin: 0 0 1rem 0; /* Reduz o espaço abaixo do subtítulo */
 }
 
-/* -----------------------------------
-   3. Seus Cursos (cards)
------------------------------------- */
+.bot-container {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 15px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
 .anos-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem; /* Reduz o espaçamento entre os cards */
-  margin-bottom: 2rem; /* Reduz o espaço abaixo dos cards */
-  justify-content: flex-start; /* Mantém os cards alinhados à esquerda */
-}
-
-.ano-card {
-  background-color: #1f1f1f;
-  border-radius: 16px;
-  padding: 0.75rem; /* Reduz o padding interno */
-  width: 130px;     /* Reduz o tamanho dos cards */
-  height: 130px;    /* Reduz o tamanho dos cards */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.ano-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
-}
-
-/* -----------------------------------
-   4. Resumo de Atividades e Aulas
------------------------------------- */
-.resumo-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.resumo-coluna h2 {
-  color: #ffffff;
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-}
-
-.resumo-item {
-  background-color: #1a1f29;
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.75rem;
-  color: #ffffff;
-  transition: background-color 0.2s;
-}
-
-.resumo-item:hover {
-  background-color: #242a36;
-}
-
-/* -----------------------------------
-   5. Responsividade
------------------------------------- */
-/* 📱 Mobile até 600px */
-@media (max-width: 600px) {
-  .container-título {
-    margin-left: 0; /* Remove o deslocamento para a esquerda */
-    padding: 1rem; /* Ajusta o padding para telas menores */
-  }
-  .header-container h1 {
-    font-size: 2rem;
-    text-align: center; /* Centraliza o título */
-  }
-  .text-cursos {
-    font-size: 1.2rem;
-    text-align: center; /* Centraliza o subtítulo */
-  }
-  .anos-container {
-    justify-content: center; /* Centraliza os cards */
-    gap: 1rem; /* Reduz o espaçamento entre os cards */
-  }
-  .ano-card {
-    width: 100%; /* Cards ocupam toda a largura disponível */
-    height: 120px; /* Ajusta a altura dos cards */
-  }
-  .resumo-container {
-    grid-template-columns: 1fr; /* Uma coluna para telas menores */
-  }
-}
-
-/* 💻 Tablet 601px–1024px */
-@media (min-width: 601px) and (max-width: 1024px) {
-  .container-título {
-    margin-left: -200px; /* Ajusta o deslocamento para tablets */
-    padding: 1rem 2rem; /* Ajusta o padding para tablets */
-  }
-  .anos-container {
-    justify-content: center; /* Centraliza os cards */
-  }
-  .ano-card {
-    width: 140px; /* Ajusta o tamanho dos cards */
-    height: 140px;
-  }
-}
-
-/* 🖥️ Desktop acima de 1025px */
-@media (min-width: 1025px) {
-  .container-título {
-    margin-left: -450px; /* Mantém o deslocamento para desktops */
-    padding: 2rem 4rem; /* Ajusta o padding para desktops */
-  }
-}
-
-/* 🖥️ Telas grandes acima de 1440px */
-@media (min-width: 1440px) {
-  .container-título {
-    margin-left: -930px; /* Ajusta o deslocamento para telas maiores */
-    padding: 2rem 5rem; /* Ajusta o padding para dar mais espaço */
-  }
-
-  .anos-container {
-    justify-content: flex-start; /* Mantém os cards alinhados à esquerda */
-    gap: 2rem; /* Aumenta o espaçamento entre os cards */
-  }
-
-  .ano-card {
-    width: 150px; /* Aumenta o tamanho dos cards */
-    height: 150px;
-  }
-
-  .resumo-container {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ajusta o tamanho das colunas */
-    gap: 2.5rem; /* Aumenta o espaçamento entre os itens */
-  }
+  justify-content: flex-start;
+  flex-direction: row;
+  margin: 5%;
 }

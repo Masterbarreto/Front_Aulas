@@ -5,13 +5,16 @@
     align-items: stretch;
     height: 100vh;
     background-color: #0e1117;
-    width: 290px; /* Ajustado para um menu lateral padrão */
+    width: 290px;
     padding: 20px 0;
     box-sizing: border-box;
     border-right: 1px solid #1e2430;
     position: fixed;
+    /* Mudei de absolute para fixed */
     left: 0;
     top: 0;
+    z-index: 1000;
+    /* Garantir que fique na frente */
 }
 
 .container-hub,

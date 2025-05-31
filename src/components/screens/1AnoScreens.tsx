@@ -9,7 +9,7 @@ import imageMkt from "../../assets/imageMkt.png";
 import imageAdm from "../../assets/imageAdm.png";
 import imageTi from "../../assets/imageTi.png";
 import imageCdd from "../../assets/imageCdd.png";
-import imageIA  from "../../assets/imageIA.png"
+import imageIA from "../../assets/imageIA.png"
 
 import "../../Styles/AnoSceens.css";
 
@@ -40,8 +40,10 @@ export function YearScreen() {
           style={{ cursor: "pointer" }}
           onClick={() => navigate(-1)}
         >
-          <ArrowLeft size={32} color="#fff" />
-          <h1>Turmas do  {ano}   – Senac</h1>
+          <ArrowLeft size={44} color="#fff" />
+          <div className="container-Turma">
+            <h1>Turmas do  {ano}   – Senac</h1>
+          </div>
         </div>
         <div className="subtitulo-cursos">
           <span>Cursos Técnicos:</span>

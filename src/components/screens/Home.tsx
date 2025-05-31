@@ -1,5 +1,4 @@
 import { Hub } from "../ui/hub";
-import Breadcrumbs from "../ui/Breadcrumbs";
 import "../../Styles/homePage.css";
 import { AnoCard } from "../ui/AnoCard";
 import { useNavigate } from "react-router-dom";
@@ -12,19 +11,15 @@ export function HomePage() {
   return (
     <div className="home-container">
       <Hub />
-      <div className="container-título">
-        <div className="header-container">
-          <h1>Bem-vindo, Professor(a)!</h1>
-        </div>
-        <div className="container-icone">
-          <p className="text-cursos">Seus Cursos</p>
-          <div className="anos-container">
-            {anos.map((ano) => (
-              <div key={ano} onClick={() => navigate(`/${ano}`)}>
-                <AnoCard titulo={`${ano.charAt(0)} º Ano`} />
-              </div>
-            ))}
-          </div>
+      <div className="Text-container">
+        <h1 className="Title">Bem-vindos Professores</h1>
+        <p className="subTitle">Seus Cursos</p>
+        <div className="bot-container">
+          {anos.map((ano) => (
+            <div key={ano} onClick={() => navigate(`/${ano}`)}>
+              <AnoCard titulo={`${ano.charAt(0)} º Ano`} />
+            </div>
+          ))}
         </div>
       </div>
     </div>
