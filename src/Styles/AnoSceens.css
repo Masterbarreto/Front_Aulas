@@ -1,22 +1,32 @@
 /* Centraliza o conteúdo principal ao lado do menu */
 .main-ano-content {
     /* padding: 40px 40px 0 40px; */
-    padding: 40px 40px 0 0; /* Remove o padding da esquerda */
+    padding: 40px 40px 0 0;
+    /* Remove o padding da esquerda */
     width: 100%;
 }
 
 .conteiner-Titulos-ano {
-    margin-left: 320px; /* Garante que não há margem à esquerda */
+    margin-left: 320px;
+    /* Garante que não há margem à esquerda */
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 0px;
     margin-bottom: 28px;
 }
 
-.conteiner-Titulos h1 {
-    font-size: 2rem;
-    color: #fff;
-    font-weight: 500;
+.conteiner-Titulos {
+    display: flex;
+    background-color: #fff;
+}
+
+
+
+.container-Turma {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px;
+    margin-top: 2rem;
 }
 
 .subtitulo-cursos {
