@@ -1,51 +1,53 @@
 .container-primeiro-ano {
   min-height: 100vh;
-  background: #0e1117; /* Fundo escuro */
-  
+  background: #0e1117;
   display: flex;
+  min-width: 1200px; /* Largura mínima fixa */
 }
 
 .materias-max-container {
   width: 100%;
-  max-width: 1200px;
+  min-width: 1200px; /* Largura mínima fixa */
   margin: 0 auto;
   display: flex;
   flex: 1;
-  background: #0e1117; /* Fundo escuro para substituir o branco */
+  background: #0e1117;
 }
 
 .main-ano-content {
   flex: 1;
   padding: 32px;
-  background: #0e1117; /* Fundo escuro */
+  background: #0e1117;
+  min-width: 1000px; /* Largura mínima para o conteúdo */
 }
 
 .conteiner-Titulos {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 48px; /* Aumentado para dar mais espaço */
+  margin-top: 24px; /* Adicionado espaço superior */
   margin-left: 0;
   padding-left: 0;
-  background: #0e1117; /* Fundo escuro */
+  background: #0e1117;
 }
 
 .conteiner-Titulos h1 {
   font-size: 28px;
   margin: 0;
-  color: #fff; /* Texto branco */
+  color: #fff;
 }
 
 .subtitulo-cursos {
   margin: 22px 0 16px 0;
   font-size: 18px;
-  color: #fff; /* Texto branco */
+  color: #fff;
 }
 
 /* Botões das turmas */
 button {
-  background: #181b22; /* Fundo escuro */
-  color: #fff; /* Texto branco */
+  background: #181b22;
+  color: #fff;
   border: none;
   border-bottom: 2px solid transparent;
   padding: 12px 32px;
@@ -55,19 +57,20 @@ button {
 }
 
 button:hover {
-  background: #23262f; /* Fundo mais claro ao passar o mouse */
+  background: #23262f;
 }
 
 button:focus {
-  border-bottom: 2px solid #573bff; /* Destaque ao selecionar */
+  border-bottom: 2px solid #573bff;
 }
 
-/* Grid das matérias */
+/* Grid das matérias - sempre 4 colunas */
 .materias-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr); /* Sempre 4 colunas */
   gap: 24px;
   margin-top: 24px;
+  min-width: 900px; /* Largura mínima para o grid */
 }
 
 /* Cartões das matérias */
@@ -83,6 +86,8 @@ button:focus {
   cursor: pointer;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   transition: background 0.2s, transform 0.2s;
+  min-width: 180px; /* Largura mínima fixa para cada card */
+  min-height: 120px; /* Altura mínima fixa */
 }
 
 .materia-card:hover {
@@ -91,30 +96,5 @@ button:focus {
 }
 
 .materia-card span {
-  color: #fff; /* Texto branco */
-}
-
-/* Responsividade */
-@media (max-width: 1100px) {
-  .materias-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .materias-max-container {
-    max-width: 700px;
-  }
-}
-
-@media (max-width: 700px) {
-  .main-ano-content {
-    padding: 8px;
-  }
-  .materias-grid {
-    grid-template-columns: 1fr;
-  }
-  .conteiner-Titulos h1 {
-    font-size: 16px;
-  }
-  .materias-max-container {
-    max-width: 98vw;
-  }
+  color: #fff;
 }
