@@ -59,19 +59,18 @@ const AulaScreens: React.FC = () => {
   return (
     <div className="aula-main-bg">
       <Hub />
-      <div
-        className="aulasTitulos"
-        style={{ cursor: "pointer", marginTop: "32px", marginLeft: "260px" }} // 260px = largura da sidebar
-        onClick={() => navigate(-1)}
-      >
-        <ArrowLeft size={32} color="#fff" />
-        <h1 className="aula-title">
+      <div className="aulasTitulos">
+        <h1 className="aulasH1">
+          <ArrowLeft
+            size={32}
+            color="#fff"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate(-1)} // Voltar para a página anterior
+          />
           Aula de {aula.titulo.charAt(0).toUpperCase() + aula.titulo.slice(1).toLowerCase()}
         </h1>
+        <span className="aulasSubtitulo">materia: {aula.Materia}</span>
       </div>
-      <span className="aula-subtitle" style={{ marginLeft: "304px" }}>
-        materia: {aula.Materia}
-      </span>
       <div className="aula-content-container">
         <div className="aula-content">
           {/* Esquerda */}

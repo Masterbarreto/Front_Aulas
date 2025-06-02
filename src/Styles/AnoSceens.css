@@ -23,10 +23,14 @@
 
 /* Estilo do texto */
 .conteiner-Titulos-ano h1 {
-  font-size: 2rem; /* Reduz o tamanho do texto */
+  font-size: 2rem; /* Mantém o tamanho do texto */
   color: #fff;
   margin: 0;
-  line-height: 1; /* Ajusta o espaçamento vertical do texto */
+  line-height: 1.2; /* Ajusta o espaçamento vertical */
+  text-align: center; /* Centraliza o texto */
+  word-wrap: break-word; /* Quebra o texto automaticamente */
+  overflow-wrap: break-word; /* Garante a quebra de palavras longas */
+  white-space: normal; /* Permite que o texto quebre linhas */
 }
 
 .conteiner-Titulos {
@@ -53,7 +57,7 @@
   padding: 0;
   width: 100%;
   height: 100vh; /* Garante que o container ocupe toda a altura da tela */
-  overflow-y: auto; /* Adiciona rolagem vertical quando necessário */
+  overflow-y: scroll; /* Garante que a barra de rolagem vertical esteja sempre visível */
   box-sizing: border-box; /* Inclui padding e bordas no cálculo do tamanho */
 }
 

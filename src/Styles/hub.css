@@ -6,7 +6,7 @@
     height: 100vh;
     background-color: #0e1117;
     width: 290px;
-    padding: 20px 0;
+    padding: 10px 0; /* Reduz o espaçamento vertical */
     box-sizing: border-box;
     border-right: 1px solid #1e2430;
     position: fixed;
@@ -22,18 +22,17 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 8px;
+    gap: 4px; /* Reduz o espaçamento entre os itens */
     width: 100%;
-    padding: 0 15px;
-    box-sizing: border-box;
+    padding: 0 10px; /* Reduz o espaçamento interno */
 }
 
 .ints-container {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 12px;
-    padding: 10px 15px;
+    gap: 8px; /* Reduz o espaçamento entre ícones e texto */
+    padding: 8px 10px; /* Reduz o espaçamento interno */
     width: 100%;
     border-radius: 8px;
     color: #ffffff;
@@ -55,7 +54,7 @@
 }
 
 .text {
-    font-size: 14px;
+    font-size: 12px; /* Reduz o tamanho do texto */
     font-weight: 500;
     text-align: left;
     flex: 1;

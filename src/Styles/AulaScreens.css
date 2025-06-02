@@ -11,25 +11,33 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    margin-left: 240px; /* Garante que o conteúdo não passe para trás da sidebar */
+    overflow-x: hidden; /* Evita que o conteúdo ultrapasse horizontalmente */
 }
 
 .aula-sidebar {
-    width: 320px;
+    width: 240px; /* Largura fixa da sidebar */
     background: #1E2027;
-    padding: 34px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: fixed; /* Garante que a sidebar fique fixa no lado esquerdo */
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1000; /* Garante que a sidebar fique acima do conteúdo */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra para destaque */
 }
 
 .aula-content-container {
     background: #23242a;
-    border-radius: 36px;
-    padding: 32px 24px;
-    min-width: 400px;
-    max-width: 1700px;
-    min-height: 600px;
-    margin: 48px 50px 40px 260px;
+    border-radius: 16px;
+    padding: 16px;
+    min-width: 280px;
+    max-width: 1200px;
+    min-height: 400px;
+    margin: 16px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -39,30 +47,30 @@
 
 .aula-content {
     display: flex;
-    gap: 32px;
+    gap: 12px; /* Ajusta o espaçamento entre os elementos */
     width: 100%;
     align-items: flex-start;
 }
 
 .aula-section {
     background: #23242B;
-    border-radius: 16px;
-    padding: 32px;
+    border-radius: 12px; /* Ajusta o border-radius */
+    padding: 16px; /* Ajusta o padding */
     flex: 2;
-    min-height: 400px;
+    min-height: 250px; /* Ajusta a altura mínima */
     display: flex;
     flex-direction: column;
 }
 
 .aula-section-title {
-    font-weight: 700;
-    font-size: 20px;
-    margin-bottom: 0;
+    font-weight: 600;
+    font-size: 14px; /* Ajusta o tamanho da fonte */
+    margin-bottom: 8px; /* Ajusta o espaçamento inferior */
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px; /* Ajusta o espaçamento entre os itens */
     position: relative;
-    padding-bottom: 12px;
+    padding-bottom: 8px; /* Ajusta o padding inferior */
 }
 
 .aula-section-title::after {
@@ -106,19 +114,19 @@
 
 .aula-details {
     background: #2d2e36;
-    border-radius: 16px;
-    padding: 32px;
+    border-radius: 12px;
+    padding: 16px; /* Ajusta o padding */
     flex: 1;
-    min-width: 320px;
+    min-width: 240px; /* Ajusta a largura mínima */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
 
 .aula-details-title {
-    font-weight: 700;
-    font-size: 18px;
-    margin-bottom: 24px;
+    font-weight: 600; /* Reduz o peso da fonte */
+    font-size: 14px; /* Reduz o tamanho da fonte */
+    margin-bottom: 16px; /* Reduz o espaçamento inferior */
 }
 
 .aula-details-item {
@@ -150,30 +158,30 @@
 }
 
 .aula-details-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 16px;
-  padding: 18px 60px; /* 18px em cima/baixo, 60px nas laterais */
-  color: #fff;
-  font-size: 1.2rem;
-  margin-bottom: 58px;
-  border: none;
-  width: 100%;
-  min-width: 140px;
-  min-height: 50px;
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 12px 0 #0008;
-  gap: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 16px;
+    padding: 18px 60px; /* 18px em cima/baixo, 60px nas laterais */
+    color: #fff;
+    font-size: 1.2rem;
+    margin-bottom: 58px;
+    border: none;
+    width: 100%;
+    min-width: 120px; /* Reduz a largura mínima */
+    min-height: 40px; /* Reduz a altura mínima */
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 12px 0 #0008;
+    gap: 18px;
 }
 .aula-details-link {
     display: flex;
     align-items: center;
     background: #2D214B;
     border-radius: 8px;
-    padding: 12px 16px;
+    padding: 12px 16px; /* Reduz o padding */
     color: #fff;
     text-decoration: none;
     font-weight: 600;
@@ -199,12 +207,12 @@
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 14px 0;
+    padding: 8px 0; /* Ajusta o padding */
     font-weight: 700;
-    font-size: 16px;
+    font-size: 14px; /* Ajusta o tamanho da fonte */
     cursor: pointer;
     transition: background 0.2s;
-    margin-top: 16px;
+    margin-top: 8px; /* Ajusta o espaçamento superior */
 }
 
 .aula-details-btn:hover {
@@ -258,17 +266,29 @@
 
 .aulasTitulos {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 48px;      /* aumenta o espaço do topo */
-    margin-left: 260px;    /* igual à largura da sidebar */
+    flex-direction: column; /* Alinha o título e subtítulo verticalmente */
+    align-items: flex-start; /* Alinha à esquerda */
+    gap: 4px; /* Espaçamento entre o título e o subtítulo */
+    margin-top: 24px; /* Espaço superior */
+    margin-left: 10px; /* Reduz o deslocamento para aproximar do Hub */
 }
 
 .aulasH1 {
     color: #fff;
-    font-size: 1.4rem;
-    font-weight: 500;
+    font-size: 2rem; /* Tamanho do título principal */
+    font-weight: 600; /* Deixa o título mais destacado */
     margin: 0;
+    display: flex;
+    align-items: center; /* Centraliza verticalmente com o ícone */
+    gap: 8px; /* Espaçamento entre o ícone e o texto */
+}
+
+.aulasSubtitulo {
+    color: #aaa; /* Cor mais clara para o subtítulo */
+    font-size: 1rem; /* Tamanho do subtítulo */
+    font-weight: 400; /* Peso mais leve para o subtítulo */
+    margin: 0;
+    margin-left: 32px; /* Ajusta o alinhamento do subtítulo */
 }
 
 /* Responsivo */
