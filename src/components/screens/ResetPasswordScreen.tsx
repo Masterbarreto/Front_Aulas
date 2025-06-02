@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../../Styles/Login.css";
+import "../../Styles/EsqueciAsenha.css";
 
 export function ResetPasswordScreen() {
   const [email, setEmail] = useState("");
@@ -34,12 +34,12 @@ export function ResetPasswordScreen() {
   };
 
   return (
-    <div className="container-principal">
-      <div className="container-logo">
+    <div className="container-principal-EsqueciSenha">
+      <div className="container-logo-EsqueciSenha">
         <h1>Redefinir Senha</h1>
       </div>
 
-      <form className="container-form" onSubmit={handleSubmit}>
+      <form className="container-form-EsqueciSenha" onSubmit={handleSubmit}>
         <label className="input-label">E-mail</label>
         <input
           type="email"

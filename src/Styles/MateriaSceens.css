@@ -1,7 +1,7 @@
 .container-primeiro-ano {
   min-height: 100vh;
-  background: #0e1117;
-  color: #fff;
+  background: #0e1117; /* Fundo escuro */
+  
   display: flex;
 }
 
@@ -11,11 +11,13 @@
   margin: 0 auto;
   display: flex;
   flex: 1;
+  background: #0e1117; /* Fundo escuro para substituir o branco */
 }
 
 .main-ano-content {
   flex: 1;
   padding: 32px;
+  background: #0e1117; /* Fundo escuro */
 }
 
 .conteiner-Titulos {
@@ -25,18 +27,42 @@
   margin-bottom: 24px;
   margin-left: 0;
   padding-left: 0;
+  background: #0e1117; /* Fundo escuro */
 }
 
 .conteiner-Titulos h1 {
   font-size: 28px;
   margin: 0;
+  color: #fff; /* Texto branco */
 }
 
 .subtitulo-cursos {
   margin: 22px 0 16px 0;
   font-size: 18px;
+  color: #fff; /* Texto branco */
 }
 
+/* Botões das turmas */
+button {
+  background: #181b22; /* Fundo escuro */
+  color: #fff; /* Texto branco */
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 12px 32px;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+button:hover {
+  background: #23262f; /* Fundo mais claro ao passar o mouse */
+}
+
+button:focus {
+  border-bottom: 2px solid #573bff; /* Destaque ao selecionar */
+}
+
+/* Grid das matérias */
 .materias-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -44,25 +70,31 @@
   margin-top: 24px;
 }
 
+/* Cartões das matérias */
 .materia-card {
-  background:#151922;
+  background: #151922;
   border-radius: 16px;
   padding: 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #fff;
   font-size: 20px;
   cursor: pointer;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   transition: background 0.2s, transform 0.2s;
 }
+
 .materia-card:hover {
   background: #23262f;
   transform: translateY(-2px) scale(1.03);
 }
 
+.materia-card span {
+  color: #fff; /* Texto branco */
+}
+
+/* Responsividade */
 @media (max-width: 1100px) {
   .materias-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -71,6 +103,7 @@
     max-width: 700px;
   }
 }
+
 @media (max-width: 700px) {
   .main-ano-content {
     padding: 8px;

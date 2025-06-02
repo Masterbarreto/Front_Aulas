@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../../Styles/Login.css";
+import "../../Styles/EsqueciAsenha.css";
 
 export function RenderPassword() {
   const [email, setEmail] = useState("");
@@ -25,7 +25,7 @@ export function RenderPassword() {
   };
 
   return (
-    <div className="container-principal">
+    <div className="container-principal-esqueciSenha">
       <div className="container-logo">
         <h1>Solicitar Redefinição de Senha</h1>
       </div>

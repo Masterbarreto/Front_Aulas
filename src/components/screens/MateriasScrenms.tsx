@@ -35,11 +35,20 @@ const materias = [
   { nome: "Biologia", icon: Fish, id: "biologia" },
 ];
 
-const turmas = ["1", "2", "3", "4"];
+const turmasPorCurso = {
+  mmd: ["1", "2", "3", "4", "5", "6", "7", "8"],
+  iot: ["1", "2", "3", "4"],
+  ti: ["1", "2", "3", "4"],
+  cdd: ["1", "2", "3"],
+  adm: ["1", "2", "3", "4"],
+  mkt: ["1", "2", "3", "4"],
+  ia: ["1", "2", "3"],
+};
 
 export default function MateriasScrenms() {
   const navigate = useNavigate();
   const { ano, curso } = useParams();
+  const turmas = turmasPorCurso[curso] || []; // Obtem as turmas do curso atual
   const [turmaSelecionada, setTurmaSelecionada] = React.useState(turmas[0]);
 
   const handleMateriaClick = (materiaId: string) => {

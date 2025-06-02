@@ -1,5 +1,5 @@
 import { Hub } from "../ui/hub";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../../Styles/uplodScren.css";
 import LinkInput from "../ui/LinkInput";
 import { useForm, Controller } from "react-hook-form";
@@ -7,8 +7,15 @@ import { AulaSelects } from "../ui/AulaSelects";
 import { FileUploader } from "../ui/FileUploader";
 import { enviarParaApi } from "../../http/uploadService.ts";
 import { TODOS_CURSOS, TODAS_TURMAS } from "../../constant/aula";
+import { LinkModal } from "../ui/LinkModal";
 import axios from "axios";
 
+// Define a interface para os links estruturados
+interface LinkItem {
+  id: string;
+  url: string;
+  name: string;
+}
 
 export function UplodScreen() {
     const [dataAula, setDataAula] = useState("");
@@ -19,6 +26,8 @@ export function UplodScreen() {
     const [clearFiles, setClearFiles] = useState(false);
     const [clearLinks, setClearLinks] = useState(false);
     const [links, setLinks] = useState<string[]>([]);
+    const [structuredLinks, setStructuredLinks] = useState<LinkItem[]>([]); // Novo estado para links estruturados
+    const linkModalRef = useRef<any>(null);
 
     // Limpa todos os campos
     const handleCancelar = () => {
@@ -28,55 +37,73 @@ export function UplodScreen() {
         setDescricao("");
         setFiles([]);
         setLinks([]);
+        setStructuredLinks([]); // Limpa os links estruturados
         setClearFiles(true);
         setClearLinks(true);
+
+        // Limpa os links no LinkModal
+        if (linkModalRef.current) {
+            linkModalRef.current.resetLinks();
+        }
+
         setTimeout(() => {
             setClearFiles(false);
             setClearLinks(false);
         }, 100); // reseta o flag após limpar
     };
 
+    // Função para lidar com mudanças nos links estruturados
+    const handleStructuredLinksChange = (newLinks: LinkItem[]) => {
+        setStructuredLinks(newLinks);
+        // Converte para o formato que a API espera (URLs e nomes alternativos)
+        const linkData = newLinks.map(link => ({ url: link.url, name: link.name }));
+        setLinks(linkData);
+    };
+
     // Envia os dados para a API
 
 const handleEnviar = async (e: React.FormEvent) => {
-  e.preventDefault();
-  const values = getValues();
-  const nomeProf = localStorage.getItem("name") || "";
+    e.preventDefault();
+    const values = getValues();
+    const nomeProf = localStorage.getItem("name") || "";
 
-  // Se "all", expande; senão, pega só o selecionado
-  const cursos = values.curso === "all" ? TODOS_CURSOS : [values.curso];
-  const turmas = values.turma === "all" ? TODAS_TURMAS : [values.turma];
+    const cursos = values.curso === "all" ? TODOS_CURSOS : [values.curso];
+    const turmas = values.turma === "all" ? TODAS_TURMAS : [values.turma];
 
-  // Para cada par (curso, turma), cria uma aula
-  const promises = cursos.flatMap((curso) =>
-    turmas.map((turma) => {
-      const form = new FormData();
-      form.append("anoEscolar", values["ano-escolar"]);
-      form.append("curso", curso);
-      form.append("titulo", values.titulo);
-      form.append("Turma", turma);
-      form.append("Materia", values.materia);
-      form.append("DayAula", dataAula); // ex: "2025-05-29"
-      form.append("Horario", horaAula); // ex: "14:30"
-      form.append("DesAula", descricao);
-      form.append("LinkAula", links[0] || ""); // ou null se preferir
-      form.append("professor", nomeProf);
-      files.forEach((f) => form.append("arquivos", f));
-      return enviarParaApi(form);
-    })
-  );
+    const promises = cursos.flatMap((curso) =>
+        turmas.map((turma) => {
+            const form = new FormData();
+            form.append("anoEscolar", values["ano-escolar"]);
+            form.append("curso", curso);
+            form.append("titulo", values.titulo);
+            form.append("Turma", turma);
+            form.append("Materia", values.materia);
+            form.append("DayAula", dataAula);
+            form.append("Horario", horaAula);
+            form.append("DesAula", descricao);
+            form.append("professor", nomeProf);
 
-  try {
-    // Executa todas as requisições em paralelo
-    await Promise.all(promises);
-    alert("Todas as aulas criadas com sucesso!");
-    handleCancelar();
-  } catch (err: any) {
-    console.error(err.response?.data || err);
-    alert("Erro ao criar as aulas: " + JSON.stringify(err.response?.data));
-  }
+            // Adiciona os links estruturados como um único campo JSON
+            form.append("LinkAula", JSON.stringify(structuredLinks));
+
+            files.forEach((f) => form.append("arquivos", f));
+            return enviarParaApi(form);
+        })
+    );
+
+    try {
+        await Promise.all(promises);
+        alert("Todas as aulas criadas com sucesso!");
+        await axios.post("https://apisubaulas.onrender.com/api/v1/users/activity", {
+            userId: localStorage.getItem("id"),
+            action: `Aulas criadas para os cursos: ${cursos.join(", ")} e turmas: ${turmas.join(", ")}`,
+        });
+        handleCancelar(); // Limpa todos os campos, incluindo os links
+    } catch (err: any) {
+        console.error(err.response?.data || err);
+        alert("Erro ao criar as aulas: " + JSON.stringify(err.response?.data));
+    }
 };
-
 
     return (
         <div className="container-principal">
@@ -151,7 +178,10 @@ const handleEnviar = async (e: React.FormEvent) => {
                     onChange={(e) => setDescricao(e.target.value)}
                     placeholder="Adicione um breve descrição do documento que será usado para essa aula"
                 />
-                <LinkInput clearLinks={clearLinks} onLinksChange={setLinks} />
+                <div className="link-section">
+                    <label className="input-label">Links da Aula</label>
+                    <LinkModal ref={linkModalRef} onLinksChange={handleStructuredLinksChange} />
+                </div>
             </form>
         </div>
     );

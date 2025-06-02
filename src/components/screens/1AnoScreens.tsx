@@ -32,18 +32,16 @@ export function YearScreen() {
   };
 
   return (
+    <>
+    <Hub />
     <div className="container-primeiro-ano">
-      <Hub />
       <div className="main-ano-content">
         <div
           className="conteiner-Titulos-ano"
-          style={{ cursor: "pointer" }}
           onClick={() => navigate(-1)}
         >
-          <ArrowLeft size={44} color="#fff" />
-          <div className="container-Turma">
-            <h1>Turmas do  {ano}   – Senac</h1>
-          </div>
+          <ArrowLeft className="arrow-icon" color="#fff" />
+          <h1>Turmas do {ano} – Senac</h1>
         </div>
         <div className="subtitulo-cursos">
           <span>Cursos Técnicos:</span>
@@ -57,5 +55,6 @@ export function YearScreen() {
         </div>
       </div>
     </div>
+    </>
   );
 }

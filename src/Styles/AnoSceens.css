@@ -1,18 +1,32 @@
 /* Centraliza o conteúdo principal ao lado do menu */
 .main-ano-content {
-    /* padding: 40px 40px 0 40px; */
-    padding: 40px 40px 0 0;
-    /* Remove o padding da esquerda */
-    width: 100%;
+  
+  margin-left: 13rem; /* Ajusta para a largura do menu lateral */
+  box-sizing: border-box; /* Garante que padding e margin sejam incluídos no tamanho total */
 }
 
+/* Container do título com a seta */
 .conteiner-Titulos-ano {
-    margin-left: 320px;
-    /* Garante que não há margem à esquerda */
-    display: flex;
-    align-items: center;
-    gap: 0px;
-    margin-bottom: 28px;
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem; /* Reduz o espaçamento entre o ícone e o texto */
+  margin-bottom: 20px; /* Ajusta o espaçamento inferior */
+  cursor: pointer;
+}
+
+/* Estilo do ícone */
+.conteiner-Titulos-ano .arrow-icon {
+  width: 46px; /* Reduz o tamanho da largura do ícone */
+  height: 46px; /* Reduz o tamanho da altura do ícone */
+}
+
+/* Estilo do texto */
+.conteiner-Titulos-ano h1 {
+  font-size: 2rem; /* Reduz o tamanho do texto */
+  color: #fff;
+  margin: 0;
+  line-height: 1; /* Ajusta o espaçamento vertical do texto */
 }
 
 .conteiner-Titulos {
@@ -21,33 +35,74 @@
 }
 
 
-
-.container-Turma {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 10px;
-    margin-top: 2rem;
-}
-
+/* Subtítulo dos cursos */
 .subtitulo-cursos {
-    color: #fff;
-    font-size: 1.2rem;
-    font-weight: 400;
-    margin-bottom: 18px;
-    margin-left: 4px;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 1rem; /* Reduz o espaçamento inferior */
+  margin-left: 4px;
+  text-align: left; /* Garante alinhamento adequado */
 }
 
-.container-cards {
-    width: 100%;
-    max-width: 1100px;
-}
-
+/* Container principal */
 .container-primeiro-ano {
-    display: flex;
-    flex-direction: row;
-    /* Remova qualquer margin-left ou padding-left */
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh; /* Garante que o container ocupe toda a altura da tela */
+  overflow-y: auto; /* Adiciona rolagem vertical quando necessário */
+  box-sizing: border-box; /* Inclui padding e bordas no cálculo do tamanho */
+}
+
+/* Container dos cards */
+.container-cards {
+  width: 100%; /* Faz o container ocupar toda a largura disponível */
+  max-width: 1400px; /* Aumenta o limite máximo de largura */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Aumenta o tamanho mínimo das colunas */
+  gap: 1.5rem; /* Aumenta o espaçamento entre os cards */
+  padding: 0 2rem; /* Adiciona espaçamento interno nas laterais */
+  margin: 0 auto; /* Centraliza os cards no container */
+  box-sizing: border-box; /* Garante que padding e bordas sejam incluídos no tamanho total */
+}
+
+/* Cards individuais */
+.curso-card {
+  display: flex;
+  flex-direction: column; /* Alinha o conteúdo verticalmente */
+  align-items: center;
+  background: #0e1117;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  text-align: center;
+  width: 100%; /* Garante que o card ocupe 100% da coluna */
+  max-width: 300px; /* Limita a largura máxima */
+  margin: 0 auto; /* Centraliza os cards dentro das colunas */
+}
+
+/* Imagem do card */
+.curso-img {
+  width: 100%;
+  height: auto;
+  max-height: 150px; /* Limita a altura máxima */
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Texto do card */
+.curso-content {
+  margin-top: 1rem;
+}
+
+.curso-title {
+  color: #fff;
+  font-size: 1rem; /* Tamanho ajustável */
+  font-weight: 500;
+  text-align: center;
+  word-wrap: break-word;
 }

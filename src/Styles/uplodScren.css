@@ -1,124 +1,384 @@
-/* Ícone branco para input date */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-/* Ícone branco para input time */
-input[type="time"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: Arial, sans-serif;
+  background-color: #181b23;
+  color: white;
+}
+
+/* Container principal */
 .container-principal {
   display: flex;
   flex-direction: row;
-  height: 100vh;
-  background: #181b23;
+  justify-content: space-between;
   align-items: flex-start;
+  width: 100%; /* Largura total */
+  min-height: 100vh;
+  padding: 1%;
+  gap: 1rem; /* Espaçamento entre os elementos */
 }
 
+/* Sidebar */
+.sidebar {
+  width: 18%; /* Largura relativa */
+  min-width: 180px; /* Limite mínimo */
+  background-color: #0e1117;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+/* Main content */
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* ou center para centralizar tudo */
-  margin-left: 350px; /* igual à largura do menu lateral */
-  margin-top: 40px;
-}
-
-.container-form {
-  background: #23262f;
-  border-radius: 28px;
-  margin: 40px 48px 0 0; /* Troque para: */
-  /* margin: 40px 48px 0 0; */
-  margin: 40px 48px 0 0; /* Remove qualquer margin-bottom */
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  box-shadow: 0 4px 24px #0002;
-  /* Se necessário, adicione: */
-  height: auto;
-  min-height: unset;
-  overflow: hidden;
-}
-
-.title {
-  text-align: left;
-  font-size: 1.4rem;
-  margin-bottom: 24px;
-  color: #fff;
+  gap: 2rem;
+  align-items: center;
+  padding: 1rem;
+  min-width: 0; /* Evita que o conteúdo ultrapasse os limites */
 }
 
 .main-title {
-  font-size: 2rem;
-  margin-bottom: 34px; /* ajuste aqui para mais ou menos espaço */
-  color: #fff;
-}
-.input,
-.textarea-descricao {
-  background: #181b23;
-  border: 1px solid #393c49;
-  border-radius: 8px;
-  color: #fff;
-  padding: 12px;
-  margin-bottom: 18px;
-  font-size: 1rem;
-}
-
-.input::placeholder,
-.textarea-descricao::placeholder {
-  color: #888;
-}
-
-.input[type="date"]::-webkit-calendar-picker-indicator,
-.input[type="time"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-
-.input-label {
-  color: #fff;
-  margin-bottom: 6px;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 2.5vw;
+  text-align: center;
 }
 
 .container-selects {
-  width: 800px;
-  margin-bottom: 32px;
-  margin-left: 0; /* pode ajustar para mais se quiser mais à direita */
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ajusta automaticamente o número de colunas */
+  gap: 1rem;
 }
 
-.input {
+.upload-area {
   width: 100%;
+  border: 2px dashed #393c49;
+  border-radius: 8px;
+  padding: 2%;
   background: #181b23;
-  border: none;
-  border-radius: 16px;
-  color: #fff;
-  padding: 18px 16px;
-  font-size: 1.1rem;
-  margin-bottom: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
   box-sizing: border-box;
 }
 
-.btn-cancelar{
+.upload-area:hover {
+  border-color: #573bff;
+  background: #1a1d26;
+}
+
+.botoes-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem; /* Espaçamento entre os botões */
+}
+
+.btn-cancelar,
+.btn-enviar {
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  flex: 1; /* Faz os botões ocuparem o mesmo espaço */
+  text-align: center;
+}
+
+.btn-cancelar {
   background: #23262f;
-  border-radius: 8px;
-  padding: 13px 24px;
-  color: #fff;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  margin-right: 620px; /* Espaço entre os botões */
+  color: white;
 }
 
-.btn-enviar{
+.btn-enviar {
   background: #573bff;
-  border-radius: 8px;
-  padding: 12px 24px;
-  color: #fff;
+  color: white;
+}
+
+/* Form container */
+.container-form {
+  width: 28%; /* Largura relativa */
+  min-width: 280px; /* Limite mínimo */
+  background: #23262f;
+  border-radius: 28px;
+  padding: 2%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 1.5vw;
+  text-align: center;
+}
+
+.input-label {
   font-size: 1rem;
-  border: none;
+}
+
+.input,
+.textarea-descricao {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #393c49;
+  background: #181b23;
+  color: white;
+  font-size: 1rem;
+}
+
+.textarea-descricao {
+  resize: none;
+  min-height: 100px;
+}
+
+.link-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Ícones brancos para inputs de data e hora */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.upload-container {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin-left: 220px;
+  /* Mesmo valor da largura do Hub */
+  width: calc(100% - 155px);
+  /* Largura total menos a largura do Hub */
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 20px;
+  /* Adicionar padding para espaçamento interno */
+  background-color: #181b23;
+}
+
+.upload-text-container {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  text-align: left;
+  margin: 2vh 0;
+  /* Remover margin lateral */
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.upload-title {
+  color: white;
+  margin-bottom: 10px;
+  margin-left: 0rem;
+  font-size: 3.8rem;
+}
+
+.upload-subtitle {
+  color: white;
+  margin-bottom: 15px;
+  margin-left: 0rem;
+  font-size: 1.5rem;
+}
+
+.upload-form-container {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  background: #23262f;
+  border-radius: 28px;
+  padding: 40px;
+  box-shadow: 0 4px 24px #0002;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.upload-drag-area {
+  border: 2px dashed #393c49;
+  border-radius: 8px;
+  background: #181b23;
+  padding: 60px 40px;
+  text-align: center;
+  min-height: 200px;
+  /* Altura fixa para manter consistência */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  transition: all 0.3s ease;
   cursor: pointer;
 }
 
+.upload-drag-area:hover {
+  border-color: #573bff;
+  background: #1a1d26;
+}
+
+.upload-drag-icon {
+  font-size: 3rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.upload-drag-text {
+  color: #888;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.upload-drag-link {
+  color: #573bff;
+  text-decoration: underline;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* FileUploader styles */
+.uploader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+
+.dropzone--active {
+  border-color: #573bff;
+  background-color: #1a1d26;
+}
+
+.icon-upload {
+  width: 3rem;
+  height: 3rem;
+  color: #666;
+}
+
+.text {
+  margin: 0;
+  font-size: 1rem;
+  color: #888;
+}
+
+.btn-choose {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 0rem;
+  font-size: 1rem;
+  color: #573bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.btn-choose:hover {
+  color: #7c3aed;
+}
+
+.hint {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0 0;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #23262f;
+  border-radius: 6px;
+  padding: 8px 14px;
+  margin-bottom: 8px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  transition: background 0.2s;
+}
+
+.remove-btn:hover {
+  background: #2a2f3d;
+  border-radius: 50%;
+}
+
+/* Container dos selects */
+.container-selectss {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 20px;
+}
+
+.container-selectss > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.container-selectss label {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+/* Estilo geral do select */
+.input {
+  position: relative;
+  height: 3rem;
+  padding: 0 1rem;
+  font-size: 1rem;
+  color: #FFFFFF;
+  background-color: #181b23;
+  border: 1px solid #393c49;
+  border-radius: 0.5rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+/* Remove a setinha padrão no IE/Edge */
+.input::-ms-expand {
+  display: none;
+}
+
+/* Coloca uma seta customizada à direita */
 select.input {
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%226%22%20viewBox%3D%220%200%2010%206%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M0%200l5%206%205-6z%22%20fill%3D%22%23FFFFFF%22/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -126,7 +386,224 @@ select.input {
   background-size: 0.625rem;
 }
 
-.textarea-descricao {
-  min-height: 120px; /* ou outro valor desejado */
-  resize: vertical;  /* permite o usuário aumentar/diminuir */
+/* Se você quiser um foco mais visível ao navegar por teclado */
+.input:focus {
+  outline: 2px solid #573bff;
+  outline-offset: 2px;
+}
+
+.upload-label {
+  color: white;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.upload-input,
+.upload-textarea {
+  background: #181b23;
+  border: 1px solid #393c49;
+  border-radius: 8px;
+  color: white;
+  padding: 12px;
+  font-size: 1rem;
+  margin-bottom: 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.upload-input::placeholder,
+.upload-textarea::placeholder {
+  color: #888;
+}
+
+.upload-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* LinkModal styles */
+.link-modal-container {
+  margin-bottom: 18px;
+}
+
+/* Overlay do modal com blur */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Conteúdo do modal */
+.dialog-content {
+  background-color: #23262f;
+  border: 1px solid #393c49;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: scaleIn 0.2s ease-out;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Botão de adicionar link */
+.input-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #181b23;
+  color: #d4d4d8;
+  border: 1px solid #393c49;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 18px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.input-button:hover {
+  background-color: #1f2937;
+  border-color: #6b7280;
+}
+
+/* Inputs do formulário */
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #393c49;
+  border-radius: 8px;
+  background-color: #181b23;
+  color: white;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+  font-family: inherit;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #573bff;
+}
+
+.form-input::placeholder {
+  color: #888;
+}
+
+/* Botões do modal */
+.button-secondary,
+.button-primary {
+  font-family: inherit;
+}
+
+.button-secondary {
+  flex: 1;
+  padding: 12px 16px;
+  background-color: #23262f;
+  color: #a1a1aa;
+  border: 1px solid #393c49;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.button-secondary:hover {
+  background-color: #1f2937;
+}
+
+.button-primary {
+  flex: 1;
+  padding: 12px 16px;
+  background-color: #573bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.button-primary:hover {
+  background-color: #7c3aed;
+}
+
+/* Item de link na lista */
+.link-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: #181b23;
+  border: 1px solid #393c49;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.link-item:hover {
+  border-color: #6b7280;
+}
+
+.upload-buttons-container {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 15px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-cancelar {
+  background: #23262f;
+  border-radius: 8px;
+  padding: 13px 24px;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-enviar {
+  background: #573bff;
+  border-radius: 8px;
+  padding: 12px 24px;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
 }

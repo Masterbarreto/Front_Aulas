@@ -211,6 +211,51 @@
     background: #4a34a3;
 }
 
+.aula-details-link-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.link-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.link-container {
+    background: #2D2E36;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 1px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.link-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.link-body {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.link-url {
+    color: #888;
+    text-decoration: none;
+    word-break: break-word; /* Quebra URLs longas */
+}
+
+.link-url:hover {
+    color: #573bff;
+    text-decoration: underline;
+}
+
 .aulasTitulos {
     display: flex;
     align-items: center;

@@ -37,11 +37,20 @@ const AulaScreens: React.FC = () => {
   useEffect(() => {
     if (!id) return;
     fetch(`https://apisubaulas.onrender.com/api/v1/aulas/aula-id/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        setAula(data);
-        setLoading(false);
-      });
+        .then(res => res.json())
+        .then(data => {
+            // Verifica se LinkAula é uma string e converte para um array de objetos
+            if (typeof data.LinkAula === "string") {
+                try {
+                    data.LinkAula = JSON.parse(data.LinkAula);
+                } catch (error) {
+                    console.error("Erro ao parsear LinkAula:", error);
+                    data.LinkAula = [];
+                }
+            }
+            setAula(data);
+            setLoading(false);
+        });
   }, [id]);
 
   if (loading) return <div style={{ color: '#fff' }}>Carregando...</div>;
@@ -154,25 +163,40 @@ const AulaScreens: React.FC = () => {
               )}
 
               {/* Adicionando os links */}
-              {aula.LinkAula ? (
-                <button
-                  className="aula-details-link"
-                  style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer" }}
-                  onClick={() => {
-                    window.open(aula.LinkAula, "_blank");
-                  }}
-                >
-                  <span className="aula-details-link-label">
-                    <Link2 size={20} style={{ marginRight: 8 }} />
-                    {aula.LinkAula}
-                  </span>
-                  <span>
-                    <svg width="20" height="20" fill="#fff"><path d="M5 13l4 4 4-4M12 17V7m-4 10V7"/></svg>
-                  </span>
-                </button>
-              ) : (
-                <span style={{ color: "#aaa", fontSize: 14 }}>Nenhum link disponível</span>
-              )}
+              <div className="aula-details-links">
+                {Array.isArray(aula.LinkAula) && aula.LinkAula.length > 0 ? (
+                    aula.LinkAula.map((link, idx) => (
+                        <div
+                            key={`link-${idx}`}
+                            className="link-container"
+                            onClick={() => window.open(link.url, "_blank")} // Abre o link em uma nova aba
+                            style={{
+                                cursor: "pointer", // Indica que o contêiner é clicável
+                                padding: "10px",
+                                background: "#2D2E36",
+                                borderRadius: "8px",
+                                marginBottom: "12px",
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "8px",
+                            }}
+                        >
+                            <div className="link-header">
+                                <span className="link-name" style={{ fontWeight: "bold", color: "#fff" }}>
+                                    {link.name}
+                                </span>
+                            </div>
+                            <div className="link-body">
+                                <span className="link-url" style={{ color: "#888" }}>
+                                    {link.url}
+                                </span>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <span style={{ color: "#aaa", fontSize: 14 }}>Nenhum link disponível</span>
+                )}
+              </div>
             </div>
             <button 
               className="aula-details-btn"
