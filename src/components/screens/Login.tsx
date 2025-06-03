@@ -86,6 +86,7 @@ export function LoginPages() {
 
       <form className="home-form" onSubmit={handleSubmit(onSubmit)}>
         {errors.email && <p className="home-error-message">{errors.email.message}</p>}
+        
         <label className="home-input-label">Email</label>
         <Controller
           control={control}
@@ -110,18 +111,20 @@ export function LoginPages() {
         {serverError && <p className="home-error-message">{serverError}</p>}
 
         {loading && <p className="home-loading-message">Carregando...</p>}
-
+          
+        
         <div className="home-forgot-password">
-          <a href="/reset-password">Esqueceu a senha?</a>
+          {/*<a href="/reset-password">Esqueceu a senha?</a>*/}
+          <a href="/"> Voltar </a>
         </div>
-
+        
         <button type="submit" className="home-btn-login" disabled={loading}>
           {loading ? "Entrando..." : "Entrar"}
         </button>
 
         <div className="home-register-text">
           <p className="home-register-text">
-            Não tem uma conta?{" "}
+          {/*  Não tem uma conta?{" "}
             <button
               type="button"
               className="home-register-link"
@@ -134,6 +137,7 @@ export function LoginPages() {
             >
               Cadastre-se
             </button>
+            */}
           </p>
         </div>
       </form>

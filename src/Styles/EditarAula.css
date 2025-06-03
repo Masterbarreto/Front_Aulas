@@ -1,0 +1,351 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos gerais */
+body {
+    background: #0C1118;
+    color: #fff;
+    font-family: 'Inter', Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Container principal */
+.container-relatorio {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2rem;
+    margin: 100 0 0 19rem; /* Aumentei o valor de margem à esquerda para mover mais para a direita */
+    min-height: 100vh;
+    width: calc(100% - 290px);
+    box-sizing: border-box;
+}
+
+/* Cabeçalho */
+.relatorio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #1e2430;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Botão de voltar */
+.btn-voltar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #1e2430;
+    color: #ffffff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-voltar:hover {
+    background-color: #2a3441;
+}
+
+/* Botão editar aulas */
+.btn-editar-aulas {
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.btn-editar-aulas:hover {
+    background-color: #2563eb;
+}
+
+/* Container da tabela */
+.tabela-container {
+    width: 100%;
+    background: #1a1d23;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #1e2430;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Tabela */
+.relatorio-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+}
+
+.relatorio-tabela th,
+.relatorio-tabela td {
+    padding: 16px;
+    text-align: left;
+    color: #fff;
+    border-bottom: 1px solid #1e2430;
+    vertical-align: middle;
+}
+
+.relatorio-tabela th {
+    background: #0e1117;
+    font-weight: 600;
+    font-size: 14px;
+    color: #e5e7eb;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.relatorio-tabela tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.relatorio-tabela tbody tr:hover {
+    background: #1e2430;
+    cursor: pointer;
+}
+
+.relatorio-tabela tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.relatorio-tabela td {
+    font-size: 14px;
+    color: #ffffff;
+}
+
+/* Status específicos */
+.status-concluida {
+    color: #10b981;
+    font-weight: 500;
+}
+
+.status-pendente {
+    color: #f59e0b;
+    font-weight: 500;
+}
+
+.status-cancelada {
+    color: #ef4444;
+    font-weight: 500;
+}
+
+.status-andamento {
+    color: #3b82f6;
+    font-weight: 500;
+}
+
+/* Coluna de ações */
+.acoes-coluna {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-acao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    background-color: transparent;
+}
+
+.btn-editar {
+    color: #3b82f6;
+}
+
+.btn-editar:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.btn-excluir {
+    color: #ef4444;
+}
+
+.btn-excluir:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Estados vazios */
+.tabela-vazia {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #6b7280;
+}
+
+.tabela-vazia h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #9ca3af;
+}
+
+.tabela-vazia p {
+    font-size: 0.9rem;
+}
+
+/* Loading state */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    color: #6b7280;
+}
+
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #1e2430;
+    border-top: 2px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 12px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Filtros e busca */
+.filtros-container {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filtro-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filtro-grupo label {
+    font-size: 12px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.filtro-grupo select,
+.filtro-grupo input {
+    background-color: #0e1117;
+    border: 1px solid #1e2430;
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: #ffffff;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+.filtro-grupo select:focus,
+.filtro-grupo input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Paginação */
+.paginacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #1e2430;
+}
+
+.paginacao button {
+    background-color: #1e2430;
+    color: #ffffff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.paginacao button:hover:not(:disabled) {
+    background-color: #2a3441;
+}
+
+.paginacao button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.paginacao button.ativo {
+    background-color: #3b82f6;
+}
+
+.paginacao span {
+    color: #9ca3af;
+    font-size: 14px;
+    margin: 0 12px;
+}
+
+/* Responsividade básica sem max-width */
+.container-relatorio {
+    padding: 1rem;
+}
+
+.relatorio-tabela th,
+.relatorio-tabela td {
+    padding: 12px 8px;
+    font-size: 13px;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+.filtros-container {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.filtro-grupo {
+    width: 100%;
+}
+
+.filtro-grupo select,
+.filtro-grupo input {
+    min-width: 100%;
+}
+
+.relatorio-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+}
+
+.acoes-coluna {
+    flex-direction: column;
+    gap: 4px;
+}

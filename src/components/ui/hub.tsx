@@ -1,47 +1,83 @@
+import React, { useState, useEffect } from "react";
 import { HubItens } from "./hub_itens";
-import { LayoutDashboard, ArrowUpToLine, SquareLibrary, Building2, Bolt, Power } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // Importa o hook useNavigate
+import { LayoutDashboard, ArrowUpToLine, SquareLibrary, Building2, Users , Power } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import "../../Styles/hub.css";
 
 export function Hub() {
     const navigate = useNavigate();
-    const cargo = localStorage.getItem("cargo");
+    const [cargo, setCargo] = useState<string | null>(null);
+
+    useEffect(() => {
+        // Tentar ler o cargo do usuário do localStorage
+        const storedCargo = localStorage.getItem("cargo");
+        if (storedCargo) {
+            setCargo(storedCargo);
+        } else {
+            // Se não houver cargo no localStorage, definir como "Professor"
+            localStorage.setItem("cargo", "Professor");
+            setCargo("Professor");
+        }
+    }, []);
+
+    // Verifica se o usuário é admin ou Professor
+    const isPrivileged = cargo === "admin" || cargo === "Professor";
+
+    console.log("Cargo do usuário:", cargo);
 
     return (
         <div className="sidebar">
             <div className="container-hub">
-                {/* Dashboard: todos podem ver */}
-                {(cargo === "admin" || cargo === "Professor") && (
+                {/* Dashboard: apenas admin ou Professor */}
+                {isPrivileged && (
                     <div onClick={() => navigate("/home")}>
                         <HubItens icon={<LayoutDashboard size={24} />} text="Dashboard" />
                     </div>
                 )}
-                {/* Upload: apenas admin e Professor */}
-                {(cargo === "admin") && (
-                    <div onClick={() => navigate("/upload")}>
-                        <HubItens icon={<ArrowUpToLine size={24} />} text="Upload de Atividades" />
-                    </div>
-                )}
-                {/* Gerenciar: apenas admin */}
+
+                {/* Upload e Gerenciar: apenas admin */}
                 {cargo === "admin" && (
-                    <div onClick={() => navigate("/manage")}>
-                        <HubItens icon={<SquareLibrary size={24} />} text="Gerenciar Atividades" />
-                    </div>
+                    <>
+                        <div onClick={() => navigate("/upload")}>
+                            <HubItens icon={<ArrowUpToLine size={24} />} text="Upload de Atividades" />
+                        </div>
+                        <div onClick={() => navigate("/editar-aula")}>
+                            <HubItens icon={<SquareLibrary size={24} />} text="Gerenciar Atividades" />
+                        </div>
+                    </>
                 )}
-                {/* Relatório: admin e Professor */}
-                {(cargo === "admin" || cargo === "Professor") && (
-                    <div onClick={() => navigate("/RelatorioAulas")}>
+
+                {/* Relatório: apenas admin ou Professor */}
+                {isPrivileged && (
+                    <div onClick={() => navigate("/relatorio-aulas")}>
                         <HubItens icon={<Building2 size={24} />} text="Relatório de Aulas Concluídas" />
                     </div>
                 )}
             </div>
+
             <div className="container-config">
-                <div onClick={() => navigate("/settings")}>
-                    <HubItens icon={<Bolt size={24} />} text="Configurações" />
-                </div>
-                <div onClick={() => navigate("/")}>
-                    <HubItens icon={<Power size={24} />} text="Sair" />
-                </div>
+                {/* Configurações e Sair: apenas para usuários logados */}
+                {cargo && (
+                    <>
+                        {cargo !== "admin" && (
+                            <div onClick={() => navigate("/login")}>
+                                <HubItens icon={<Users size={24} />} text=" Login Adiministrativo" />
+                            </div>
+                        )}
+                        <div
+                            onClick={() => {
+                                // Limpa todo o localStorage
+                                localStorage.clear();
+                                // Redefine o estado para "Professor"
+                                setCargo("Professor");
+                                // Redireciona para a página inicial
+                                navigate("/");
+                            }}
+                        >
+                            <HubItens icon={<Power size={24} />} text="Sair" />
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

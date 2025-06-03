@@ -118,6 +118,70 @@ h1 {
     background: #2d313a;
 }
 
+.relatorio-aulas-container {
+  padding: 20px;
+  color: #fff;
+}
+
+.relatorio-aulas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn-voltar {
+  background-color: #444;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-voltar:hover {
+  background-color: #666;
+}
+
+.relatorio-aulas-table {
+  background-color: #333;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #555;
+}
+
+th {
+  color: #f0a500;
+}
+
+tr:hover {
+  background-color: #444;
+}
+
+.btn-editar {
+  background-color: #f0a500;
+  color: #000;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-editar:hover {
+  background-color: #d18e00;
+}
+
 @media (max-width: 800px) {
     .container-relatorio, .Container-AulasRelatorio {
         padding: 10px;

@@ -34,6 +34,8 @@ const AulaScreens: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // <-- pega o id da URL
 
+ 
+
   useEffect(() => {
     if (!id) return;
     fetch(`https://apisubaulas.onrender.com/api/v1/aulas/aula-id/${id}`)
@@ -56,6 +58,7 @@ const AulaScreens: React.FC = () => {
   if (loading) return <div style={{ color: '#fff' }}>Carregando...</div>;
   if (!aula || !aula.Materia) return <div style={{ color: '#fff' }}>Aula não encontrada.</div>;
 
+   console.log("Valor de createdAt:", aula.createdAt)
   return (
     <div className="aula-main-bg">
       <Hub />
@@ -91,7 +94,7 @@ const AulaScreens: React.FC = () => {
           <div className="aula-details">
             <div className="aula-details-title">Detalhes da Aula</div>
             <div className="aula-details-item">
-              <span className="aula-details-label">Criador da atividade :</span>
+              <span className="aula-details-label">Criador da atividade:</span>
               <span className="aula-details-value">
                 {aula.professor
                   ? aula.professor.split(" ").slice(0, 2).join(" ") // Exibe apenas o primeiro e o segundo nomes
@@ -99,11 +102,14 @@ const AulaScreens: React.FC = () => {
               </span>
             </div>
             <div className="aula-details-item">
-              <span className="aula-details-label">Data de Criação :</span>
-
+              <span className="aula-details-label">Data de Criação:</span>
               <span className="aula-details-value">
-                {aula.DayAula
-                  ? new Date(aula.DayAula).toLocaleDateString('pt-BR')
+                {aula.createdAt
+                  ? (() => {
+                      const createdAtDate = new Date(aula.createdAt);
+                      createdAtDate.setUTCDate(createdAtDate.getUTCDate() - 1); // Subtrai 1 dia em UTC
+                      return createdAtDate.toLocaleDateString('pt-BR'); // Formata como DD/MM/AAAA
+                    })()
                   : "Não informado"}
               </span>
             </div>
@@ -120,8 +126,16 @@ const AulaScreens: React.FC = () => {
                   if (diffDays === 0) return "Hoje";
                   if (diffDays === 1) return "Amanhã";
                   if (diffDays > 1) return `${diffDays} dias para a aula`;
-                  return dataAula.toLocaleDateString('pt-BR');
+                  return dataAula.toLocaleDateString("pt-BR");
                 })()}
+              </span>
+            </div>
+            <div className="aula-details-item">
+              <span className="aula-details-label">Dia que a aula foi criada :</span>
+              <span className="aula-details-value">
+                {aula.createdAt
+                  ? new Date(aula.createdAt).toLocaleDateString('pt-BR') // Formata como DD/MM/AAAA
+                  : "Não informado"}
               </span>
             </div>
             <div className="aula-details-links-title">Links e Arquivos</div>

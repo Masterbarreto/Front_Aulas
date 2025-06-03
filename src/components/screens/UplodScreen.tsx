@@ -27,6 +27,7 @@ export function UplodScreen() {
     const [clearLinks, setClearLinks] = useState(false);
     const [links, setLinks] = useState<string[]>([]);
     const [structuredLinks, setStructuredLinks] = useState<LinkItem[]>([]); // Novo estado para links estruturados
+    const [nomeProf, setNomeProf] = useState(""); // Inicializa como uma string vazia
     const linkModalRef = useRef<any>(null);
 
     // Limpa todos os campos
@@ -38,6 +39,7 @@ export function UplodScreen() {
         setFiles([]);
         setLinks([]);
         setStructuredLinks([]); // Limpa os links estruturados
+        setNomeProf(""); // Limpa o campo Nome do Professor
         setClearFiles(true);
         setClearLinks(true);
 
@@ -65,7 +67,6 @@ export function UplodScreen() {
 const handleEnviar = async (e: React.FormEvent) => {
     e.preventDefault();
     const values = getValues();
-    const nomeProf = localStorage.getItem("name") || "";
 
     const cursos = values.curso === "all" ? TODOS_CURSOS : [values.curso];
     const turmas = values.turma === "all" ? TODAS_TURMAS : [values.turma];
@@ -81,10 +82,13 @@ const handleEnviar = async (e: React.FormEvent) => {
             form.append("DayAula", dataAula);
             form.append("Horario", horaAula);
             form.append("DesAula", descricao);
-            form.append("professor", nomeProf);
+            form.append("professor", nomeProf); // Usa o valor do input controlado pelo estado
 
-            // Adiciona os links estruturados como um único campo JSON
-            form.append("LinkAula", JSON.stringify(structuredLinks));
+            // Adiciona os links estruturados diretamente como um array
+            structuredLinks.forEach((link, index) => {
+                form.append(`LinkAula[${index}][url]`, link.url);
+                form.append(`LinkAula[${index}][name]`, link.name);
+            });
 
             files.forEach((f) => form.append("arquivos", f));
             return enviarParaApi(form);
@@ -98,7 +102,7 @@ const handleEnviar = async (e: React.FormEvent) => {
             userId: localStorage.getItem("id"),
             action: `Aulas criadas para os cursos: ${cursos.join(", ")} e turmas: ${turmas.join(", ")}`,
         });
-        handleCancelar(); // Limpa todos os campos, incluindo os links
+        handleCancelar(); // Limpa todos os campos, incluindo o nome do professor
     } catch (err: any) {
         console.error(err.response?.data || err);
         alert("Erro ao criar as aulas: " + JSON.stringify(err.response?.data));
@@ -134,16 +138,27 @@ const handleEnviar = async (e: React.FormEvent) => {
                 autoComplete="off"
             >
                 <h1 className="title">Detalhes da Aula</h1>
-                <label className="input-label" htmlFor="titulo">
-                    Título
-                </label>
-                <input
-                    type="text"
-                    id="titulo"
-                    className="input"
-                    {...control.register("titulo", { required: true })}
-                    placeholder="Ex: Informática"
-                />
+                    <label className="input-label" htmlFor="professor">
+                        Nome do Professor
+                    </label>
+                        <input
+                            type="text"
+                            id="professor"
+                            className="input"
+                            value={nomeProf} // Controla o valor do campo com o estado
+                            onChange={(e) => setNomeProf(e.target.value)} // Atualiza o estado ao digitar
+                            placeholder="Digite o nome do professor"
+                        />
+                        <label className="input-label" htmlFor="titulo">
+                            Título
+                        </label>
+                        <input
+                            type="text"
+                            id="titulo"
+                            className="input"
+                            {...control.register("titulo", { required: true })}
+                            placeholder="Ex: Informática"
+                        />
                 <label className="input-label" htmlFor="data-aula">
                     Dia da Aula
                 </label>
