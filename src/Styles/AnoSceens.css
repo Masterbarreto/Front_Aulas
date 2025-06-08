@@ -1,41 +1,61 @@
 /* Centraliza o conteúdo principal ao lado do menu */
 .main-ano-content {
-  
-  margin-left: 13rem; /* Ajusta para a largura do menu lateral */
-  box-sizing: border-box; /* Garante que padding e margin sejam incluídos no tamanho total */
+  margin-left: 13rem;
+  /* Ajusta para a largura do menu lateral */
+  box-sizing: border-box;
+  /* Garante que padding e margin sejam incluídos no tamanho total */
+}
+
+@media screen and (max-width: 1200px) {
+  .main-ano-content {
+    margin-left: 14.5rem;
+    /* Ajusta para a largura do menu lateral */
+    box-sizing: border-box;
+    /* Garante que padding e margin sejam incluídos no tamanho total */
+  }
 }
 
 /* Container do título com a seta */
 .conteiner-Titulos-ano {
-  margin-left: 20px;
+  margin-left: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 0.3rem; /* Reduz o espaçamento entre o ícone e o texto */
-  margin-bottom: 20px; /* Ajusta o espaçamento inferior */
+  gap: 0.3rem;
+  /* Reduz o espaçamento entre o ícone e o texto */
+  margin-bottom: 20px;
+  /* Ajusta o espaçamento inferior */
   cursor: pointer;
 }
 
 /* Estilo do ícone */
 .conteiner-Titulos-ano .arrow-icon {
-  width: 46px; /* Reduz o tamanho da largura do ícone */
-  height: 46px; /* Reduz o tamanho da altura do ícone */
+  width: 46px;
+  /* Reduz o tamanho da largura do ícone */
+  height: 46px;
+  /* Reduz o tamanho da altura do ícone */
 }
 
 /* Estilo do texto */
 .conteiner-Titulos-ano h1 {
-  font-size: 2rem; /* Mantém o tamanho do texto */
+  font-size: 2rem;
+  /* Mantém o tamanho do texto */
   color: #fff;
   margin: 0;
-  line-height: 1.2; /* Ajusta o espaçamento vertical */
-  text-align: center; /* Centraliza o texto */
-  word-wrap: break-word; /* Quebra o texto automaticamente */
-  overflow-wrap: break-word; /* Garante a quebra de palavras longas */
-  white-space: normal; /* Permite que o texto quebre linhas */
+  line-height: 1.2;
+  /* Ajusta o espaçamento vertical */
+  text-align: center;
+  /* Centraliza o texto */
+  word-wrap: break-word;
+  /* Quebra o texto automaticamente */
+  overflow-wrap: break-word;
+  /* Garante a quebra de palavras longas */
+  white-space: normal;
+  /* Permite que o texto quebre linhas */
 }
 
 .conteiner-Titulos {
-    display: flex;
-    background-color: #fff;
+  display: flex;
+  background-color: #fff;
 }
 
 
@@ -43,10 +63,9 @@
 .subtitulo-cursos {
   color: #fff;
   font-size: 1.2rem;
-  font-weight: 400;
-  margin-bottom: 1rem; /* Reduz o espaçamento inferior */
-  margin-left: 4px;
-  text-align: left; /* Garante alinhamento adequado */
+  /* Reduz o espaçamento inferior */
+  margin-left: 10px;
+  /* Garante alinhamento adequado */
 }
 
 /* Container principal */
@@ -56,27 +75,38 @@
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100vh; /* Garante que o container ocupe toda a altura da tela */
-  overflow-y: scroll; /* Garante que a barra de rolagem vertical esteja sempre visível */
-  box-sizing: border-box; /* Inclui padding e bordas no cálculo do tamanho */
+  height: 100vh;
+  /* Garante que o container ocupe toda a altura da tela */
+  overflow-y: scroll;
+  /* Garante que a barra de rolagem vertical esteja sempre visível */
+  box-sizing: border-box;
+  /* Inclui padding e bordas no cálculo do tamanho */
 }
 
 /* Container dos cards */
 .container-cards {
-  width: 100%; /* Faz o container ocupar toda a largura disponível */
-  max-width: 1400px; /* Aumenta o limite máximo de largura */
+  width: 100%;
+  /* Faz o container ocupar toda a largura disponível */
+  max-width: 1400px;
+  /* Aumenta o limite máximo de largura */
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Aumenta o tamanho mínimo das colunas */
-  gap: 1.5rem; /* Aumenta o espaçamento entre os cards */
-  padding: 0 2rem; /* Adiciona espaçamento interno nas laterais */
-  margin: 0 auto; /* Centraliza os cards no container */
-  box-sizing: border-box; /* Garante que padding e bordas sejam incluídos no tamanho total */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  /* Aumenta o tamanho mínimo das colunas */
+  gap: 1.5rem;
+  /* Aumenta o espaçamento entre os cards */
+  padding: 0 2rem;
+  /* Adiciona espaçamento interno nas laterais */
+  margin: 0 auto;
+  /* Centraliza os cards no container */
+  box-sizing: border-box;
+  /* Garante que padding e bordas sejam incluídos no tamanho total */
 }
 
 /* Cards individuais */
 .curso-card {
   display: flex;
-  flex-direction: column; /* Alinha o conteúdo verticalmente */
+  flex-direction: column;
+  /* Alinha o conteúdo verticalmente */
   align-items: center;
   background: #0e1117;
   border-radius: 8px;
@@ -84,16 +114,20 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 1rem;
   text-align: center;
-  width: 100%; /* Garante que o card ocupe 100% da coluna */
-  max-width: 300px; /* Limita a largura máxima */
-  margin: 0 auto; /* Centraliza os cards dentro das colunas */
+  width: 100%;
+  /* Garante que o card ocupe 100% da coluna */
+  max-width: 300px;
+  /* Limita a largura máxima */
+  margin: 0 auto;
+  /* Centraliza os cards dentro das colunas */
 }
 
 /* Imagem do card */
 .curso-img {
   width: 100%;
   height: auto;
-  max-height: 150px; /* Limita a altura máxima */
+  max-height: 150px;
+  /* Limita a altura máxima */
   object-fit: cover;
   border-radius: 8px;
 }
@@ -105,7 +139,8 @@
 
 .curso-title {
   color: #fff;
-  font-size: 1rem; /* Tamanho ajustável */
+  font-size: 1rem;
+  /* Tamanho ajustável */
   font-weight: 500;
   text-align: center;
   word-wrap: break-word;

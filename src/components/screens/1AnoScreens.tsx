@@ -33,28 +33,28 @@ export function YearScreen() {
 
   return (
     <>
-    <Hub />
-    <div className="container-primeiro-ano">
-      <div className="main-ano-content">
-        <div
-          className="conteiner-Titulos-ano"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft className="arrow-icon" color="#fff" />
-          <h1>Turmas do {ano} – Senac</h1>
-        </div>
-        <div className="subtitulo-cursos">
-          <span>Cursos Técnicos:</span>
-        </div>
-        <div className="container-cards">
-          {cursos.map((curso) => (
-            <div key={curso.id} onClick={() => handleCursoClick(curso.id)}>
-              <CursoCards cursos={[curso]} />
-            </div>
-          ))}
+      <Hub />
+      <div className="container-primeiro-ano">
+        <div className="main-ano-content">
+          <div
+            className="conteiner-Titulos-ano"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="arrow-icon" color="#fff" />
+            <h1>Turmas do {ano} – Senac</h1>
+          </div>
+          <div className="subtitulo-cursos">
+            <span>Cursos Técnicos:</span>
+          </div>
+          <div className="container-cards">
+            {cursos.map((curso) => (
+              <div key={curso.id} onClick={() => handleCursoClick(curso.id)}>
+                <CursoCards cursos={[curso]} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }
