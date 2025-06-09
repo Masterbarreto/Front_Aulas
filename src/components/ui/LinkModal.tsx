@@ -78,7 +78,7 @@ export const LinkModal = forwardRef(({ onLinksChange }: LinkModalProps, ref) => 
     setLinks(newLinks);
     // Converte para o formato que a API espera (URLs e nomes alternativos)
     const linkData = newLinks.map(link => ({ url: link.url, name: link.name }));
-    setLinks(linkData);
+    setLinks(linkData); // Atualiza o estado com o formato correto
 };
 
   return (

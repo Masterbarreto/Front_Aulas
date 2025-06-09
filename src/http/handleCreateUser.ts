@@ -14,7 +14,7 @@ export async function handleCreateUser(data: CreateUserPayload): Promise<{ succe
       return { error: "Por favor, preencha todos os campos." };
     }
 
-    const url = `${import.meta.env.VITE_API_URL}/users/register`;
+    const url = `https://apisubaulas.onrender.com/api/v1/aulas/users/register`;
 
     // Faz a requisição para a API
     const response = await axios.post(url, data);

@@ -52,6 +52,28 @@ export default function RelatorioEdit() {
         navigate(`/editar-aula/${id}`); // Redireciona para a tela de edição com o ID da aula
     };
 
+    const handleDeleteAula = async (id: string) => {
+        console.log("ID da aula para exclusão:", id); // Log do ID
+        if (!id) return;
+
+        const confirmDelete = window.confirm("Tem certeza que deseja excluir esta aula?");
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${id}`, {
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                throw new Error(`Erro ao excluir aula: ${response.statusText}`);
+            }
+            alert("Aula excluída com sucesso!");
+            setAulas((prevAulas) => prevAulas.filter((aula) => aula.id !== id));
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao excluir aula.");
+        }
+    };
+
     return (
         <>
             <Hub />
@@ -71,13 +93,14 @@ export default function RelatorioEdit() {
                                 <th>Curso</th>
                                 <th>Turma</th>
                                 <th>Matéria</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             {aulas.map((aula, idx) => (
                                 <tr
                                     key={aula.id || idx}
-                                    onClick={() => handleRowClick(aula)}
+                                    onClick={() => handleRowClick(aula)} // Redireciona para a edição ao clicar na linha
                                     style={{ cursor: "pointer" }}
                                 >
                                     <td>{aula.titulo}</td>
@@ -88,6 +111,24 @@ export default function RelatorioEdit() {
                                     <td>{aula.curso}</td>
                                     <td>{aula.turma}</td>
                                     <td>{aula.materia}</td>
+                                    <td>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Impede que o clique na linha seja acionado
+                                                handleDeleteAula(aula.id); // Chama a função de exclusão
+                                            }}
+                                            style={{
+                                                backgroundColor: "red",
+                                                color: "white",
+                                                border: "none",
+                                                padding: "5px 10px",
+                                                cursor: "pointer",
+                                            }}
+                                        >
+                                            Deletar
+                                        </button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
