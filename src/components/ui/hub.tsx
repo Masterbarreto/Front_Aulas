@@ -66,12 +66,21 @@ export function Hub() {
                         )}
                         <div
                             onClick={() => {
-                                // Limpa todo o localStorage
-                                localStorage.clear();
-                                // Redefine o estado para "Professor"
-                                setCargo("Professor");
-                                // Redireciona para a página inicial
-                                navigate("/");
+                                try {
+                                    // Limpa todo o localStorage
+                                    localStorage.clear();
+                                    console.log("LocalStorage limpo com sucesso.");
+
+                                    // Redefine o estado para "Professor"
+                                    setCargo("Professor");
+                                    console.log("Estado 'cargo' redefinido para 'Professor'.");
+
+                                    // Redireciona para a página inicial
+                                    navigate("/");
+                                    console.log("Redirecionado para a página inicial.");
+                                } catch (error) {
+                                    console.error("Erro ao tentar sair:", error);
+                                }
                             }}
                         >
                             <HubItens icon={<Power size={24} />} text="Sair" />

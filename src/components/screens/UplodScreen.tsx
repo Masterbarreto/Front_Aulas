@@ -98,11 +98,25 @@ const handleEnviar = async (e: React.FormEvent) => {
     try {
         await Promise.all(promises);
         alert("Todas as aulas criadas com sucesso!");
-        await axios.post("https://apisubaulas.onrender.com/api/v1/users/activity", {
-            userId: localStorage.getItem("id"),
-            action: `Aulas criadas para os cursos: ${cursos.join(", ")} e turmas: ${turmas.join(", ")}`,
-        });
-        handleCancelar(); // Limpa todos os campos, incluindo o nome do professor
+
+        try {
+            const userId = "683e372098df1ac06fe24ec3";
+            if (!userId) {
+                console.error("userId não encontrado no localStorage.");
+                alert("Erro: Usuário não autenticado.");
+                return;
+            }
+
+            await axios.post("https://apisubaulas.onrender.com/api/v1/users/activity", {
+                userId: "683e372098df1ac06fe24ec3" , // Use o userId do localStorage
+                action: `Aulas criadas para os cursos: ${cursos.join(", ")} e turmas: ${turmas.join(", ")}`,
+            });
+        } catch (activityError) {
+            console.error("Erro ao registrar atividade:", activityError.response?.data || activityError);
+            alert("Aulas criadas, mas houve um erro ao registrar a atividade.");
+        }
+
+        handleCancelar();
     } catch (err: any) {
         console.error(err.response?.data || err);
         alert("Erro ao criar as aulas: " + JSON.stringify(err.response?.data));
