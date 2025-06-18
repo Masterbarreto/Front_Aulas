@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-dialog": "^1.1.14",
     "@react-native-async-storage/async-storage": "^2.1.2",
+    "@segment/analytics-next": "^1.81.0",
     "@tanstack/react-query": "^5.75.7",
     "axios": "^1.9.0",
     "lucide-react": "^0.509.0",
@@ -22,6 +23,7 @@
     "react-dropzone": "^14.3.8",
     "react-hook-form": "^7.56.3",
     "react-router-dom": "^7.6.0",
+    "recharts": "^2.15.3",
     "sub-aulas": "file:",
     "yup": "^1.6.1"
   },

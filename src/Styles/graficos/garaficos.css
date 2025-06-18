@@ -1,0 +1,214 @@
+/* Container principal dos gráficos */
+.graficos-container {
+  display: flex;
+  justify-content: flex-start; /* Alinha os gráficos à esquerda */
+  align-items: flex-start; /* Alinha os gráficos no topo */
+  gap: 20px; /* Espaço entre os gráficos */
+  padding: 20px;
+  flex-wrap: nowrap; /* Impede que os gráficos quebrem para a próxima linha */
+  width: 1600px; /* Define largura fixa */
+  margin: 0 auto; /* Centraliza o layout */
+}
+
+/* Estilo para cada gráfico individual */
+.grafico-item {
+  width: 500px; /* Define largura fixa */
+  background-color: #374151; /* Fundo do gráfico */
+  border-radius: 8px; /* Bordas arredondadas */
+  border: 1px solid #4B5563; /* Bordas */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* Adiciona sombra */
+  overflow: hidden; /* Impede conteúdo de ultrapassar o limite */
+}
+
+/* Estilo para o gráfico 1 */
+.grafico1-item {
+  width: 500px; /* Define largura fixa para o gráfico 1 */
+  background-color: #374151; /* Fundo do gráfico */
+  border-radius: 8px; /* Bordas arredondadas */
+  border: 1px solid #4B5563; /* Bordas */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* Adiciona sombra */
+  overflow: hidden; /* Impede conteúdo de ultrapassar o limite */
+}
+
+/* Container específico do gráfico 1 */
+.grafico-container {
+  background-color: #374151;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #4B5563;
+  width: 600px; /* Define largura fixa */
+  height: 280px; /* Altura padronizada */
+}
+
+.grafico-titulo {
+  color: #F9FAFB;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.grafico {
+  height: 220px; /* Altura padronizada */
+  width: 100%;
+}
+
+/* Estilo para o gráfico 2 */
+.grafico2-item {
+  width: 630px; /* Define largura fixa para o gráfico 2 */
+  height: 280px; /* Altura fixa */
+  background-color: #374151; /* Fundo do gráfico */
+  border-radius: 8px; /* Bordas arredondadas */
+  border: 1px solid #4B5563; /* Bordas */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* Adiciona sombra */
+  overflow: hidden; /* Impede conteúdo de ultrapassar o limite */
+}
+
+/* Container específico do gráfico 2 */
+.grafico2-container {
+  background-color: #374151;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #4B5563;/
+}
+
+.grafico2-titulo {
+  color: #F9FAFB;
+  font-size: 16px;
+  font-weight: 200;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* Estilo para o gráfico 3 */
+/* Container específico do gráfico 3 (circular) */
+.grafico3-container {
+  background-color: #374151;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #4B5563;
+  text-align: center;
+  width: 400%;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.grafico3-title {
+  color: #F9FAFB;
+  font-size: 16px;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+
+/* Estilos gerais */
+.bg-gray-800 {
+  background-color: #374151;
+}
+
+.rounded-lg {
+  border-radius: 8px;
+}
+
+.border {
+  border: 1px solid #4B5563;
+}
+
+.shadow-lg {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.text-white {
+  color: #F9FAFB;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.h-64 {
+  height: 140px;
+}
+
+.text-gray-400 {
+  color: #9CA3AF;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.transform {
+  transform: rotate(-90deg);
+}
+
+.transition-all {
+  transition: all 1000ms ease-out;
+}
+
+.duration-1000 {
+  transition-duration: 1000ms;
+}
+
+.ease-out {
+  transition-timing-function: ease-out;
+}

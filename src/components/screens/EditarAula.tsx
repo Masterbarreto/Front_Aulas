@@ -5,10 +5,15 @@ import { Hub } from "../ui/hub";
 import "../../Styles/EditarAulas.css";
 import { LinkModal } from "../ui/LinkModal";
 import { FileUploader } from "../ui/FileUploader";
+import { AnalyticsBrowser } from "@segment/analytics-next";
 
 // Base da URL pega do .env
 const API_BASE = import.meta.env.VITE_API_URL as string; 
 const API_URL = `${API_BASE}/aulas`;                     
+
+const analytics = AnalyticsBrowser.load({
+  writeKey: "2DnuujYPsWB3IARRCuGMATKP6tUWaEcx",
+});
 
 export default function EditarAula() {
   const { id: aulaId } = useParams<{ id: string }>();
@@ -88,7 +93,6 @@ export default function EditarAula() {
       const res = await axios.patch(`${API_URL}/${aulaId}`, formData);
       setAula(res.data.aula);
 
-      // Atualiza arquivos existentes a partir da resposta
       const mappedFiles = (res.data.aula.arquivos || []).map((file: any) => ({
         _id: file.id?.["$oid"] || "",
         nome: file.nome,
@@ -98,7 +102,19 @@ export default function EditarAula() {
 
       alert("Aula editada com sucesso!");
 
-      // Recarrega a página
+      // Registro de atividade
+      const userId = localStorage.getItem("userId");
+      await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
+        userId: userId,
+        action: "Aula Editada",
+        detalhes: {
+          titulo: aula.titulo,
+          turma: aula.Turma,
+          curso: aula.curso,
+        },
+        data: new Date().toISOString(),
+      });
+
       window.location.reload();
     } catch (err: any) {
       console.error("Erro ao enviar dados:", err.response?.data || err);
@@ -115,9 +131,23 @@ export default function EditarAula() {
     }
 
     try {
-      await axios.delete(`${API_URL}/arquivos/${fileId}`); // Adiciona o ID do arquivo ao endpoint
+      await axios.delete(`${API_URL}/arquivos/${fileId}`);
       setExistingFiles((prev) => prev.filter((file) => file._id !== fileId));
       alert("Arquivo removido com sucesso!");
+
+      // Registro de atividade
+      const userId = localStorage.getItem("userId");
+      await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
+        userId: userId,
+        action: "Arquivo Deletado",
+        detalhes: {
+          arquivoId: fileId,
+          titulo: aula?.titulo,
+          turma: aula?.Turma,
+          curso: aula?.curso,
+        },
+        data: new Date().toISOString(),
+      });
     } catch (err) {
       console.error("Erro ao excluir arquivo:", err);
       alert("Erro ao excluir arquivo. Veja o console para mais detalhes.");
@@ -269,7 +299,11 @@ export default function EditarAula() {
 
         {/* Botões */}
         <div className="button-container">
-          <button type="submit" className="btn-editar-aulas">
+          <button 
+            type="submit" 
+            className="btn-editar-aulas" 
+            onClick={() => analytics.track("Aula Editada", { button_name: "Salvar Alterações" })}
+          >
             Salvar Alterações
           </button>
           <button type="button" className="btn-voltar" onClick={() => navigate(-1)}>

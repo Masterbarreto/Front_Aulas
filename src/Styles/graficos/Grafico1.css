@@ -1,0 +1,21 @@
+.grafico-container {
+  background-color: #374151; /* Fundo do gráfico */
+  border-radius: 8px; /* Bordas arredondadas */
+  padding: 1px; /* Espaçamento interno */
+  border: 1px solid #4B5563; /* Bordas */
+  width: 10px; /* Largura total */
+  margin: 0 auto; /* Centraliza o gráfico */
+  position: relative; /* Permite usar propriedades de posicionamento */
+  left: -50px; 
+}
+
+.grafico-titulo {
+  color: #F9FAFB; /* Texto branco */
+  font-size: 18px; /* Tamanho da fonte */
+  font-weight: 500; /* Peso da fonte */
+  margin-bottom: 16px; /* Espaçamento abaixo do título */
+}
+
+.grafico {
+  height: 80px; /* Altura reduzida */
+}

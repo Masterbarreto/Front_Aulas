@@ -1,0 +1,39 @@
+.bg-gray-800 {
+  background-color: #374151;
+}
+
+.rounded-lg {
+  border-radius: 8px;
+}
+
+.border {
+  border: 1px solid #4B5563;
+}
+
+.shadow-lg {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.text-white {
+  color: #F9FAFB;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.h-64 {
+  height: 16rem;
+}

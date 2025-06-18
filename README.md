@@ -4,7 +4,7 @@
 
 ![Status](https://img.shields.io/badge/Status-Em%20Produção-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-blue)
-![Version](https://img.shields.io/badge/Version-1.0.0-orange)
+![Version](https://img.shields.io/badge/Version-1.1.0-orange)
 
 **Plataforma web para otimização do processo de substituição de aulas no ambiente educacional do Senac**
 
@@ -65,6 +65,21 @@ Uma plataforma web centralizada que garante:
 - **Sistema de logs** detalhado com Chalk
 - **Documentação automática** da API com Swagger
 - **Rastreabilidade** completa das operações
+
+### 🛠 Novidades na Versão 1.1.0
+- **Integração com Segment Analytics**:
+  - Rastreio de rotas e atividades do usuário.
+  - Inicialização do Segment Analytics no componente `App`.
+  - Registro de visualizações de página em mudanças de rota.
+- **Registro de Atividades do Usuário**:
+  - Implementado em `AulaScreens` e `EditarAula` para ações como concluir ou editar aulas.
+- **Relatórios e Visualização de Dados**:
+  - Adicionado um dashboard no componente `RelatorioEdit` com gráficos interativos.
+  - Criados os componentes `Grafico1`, `Grafico2` e `Grafico3` para visualização de dados.
+- **Melhorias na Interface**:
+  - Estilos atualizados para gráficos e seções de relatórios.
+- **Refatoração**:
+  - Simplificação do arquivo `main.jsx` para uso do `BrowserRouter`.
 
 ---
 
@@ -187,7 +202,7 @@ PORT=3001
 # Frontend (terminal 1)
 npm run dev
 
-#  Backend  (terminal 2)
+# Backend (terminal 2)
 npm start
 ```
 

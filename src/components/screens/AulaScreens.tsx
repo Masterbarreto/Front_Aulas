@@ -5,8 +5,6 @@ import { ArrowLeft, FileText, Download, Link2 } from 'lucide-react';
 import '../../Styles/AulaScreens.css';
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API_BASE_URL;
-
 interface Arquivo {
   nome: string;
   mimetype: string;
@@ -224,6 +222,19 @@ const AulaScreens: React.FC = () => {
                       headers: { "Content-Type": "application/json" },
                     });
                     alert("Aula marcada como não concluída!");
+
+                    // Registro de atividade ao desconcluir
+                    const userId = localStorage.getItem("userId");
+                    await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
+                      userId: userId,
+                      action: "Aula Desconcluída",
+                      detalhes: {
+                        titulo: aula.titulo,
+                        turma: aula.Turma,
+                        curso: aula.curso,
+                      },
+                      data: new Date().toISOString(),
+                    });
                   } else {
                     // Rota para "Concluir Aula"
                     await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/concluir`, {
@@ -233,10 +244,11 @@ const AulaScreens: React.FC = () => {
                     });
                     alert("Aula concluída com sucesso!");
 
+                    // Registro de atividade ao concluir
                     const userId = localStorage.getItem("userId");
                     await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
                       userId: userId,
-                      action: "Atividade concluída",
+                      action: "Aula Concluída",
                       detalhes: {
                         titulo: aula.titulo,
                         turma: aula.Turma,
@@ -251,9 +263,9 @@ const AulaScreens: React.FC = () => {
 
                   // Volta para a tela anterior após concluir/desconcluir
                   navigate(-1);
-
                 } catch (err) {
-                  alert("Erro ao atualizar status da aula!");
+                  console.error("Erro ao atualizar status da aula:", err);
+                  alert("Erro ao atualizar status da aula! Verifique o console para mais detalhes.");
                 }
               }}
             >

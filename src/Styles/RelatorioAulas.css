@@ -1,11 +1,7 @@
 .container-relatorio {
   position: absolute;
-  /* Permite posicionar o título em qualquer lugar */
   top: -2%;
-  /* Ajusta a posição vertical */
-  left: 330px;
-  /* Encosta o título na linha do Hub */
-  color: #ffffff;
+  left: 300px;
   font-size: 28px;
   font-weight: bold;
   margin: 40px auto;
@@ -13,15 +9,6 @@
   max-width: 3900px;
   border-radius: 18px;
   text-align: left;
-  /* Alinha o texto à esquerda */
-}
-
-@media screen and (max-width: 1300px) {
-  .container-relatorio {
-    /* Ajusta a posição vertical */
-    left: 20%;
-    /* Encosta o título na linha do Hub */
-  }
 }
 
 h1 {
@@ -35,7 +22,6 @@ h1 {
 
 .Sub-Titulo-Relatorio {
   margin: 40px 40px 0px;
-  /* top, right, bottom, left */
   flex-shrink: 0;
   color: #FFF;
   font-family: Poppins, sans-serif;
@@ -46,22 +32,17 @@ h1 {
 }
 
 .Container-AulasRelatorio {
-  max-width: 1800px;
-  /* aumente conforme desejar, ou use 100% */
-  width: 76vw;
-  /* opcional: faz ocupar 90% da largura da tela */
-  height: 700px;
-  /* altura fixa para a área da tabela */
+  width: 78vw;
+  height: 530px;
   margin: 0 auto;
+  margin-left: 20px;
   flex-shrink: 0;
   border-radius: 21px;
   background: #292d33;
   box-shadow: 0 2px 12px #0005;
   padding: 24px;
   overflow-y: auto;
-  /* barra de rolagem vertical */
-  position: static;
-  /* remove o absolute */
+  position: relative;
   scrollbar-width: thin;
   scrollbar-color: #23272f #181a1f;
 }
@@ -104,14 +85,12 @@ h1 {
 .btn-voltar:hover,
 .btn-editar:hover {
   background: #ffb36622;
-  color: #fff;
 }
 
 .relatorio-tabela {
   width: 100%;
   border-collapse: collapse;
   background: #23272f;
-  color: #fff;
   border-radius: 12px;
   overflow: hidden;
   font-size: 1rem;
@@ -130,18 +109,38 @@ h1 {
   border-bottom: 1px solid #393e46;
 }
 
+/* Corrigindo o comportamento das linhas */
+.relatorio-tabela tbody tr {
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.relatorio-tabela tbody tr:hover {
+  background-color: #2d313a !important;
+}
+
+.relatorio-tabela tbody tr td {
+  background-color: transparent !important;
+  color: #fff;
+  border: none;
+}
+
+/* Remove qualquer fundo branco das classes antigas */
 .relatorio-row {
-  cursor: pointer;
-  transition: background 0.2s;
+  background-color: transparent !important;
+  transition: background-color 0.2s ease;
+}
+
+.relatorio-row.concluida {
+  background-color: transparent !important;
 }
 
 .relatorio-row:hover {
-  background: #2d313a;
+  background-color: #2d313a !important;
 }
 
 .relatorio-aulas-container {
   padding: 20px;
-  color: #fff;
 }
 
 .relatorio-aulas-header {
@@ -153,7 +152,6 @@ h1 {
 
 .btn-voltar {
   background-color: #444;
-  color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -203,16 +201,7 @@ tr:hover {
   background-color: #d18e00;
 }
 
-@media (max-width: 800px) {
-
-  .container-relatorio,
-  .Container-AulasRelatorio {
-    padding: 10px;
-  }
-
-  .relatorio-tabela th,
-  .relatorio-tabela td {
-    padding: 10px 4px;
-    font-size: 0.95rem;
-  }
+.container-graficos {
+  margin-top: -17px;
+  position: relative;
 }

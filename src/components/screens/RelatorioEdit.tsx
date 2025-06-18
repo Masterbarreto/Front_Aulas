@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Hub } from '../ui/hub';
 import "../../Styles/EditarAula.css";
+import Dashboard from '../ui/graficos/Graficos';
 
 export default function RelatorioEdit() {
     const [aulas, setAulas] = useState<any[]>([]);
@@ -31,7 +32,7 @@ export default function RelatorioEdit() {
                     id: aula.aulaId,
                     titulo: aula.titulo || "Sem título",
                     data: aula.DayAula || "Sem data",
-                    professor: aula.professor || "Não informado", // Define um valor padrão se o campo não existir
+                    professor: aula.professor || "Não informado",
                     status: aula.concluida ? "Concluída" : "Não Concluída",
                     anoEscolar: aula.anoEscolar,
                     curso: aula.curso,
@@ -48,12 +49,12 @@ export default function RelatorioEdit() {
 
     const handleRowClick = (aula: any) => {
         const { id } = aula;
-        if (!id) return; // não navega se não houver id
-        navigate(`/editar-aula/${id}`); // Redireciona para a tela de edição com o ID da aula
+        if (!id) return;
+        navigate(`/editar-aula/${id}`);
     };
 
     const handleDeleteAula = async (id: string) => {
-        console.log("ID da aula para exclusão:", id); // Log do ID
+        console.log("ID da aula para exclusão:", id);
         if (!id) return;
 
         const confirmDelete = window.confirm("Tem certeza que deseja excluir esta aula?");
@@ -79,7 +80,9 @@ export default function RelatorioEdit() {
             <Hub />
             <div className="container-relatorio">
                 <h1>Relatório de Aulas</h1>
-
+                <div className="container-graficos">
+                    <Dashboard />
+                </div>
                 {/* Tabela de Todas as Aulas */}
                 <div className="Container-AulasRelatorio">
                     <table className="relatorio-tabela">
@@ -100,7 +103,8 @@ export default function RelatorioEdit() {
                             {aulas.map((aula, idx) => (
                                 <tr
                                     key={aula.id || idx}
-                                    onClick={() => handleRowClick(aula)} // Redireciona para a edição ao clicar na linha
+                                    className="relatorio-row"
+                                    onClick={() => handleRowClick(aula)}
                                     style={{ cursor: "pointer" }}
                                 >
                                     <td>{aula.titulo}</td>
@@ -115,8 +119,8 @@ export default function RelatorioEdit() {
                                         <button
                                             type="button"
                                             onClick={(e) => {
-                                                e.stopPropagation(); // Impede que o clique na linha seja acionado
-                                                handleDeleteAula(aula.id); // Chama a função de exclusão
+                                                e.stopPropagation();
+                                                handleDeleteAula(aula.id);
                                             }}
                                             style={{
                                                 backgroundColor: "red",
@@ -124,6 +128,7 @@ export default function RelatorioEdit() {
                                                 border: "none",
                                                 padding: "5px 10px",
                                                 cursor: "pointer",
+                                                borderRadius: "4px"
                                             }}
                                         >
                                             Deletar
