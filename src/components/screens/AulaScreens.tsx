@@ -224,9 +224,8 @@ const AulaScreens: React.FC = () => {
                     alert("Aula marcada como não concluída!");
 
                     // Registro de atividade ao desconcluir
-                    const userId = localStorage.getItem("userId");
                     await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
-                      userId: userId,
+                      userId: "683e372098df1ac06fe24ec3" ,
                       action: "Aula Desconcluída",
                       detalhes: {
                         titulo: aula.titulo,
@@ -245,9 +244,9 @@ const AulaScreens: React.FC = () => {
                     alert("Aula concluída com sucesso!");
 
                     // Registro de atividade ao concluir
-                    const userId = localStorage.getItem("userId");
+                    //const userId = localStorage.getItem("userId");
                     await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
-                      userId: userId,
+                      userId: "683e372098df1ac06fe24ec3" ,
                       action: "Aula Concluída",
                       detalhes: {
                         titulo: aula.titulo,

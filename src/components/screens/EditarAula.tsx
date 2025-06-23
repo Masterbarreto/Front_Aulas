@@ -103,9 +103,9 @@ export default function EditarAula() {
       alert("Aula editada com sucesso!");
 
       // Registro de atividade
-      const userId = localStorage.getItem("userId");
+      //const userId = localStorage.getItem("userId");
       await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
-        userId: userId,
+        userId: "683e372098df1ac06fe24ec3" ,
         action: "Aula Editada",
         detalhes: {
           titulo: aula.titulo,
@@ -136,9 +136,9 @@ export default function EditarAula() {
       alert("Arquivo removido com sucesso!");
 
       // Registro de atividade
-      const userId = localStorage.getItem("userId");
+      //const userId = localStorage.getItem("userId");
       await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
-        userId: userId,
+        userId: "683e372098df1ac06fe24ec3" ,
         action: "Arquivo Deletado",
         detalhes: {
           arquivoId: fileId,
