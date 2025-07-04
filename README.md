@@ -21,6 +21,7 @@
 - [Tecnologias](#-tecnologias)
 - [Arquitetura](#-arquitetura)
 - [Instalação](#-instalação)
+- [Docker & Containerização](#-docker--containerização)
 - [Uso](#-uso)
 - [Roadmap](#-roadmap)
 - [Equipe](#-equipe)
@@ -199,11 +200,131 @@ PORT=3001
 
 4. **Execute o projeto**
 ```bash
-# Frontend (terminal 1)
+# Backend (em um terminal)
+cd ApiSubAulas
 npm run dev
 
-# Backend (terminal 2)
-npm start
+# Frontend (em outro terminal)
+cd Front_Aulas/Sub_Aulas
+npm run dev
+```
+
+---
+
+## 🐳 Docker & Containerização
+
+O projeto **Sub_Aulas** está totalmente configurado para execução em containers Docker, proporcionando um ambiente de desenvolvimento consistente e portável.
+
+### 📦 Pré-requisitos para Docker
+```bash
+Docker >= 20.0.0
+Docker Compose >= 2.0.0
+```
+
+### 🚀 Execução com Docker
+
+#### **Método 1: Docker Compose (Recomendado)**
+```bash
+# Clone o repositório
+git clone https://github.com/Masterbarreto/Front_Aulas.git
+cd Front_Aulas/Sub_Aulas
+
+# Construa e execute o container
+docker compose up --build
+
+# Para executar em background
+docker compose up -d --build
+
+# Para parar o container
+docker compose down
+```
+
+#### **Método 2: Docker Build Manual**
+```bash
+# Construa a imagem
+docker build -t sub-aulas .
+
+# Execute o container
+docker run -p 5173:5173 \
+  -v $(pwd):/app \
+  -v /app/node_modules \
+  sub-aulas
+```
+
+### 🔧 Configuração Docker
+
+O projeto inclui os seguintes arquivos de configuração:
+
+#### **Dockerfile**
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+```
+
+#### **docker-compose.yml**
+```yaml
+version: '3.8'
+services:
+  frontend:
+    build: .
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+```
+
+#### **.dockerignore**
+```
+node_modules
+.git
+.env.local
+dist
+build
+coverage
+*.log
+```
+
+### 🌐 Acesso ao Container
+
+Após executar o container, a aplicação estará disponível em:
+- **URL**: http://localhost:5173
+- **Hot Reload**: ✅ Habilitado
+- **API**: Conectada automaticamente
+
+### 💡 Vantagens da Containerização
+
+- **🔒 Isolamento**: Ambiente completamente isolado
+- **📦 Portabilidade**: Executa em qualquer sistema com Docker
+- **🔄 Consistência**: Mesmo ambiente em dev/prod
+- **⚡ Performance**: Otimização de cache de dependências
+- **🛠️ Desenvolvimento**: Hot reload funcional
+
+### 🐛 Troubleshooting Docker
+
+```bash
+# Ver logs do container
+docker compose logs -f
+
+# Reconstruir sem cache
+docker compose build --no-cache
+
+# Limpar volumes
+docker compose down -v
+
+# Verificar containers rodando
+docker ps
+
+# Acessar o container
+docker compose exec frontend sh
 ```
 
 ---
