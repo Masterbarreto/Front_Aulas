@@ -24,6 +24,25 @@ Para configurar corretamente os workflows de CI/CD, você precisa adicionar os s
 
 O GitHub Container Registry funciona automaticamente com o token `GITHUB_TOKEN` que é fornecido automaticamente pelos GitHub Actions.
 
+### ⚙️ Permissões Necessárias
+
+Para que o workflow funcione corretamente, certifique-se de que as seguintes permissões estão habilitadas:
+
+1. **Workflow Permissions**:
+   - Vá para **Settings** → **Actions** → **General**
+   - Em "Workflow permissions", selecione **"Read and write permissions"**
+   - Marque **"Allow GitHub Actions to create and approve pull requests"**
+
+2. **Code Scanning** (para security scan):
+   - O workflow tem permissões específicas para `security-events: write`
+   - Isso permite upload de resultados SARIF para GitHub Advanced Security
+
+### 🔧 Correções Aplicadas
+
+- ✅ **CodeQL Action**: Atualizado de v2 para v3 (v2 está depreciado)
+- ✅ **Security Permissions**: Adicionadas permissões específicas para o job de security
+- ✅ **Git Repository**: Adicionado checkout no job de security para resolver erros de git
+
 ## 🚀 Workflows Disponíveis
 
 ### 1. `docker-simple.yml`
