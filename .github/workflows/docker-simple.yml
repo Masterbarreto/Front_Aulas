@@ -1,0 +1,35 @@
+name: Docker Image CI - Simple
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Build Docker image
+      run: |
+        docker build . \
+          --file Dockerfile \
+          --tag sub-aulas:$(date +%s) \
+          --tag sub-aulas:latest
+          
+    - name: Test Docker image
+      run: |
+        docker run --rm -d --name test-container -p 5173:5173 sub-aulas:latest
+        sleep 10
+        docker stop test-container || true
+        
+    - name: Clean up
+      run: docker system prune -f

@@ -22,6 +22,7 @@
 - [Arquitetura](#-arquitetura)
 - [Instalação](#-instalação)
 - [Docker & Containerização](#-docker--containerização)
+- [CI/CD](#-ci/cd)
 - [Uso](#-uso)
 - [Roadmap](#-roadmap)
 - [Equipe](#-equipe)
@@ -325,6 +326,59 @@ docker ps
 
 # Acessar o container
 docker compose exec frontend sh
+```
+
+---
+
+## 🔄 CI/CD - Integração Contínua
+
+O projeto inclui workflows automatizados de GitHub Actions para build e deploy:
+
+#### **Workflows Disponíveis:**
+
+1. **🏗️ docker-simple.yml** - Build básico para testes
+2. **🚀 docker-production.yml** - Build completo com deploy
+3. **🔧 docker-ci.yml** - Pipeline completo com testes
+
+#### **Funcionalidades do CI/CD:**
+
+- ✅ **Build automático** em push/PR
+- ✅ **Testes e linting** automáticos
+- ✅ **Multi-platform build** (AMD64/ARM64)
+- ✅ **Push para registries** (GitHub Container Registry)
+- ✅ **Security scanning** com Trivy
+- ✅ **Cache inteligente** para builds rápidos
+
+#### **Configuração:**
+
+```yaml
+# .github/workflows/docker-production.yml
+name: Sub_Aulas Docker Build & Deploy
+on:
+  push:
+    branches: [ "main", "develop" ]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build -t sub-aulas .
+```
+
+#### **Registries Suportados:**
+
+- 📦 **GitHub Container Registry**: `ghcr.io/seu-usuario/sub-aulas-frontend`
+- 🐳 **Docker Hub**: Configure `DOCKERHUB_USERNAME` e `DOCKERHUB_TOKEN`
+
+#### **Comandos para usar a imagem:**
+
+```bash
+# Pull da imagem
+docker pull ghcr.io/seu-usuario/sub-aulas-frontend:latest
+
+# Executar container
+docker run -p 5173:5173 ghcr.io/seu-usuario/sub-aulas-frontend:latest
 ```
 
 ---
