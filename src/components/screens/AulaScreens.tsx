@@ -24,39 +24,196 @@ interface Aula {
   concluida: boolean;
   arquivos: Arquivo[];
   arquivosIds: string[];
+  professor?: string;
+  createdAt?: string;
 }
 
 const AulaScreens: React.FC = () => {
   const [aula, setAula] = useState<Aula | null>(null);
   const [loading, setLoading] = useState(true);
+  const [todasAulasMesmoTitulo, setTodasAulasMesmoTitulo] = useState<Aula[]>([]);
+  
+  // Estados para o modal
+  const [showConcluirModal, setShowConcluirModal] = useState(false);
+  const [professorName, setProfessorName] = useState("");
+  const [turmaSelecionada, setTurmaSelecionada] = useState("");
+  const [turmasDisponiveis, setTurmasDisponiveis] = useState<string[]>([]);
+  
   const navigate = useNavigate();
-  const { id } = useParams(); // <-- pega o id da URL
-
- 
+  const { id } = useParams();
 
   useEffect(() => {
     if (!id) return;
+    
+    // Buscar a aula específica primeiro
     fetch(`https://apisubaulas.onrender.com/api/v1/aulas/aula-id/${id}`)
-        .then(res => res.json())
-        .then(data => {
-            // Verifica se LinkAula é uma string e converte para um array de objetos
-            if (typeof data.LinkAula === "string") {
-                try {
-                    data.LinkAula = JSON.parse(data.LinkAula);
-                } catch (error) {
-                    console.error("Erro ao parsear LinkAula:", error);
-                    data.LinkAula = [];
-                }
-            }
-            setAula(data);
-            setLoading(false);
-        });
+      .then(res => res.json())
+      .then(data => {
+        // Verifica se LinkAula é uma string e converte para um array de objetos
+        if (typeof data.LinkAula === "string") {
+          try {
+            data.LinkAula = JSON.parse(data.LinkAula);
+          } catch (error) {
+            console.error("Erro ao parsear LinkAula:", error);
+            data.LinkAula = [];
+          }
+        }
+        setAula(data);
+        setLoading(false);
+        
+        // Depois buscar todas as aulas com o mesmo título, matéria e curso
+        buscarAulasDoMesmoTipo(data);
+      })
+      .catch(error => {
+        console.error("Erro ao buscar aula:", error);
+        setLoading(false);
+      });
   }, [id]);
+
+  // Função para buscar todas as aulas do mesmo tipo (mesmo título, matéria, curso)
+  const buscarAulasDoMesmoTipo = async (aulaAtual: Aula) => {
+    try {
+      const response = await axios.get('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas');
+      
+      // Filtrar aulas com mesmo título, matéria e curso
+      const aulasIguais = response.data.filter((a: Aula) => 
+        a.titulo === aulaAtual.titulo && 
+        a.Materia === aulaAtual.Materia && 
+        a.curso === aulaAtual.curso
+      );
+      
+      setTodasAulasMesmoTitulo(aulasIguais);
+      
+      // Extrair turmas que ainda não foram concluídas
+      const turmasNaoConcluidas = aulasIguais
+        .filter((a: Aula) => !a.concluida)
+        .map((a: Aula) => a.Turma)
+        .filter((turma, index, array) => array.indexOf(turma) === index) // Remove duplicatas
+        .sort(); // Ordena as turmas
+      
+      setTurmasDisponiveis(turmasNaoConcluidas);
+      
+      console.log("Aulas do mesmo tipo encontradas:", aulasIguais);
+      console.log("Turmas disponíveis para conclusão:", turmasNaoConcluidas);
+      
+    } catch (error) {
+      console.error("Erro ao buscar aulas do mesmo tipo:", error);
+    }
+  };
+
+  // Função para concluir aula em uma turma específica
+  const handleConcluirAula = async () => {
+    if (!professorName.trim() || !turmaSelecionada.trim()) {
+      alert("Por favor, preencha todos os campos!");
+      return;
+    }
+
+    try {
+      // Encontrar a aula específica da turma selecionada
+      const aulaParaConcluir = todasAulasMesmoTitulo.find(a => 
+        a.Turma === turmaSelecionada && !a.concluida
+      );
+
+      if (!aulaParaConcluir) {
+        alert("Aula não encontrada para esta turma!");
+        return;
+      }
+
+      console.log("Concluindo aula:", aulaParaConcluir._id, "Turma:", turmaSelecionada);
+
+      // Concluir a aula específica da turma
+      await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aulaParaConcluir._id}/concluir`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          concluida: true,
+          professorResponsavel: professorName
+        }),
+      });
+      
+      alert(`Aula "${aula.titulo}" concluída para a Turma ${turmaSelecionada}!`);
+
+      // Registro de atividade
+      await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
+        userId: "683e372098df1ac06fe24ec3",
+        action: "Aula Concluída",
+        detalhes: {
+          titulo: aula.titulo,
+          turma: `Turma ${turmaSelecionada}`,
+          professor: professorName,
+          curso: aula.curso,
+          materia: aula.Materia,
+        },
+        data: new Date().toISOString(),
+      });
+
+      // Atualizar a lista de aulas do mesmo tipo
+      const aulasAtualizadas = todasAulasMesmoTitulo.map(a => 
+        a._id === aulaParaConcluir._id ? { ...a, concluida: true, professor: professorName } : a
+      );
+      setTodasAulasMesmoTitulo(aulasAtualizadas);
+
+      // Atualizar turmas disponíveis (remover a turma que foi concluída)
+      const novasTurmasDisponiveis = turmasDisponiveis.filter(t => t !== turmaSelecionada);
+      setTurmasDisponiveis(novasTurmasDisponiveis);
+      
+      // Limpar campos do formulário
+      setProfessorName("");
+      setTurmaSelecionada("");
+      
+      // Verificar se ainda há turmas para concluir
+      if (novasTurmasDisponiveis.length === 0) {
+        setShowConcluirModal(false);
+        alert("Todas as turmas desta aula foram concluídas!");
+        navigate(-1);
+      } else {
+        alert(`Turma ${turmaSelecionada} concluída! Ainda restam ${novasTurmasDisponiveis.length} turma(s) para concluir.`);
+      }
+
+    } catch (err) {
+      console.error("Erro ao concluir aula:", err);
+      alert("Erro ao concluir aula! Verifique o console para mais detalhes.");
+    }
+  };
+
+  // Função para desconcluir aula
+  const handleDesconcluirAula = async () => {
+    try {
+      await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/desconcluir`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+      });
+      
+      alert("Aula marcada como não concluída!");
+
+      await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
+        userId: "683e372098df1ac06fe24ec3",
+        action: "Aula Desconcluída",
+        detalhes: {
+          titulo: aula.titulo,
+          turma: aula.Turma,
+          curso: aula.curso,
+        },
+        data: new Date().toISOString(),
+      });
+
+      setAula({ ...aula, concluida: false });
+      
+      // Recarregar as aulas do mesmo tipo para atualizar a lista
+      if (aula) {
+        buscarAulasDoMesmoTipo(aula);
+      }
+      
+      navigate(-1);
+    } catch (err) {
+      console.error("Erro ao desconcluir aula:", err);
+      alert("Erro ao desconcluir aula!");
+    }
+  };
 
   if (loading) return <div style={{ color: '#fff' }}>Carregando...</div>;
   if (!aula || !aula.Materia) return <div style={{ color: '#fff' }}>Aula não encontrada.</div>;
 
-   console.log("Valor de createdAt:", aula.createdAt)
   return (
     <div className="aula-main-bg">
       <Hub />
@@ -66,15 +223,15 @@ const AulaScreens: React.FC = () => {
             size={32}
             color="#fff"
             style={{ cursor: "pointer" }}
-            onClick={() => navigate(-1)} // Voltar para a página anterior
+            onClick={() => navigate(-1)}
           />
           Aula de {aula.titulo.charAt(0).toUpperCase() + aula.titulo.slice(1).toLowerCase()}
         </h1>
-        <span className="aulasSubtitulo">materia: {aula.Materia}</span>
+        <span className="aulasSubtitulo">Matéria: {aula.Materia}</span>
       </div>
+      
       <div className="aula-content-container">
         <div className="aula-content">
-          {/* Esquerda */}
           <div className="aula-section">
             <div className="aula-section-title">
               <span className="aula-section-icon">
@@ -83,193 +240,154 @@ const AulaScreens: React.FC = () => {
               Tema da aula
             </div>
             <hr className="aula-section-divider" />
-            <div className="aula-section-desc-title">Descrição da Aula :</div>
+            <div className="aula-section-desc-title">Descrição da Aula:</div>
             <div className="aula-section-desc">
               {aula.DesAula}
             </div>
           </div>
-          {/* Direita */}
+          
           <div className="aula-details">
             <div className="aula-details-title">Detalhes da Aula</div>
+            
             <div className="aula-details-item">
-              <span className="aula-details-label">Criador da atividade:</span>
+              <span className="aula-details-label">Curso:</span>
+              <span className="aula-details-value">{aula.curso.toUpperCase()}</span>
+            </div>
+            
+            <div className="aula-details-item">
+              <span className="aula-details-label">Turmas com esta aula:</span>
               <span className="aula-details-value">
-                {aula.professor
-                  ? aula.professor.split(" ").slice(0, 2).join(" ") // Exibe apenas o primeiro e o segundo nomes
-                  : "Não informado"}
+                {todasAulasMesmoTitulo.length > 0 
+                  ? todasAulasMesmoTitulo.map(a => `Turma ${a.Turma}`).join(', ')
+                  : `Turma ${aula.Turma}`
+                }
               </span>
             </div>
+            
             <div className="aula-details-item">
-              <span className="aula-details-label">Data de Criação:</span>
-              <span className="aula-details-value">
-                {aula.createdAt
-                  ? (() => {
-                      const createdAtDate = new Date(aula.createdAt);
-                      createdAtDate.setUTCDate(createdAtDate.getUTCDate() - 1); // Subtrai 1 dia em UTC
-                      return createdAtDate.toLocaleDateString('pt-BR'); // Formata como DD/MM/AAAA
-                    })()
-                  : "Não informado"}
-              </span>
+              <span className="aula-details-label">Dia da Aula:</span>
+              <span className="aula-details-value">{aula.DayAula}</span>
             </div>
+            
             <div className="aula-details-item">
-              <span className="aula-details-label">Dia da Aula :</span>
-              <span className="aula-details-value">
-                {(() => {
-                  const hoje = new Date();
-                  const dataAula = new Date(aula.DayAula);
-                  hoje.setHours(0, 0, 0, 0);
-                  dataAula.setHours(0, 0, 0, 0);
-                  const diffTime = dataAula.getTime() - hoje.getTime();
-                  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-                  if (diffDays === 0) return "Hoje";
-                  if (diffDays === 1) return "Amanhã";
-                  if (diffDays > 1) return `${diffDays} dias para a aula`;
-                  return dataAula.toLocaleDateString("pt-BR");
-                })()}
-              </span>
+              <span className="aula-details-label">Horário:</span>
+              <span className="aula-details-value">{aula.Horario}</span>
             </div>
-            <div className="aula-details-item">
-              <span className="aula-details-label">Dia que a aula foi criada :</span>
-              <span className="aula-details-value">
-                {aula.createdAt
-                  ? new Date(aula.createdAt).toLocaleDateString('pt-BR') // Formata como DD/MM/AAAA
-                  : "Não informado"}
-              </span>
-            </div>
+
+            {/* Links e Arquivos */}
             <div className="aula-details-links-title">Links e Arquivos</div>
             <div className="aula-details-links">
               {Array.isArray(aula.arquivos) && aula.arquivos.length > 0 ? (
                 aula.arquivos.map((arq, idx) => (
-                  <button
-                    key={`arquivo-${idx}`}
-                    className="aula-details-link"
-                    style={{ width: "100%", textAlign: "left", background: "none", border: "none", padding: 0, cursor: "pointer" }}
-                    onClick={() => {
-                      const arquivoId = aula.arquivosIds[idx];
-                      if (arquivoId) {
-                        fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${arquivoId}/pdf`)
-                          .then(res => res.blob())
-                          .then(blob => {
-                            const urlBlob = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = urlBlob;
-                            a.download = arq.nome;
-                            a.click();
-                            window.URL.revokeObjectURL(urlBlob);
-                          });
-                      }
-                    }}
-                  >
-                    <span className="aula-details-link-label">
-                      <FileText size={20} style={{ marginRight: 8 }} />
-                      {arq.nome}
-                    </span>
-                    <span>
-                      <svg width="20" height="20" fill="#fff"><path d="M5 13l4 4 4-4M12 17V7m-4 10V7"/></svg>
-                    </span>
-                  </button>
+                  <div key={idx} className="aula-link-item">
+                    <FileText size={16} />
+                    <span>{arq.nome}</span>
+                  </div>
                 ))
               ) : (
                 <span style={{ color: "#aaa", fontSize: 14 }}>Nenhum arquivo disponível</span>
               )}
-
-              {/* Adicionando os links */}
-              <div className="aula-details-links">
-                {Array.isArray(aula.LinkAula) && aula.LinkAula.length > 0 ? (
-                    aula.LinkAula.map((link, idx) => (
-                        <div
-                            key={`link-${idx}`}
-                            className="link-container"
-                            onClick={() => window.open(link.url, "_blank")} // Abre o link em uma nova aba
-                            style={{
-                                cursor: "pointer", // Indica que o contêiner é clicável
-                                padding: "10px",
-                                background: "#2D2E36",
-                                borderRadius: "8px",
-                                marginBottom: "12px",
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "8px",
-                            }}
-                        >
-                            <div className="link-header">
-                                <span className="link-name" style={{ fontWeight: "bold", color: "#fff" }}>
-                                    {link.name}
-                                </span>
-                            </div>
-                            <div className="link-body">
-                                <span className="link-url" style={{ color: "#888" }}>
-                                    {link.url}
-                                </span>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <span style={{ color: "#aaa", fontSize: 14 }}>Nenhum link disponível</span>
-                )}
-              </div>
+              
+              {Array.isArray(aula.LinkAula) && aula.LinkAula.length > 0 ? (
+                aula.LinkAula.map((link, idx) => (
+                  <div key={idx} className="aula-link-item">
+                    <Link2 size={16} />
+                    <a href={link.url} target="_blank" rel="noopener noreferrer">
+                      {link.name || link.url}
+                    </a>
+                  </div>
+                ))
+              ) : null}
             </div>
+            
+            {/* Botão de Concluir/Desconcluir */}
             <button 
               className="aula-details-btn"
               type="button"
-              onClick={async () => {
-                if (!aula?._id) return;
-                try {
-                  if (aula.concluida) {
-                    // Rota para "Desconcluir Aula"
-                    await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/desconcluir`, {
-                      method: "PATCH",
-                      headers: { "Content-Type": "application/json" },
-                    });
-                    alert("Aula marcada como não concluída!");
-
-                    // Registro de atividade ao desconcluir
-                    await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
-                      userId: "683e372098df1ac06fe24ec3" ,
-                      action: "Aula Desconcluída",
-                      detalhes: {
-                        titulo: aula.titulo,
-                        turma: aula.Turma,
-                        curso: aula.curso,
-                      },
-                      data: new Date().toISOString(),
-                    });
-                  } else {
-                    // Rota para "Concluir Aula"
-                    await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/concluir`, {
-                      method: "PATCH",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ concluida: true }),
-                    });
-                    alert("Aula concluída com sucesso!");
-
-                    // Registro de atividade ao concluir
-                    //const userId = localStorage.getItem("userId");
-                    await axios.post(`${import.meta.env.VITE_API_URL}/users/activity`, {
-                      userId: "683e372098df1ac06fe24ec3" ,
-                      action: "Aula Concluída",
-                      detalhes: {
-                        titulo: aula.titulo,
-                        turma: aula.Turma,
-                        curso: aula.curso,
-                      },
-                      data: new Date().toISOString(),
-                    });
-                  }
-
-                  // Atualiza o estado da aula
-                  setAula({ ...aula, concluida: !aula.concluida });
-
-                  // Volta para a tela anterior após concluir/desconcluir
-                  navigate(-1);
-                } catch (err) {
-                  console.error("Erro ao atualizar status da aula:", err);
-                  alert("Erro ao atualizar status da aula! Verifique o console para mais detalhes.");
+              onClick={() => {
+                if (aula.concluida) {
+                  handleDesconcluirAula();
+                } else {
+                  setShowConcluirModal(true);
                 }
               }}
             >
               {aula.concluida ? "Desconcluir Aula" : "Concluir Aula"}
             </button>
+
+            {/* Modal de Concluir Aula */}
+            {showConcluirModal && (
+              <div className="modal-overlay" onClick={() => setShowConcluirModal(false)}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h2>Concluir Aula</h2>
+                    <button 
+                      className="modal-close-btn"
+                      onClick={() => setShowConcluirModal(false)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  
+                  <div className="modal-body">
+                    <p>Preencha essas informações para Concluir a Aula</p>
+                    
+                    <div className="form-group">
+                      <label>Nome de Quem Deu a Aula</label>
+                      <input
+                        type="text"
+                        placeholder="Professor Exemplo"
+                        value={professorName}
+                        onChange={(e) => setProfessorName(e.target.value)}
+                        className="form-input"
+                      />
+                    </div>
+                    
+                    <div className="form-group">
+                      <label>Turma Que a Aula foi dada</label>
+                      <select
+                        value={turmaSelecionada}
+                        onChange={(e) => setTurmaSelecionada(e.target.value)}
+                        className="form-select"
+                      >
+                        <option value="">Selecione a turma</option>
+                        {turmasDisponiveis.map(turma => (
+                          <option key={turma} value={turma}>
+                            Turma {turma}
+                          </option>
+                        ))}
+                      </select>
+                      {turmasDisponiveis.length === 0 && (
+                        <p style={{ color: "#ffa500", fontSize: "12px", marginTop: "5px" }}>
+                          Todas as turmas já foram concluídas para esta aula.
+                        </p>
+                      )}
+                      {turmasDisponiveis.length > 0 && (
+                        <p style={{ color: "#888", fontSize: "12px", marginTop: "5px" }}>
+                          {turmasDisponiveis.length} turma(s) disponível(eis) para conclusão
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="modal-footer">
+                    <button 
+                      className="btn-secondary"
+                      onClick={() => setShowConcluirModal(false)}
+                    >
+                      Fechar
+                    </button>
+                    <button 
+                      className="btn-primary"
+                      onClick={handleConcluirAula}
+                      disabled={turmasDisponiveis.length === 0}
+                    >
+                      Salvar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
