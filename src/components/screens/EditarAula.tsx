@@ -3,8 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Hub } from "../ui/hub";
 import "../../Styles/EditarAulas.css";
+import "../../Styles/MobileMenu.css";
 import { LinkModal } from "../ui/LinkModal";
 import { FileUploader } from "../ui/FileUploader";
+import { MobileMenu } from "../ui/MobileMenu";
 import { AnalyticsBrowser } from "@segment/analytics-next";
 
 // Base da URL pega do .env
@@ -155,12 +157,12 @@ export default function EditarAula() {
   };
 
   if (loading) return <div>Carregando...</div>;
-  if (error) return <div>{error}</div>;
-
-  return (
+  if (error) return <div>{error}</div>;  return (
     <div className="container-editar-aula">
-      <Hub />
-      <h1>Editar Aula</h1>
+      <Hub className="hub-editar" />      <div className="title-container">
+        <MobileMenu />
+        <h1>Editar Aula</h1>
+      </div>
       <form onSubmit={handleSubmit}>
         {/* Campos de texto */}
         <div className="form-group">

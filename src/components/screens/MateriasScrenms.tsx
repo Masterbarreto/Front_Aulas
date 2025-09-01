@@ -1,5 +1,6 @@
 import "../../Styles/MateriaSceens.css";
 import { Hub } from "../ui/hub";
+import { MobileMenu } from "../ui/MobileMenu";
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import {
@@ -35,7 +36,7 @@ const materias = [
   { nome: "Biologia", icon: Fish, id: "biologia" },
 ];
 
-const turmasPorCurso = {
+const turmasPorCurso: Record<string, string[]> = {
   mmd: ["1", "2", "3", "4", "5", "6", "7", "8"],
   iot: ["1", "2", "3", "4"],
   ti: ["1", "2", "3", "4"],
@@ -48,15 +49,14 @@ const turmasPorCurso = {
 export default function MateriasScrenms() {
   const navigate = useNavigate();
   const { ano, curso } = useParams();
-  const turmas = turmasPorCurso[curso] || []; // Obtem as turmas do curso atual
+  const turmas = turmasPorCurso[curso || ""] || []; // Obtem as turmas do curso atual
   const [turmaSelecionada, setTurmaSelecionada] = React.useState(turmas[0]);
 
   const handleMateriaClick = (materiaId: string) => {
     navigate(`/${ano}/${curso}/${turmaSelecionada}/${materiaId}/aulas`);
-  };
-
-  return (
+  };  return (
     <div className="container-primeiro-ano">
+      <MobileMenu />
       <Hub />
       <div className="materias-max-container">
         <div className="main-ano-content">
@@ -73,8 +73,8 @@ export default function MateriasScrenms() {
           <div className="subtitulo-cursos">
             Turmas do curso ({curso?.toUpperCase()}):
           </div>
-          <div style={{ display: "flex", gap: 16, marginBottom: 32 }}>
-            {turmas.map((turma) => (
+          <div style={{ display: "flex", gap: 16, marginBottom: 32, flexWrap: "wrap" }}>
+            {turmas.map((turma: string) => (
               <button
                 key={turma}
                 style={{

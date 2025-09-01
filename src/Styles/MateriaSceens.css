@@ -2,12 +2,11 @@
   min-height: 100vh;
   background: #0e1117;
   display: flex;
-  min-width: 1200px; /* Largura mínima fixa */
+  width: 100%;
 }
 
 .materias-max-container {
   width: 100%;
-  min-width: 1200px; /* Largura mínima fixa */
   margin: 0 auto;
   display: flex;
   flex: 1;
@@ -18,15 +17,14 @@
   flex: 1;
   padding: 32px;
   background: #0e1117;
-  min-width: 1000px; /* Largura mínima para o conteúdo */
 }
 
 .conteiner-Titulos {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 48px; /* Aumentado para dar mais espaço */
-  margin-top: 24px; /* Adicionado espaço superior */
+  margin-bottom: 24px;
+  margin-top: 0;
   margin-left: 0;
   padding-left: 0;
   background: #0e1117;
@@ -44,33 +42,12 @@
   color: #fff;
 }
 
-/* Botões das turmas */
-button {
-  background: #181b22;
-  color: #fff;
-  border: none;
-  border-bottom: 2px solid transparent;
-  padding: 12px 32px;
-  border-radius: 8px 8px 0 0;
-  cursor: pointer;
-  font-weight: normal;
-}
-
-button:hover {
-  background: #23262f;
-}
-
-button:focus {
-  border-bottom: 2px solid #573bff;
-}
-
-/* Grid das matérias - sempre 4 colunas */
+/* Grid das matérias */
 .materias-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Sempre 4 colunas */
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   margin-top: 24px;
-  min-width: 900px; /* Largura mínima para o grid */
 }
 
 /* Cartões das matérias */
@@ -86,8 +63,7 @@ button:focus {
   cursor: pointer;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   transition: background 0.2s, transform 0.2s;
-  min-width: 180px; /* Largura mínima fixa para cada card */
-  min-height: 120px; /* Altura mínima fixa */
+  min-height: 120px;
 }
 
 .materia-card:hover {
@@ -97,4 +73,85 @@ button:focus {
 
 .materia-card span {
   color: #fff;
+  text-align: center;
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+/* Responsividade simples */
+
+/* Tablet */
+@media (max-width: 991px) {
+  .materias-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .materia-card {
+    padding: 24px;
+    font-size: 18px;
+  }
+  
+  .main-ano-content {
+    padding: 24px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .main-ano-content {
+    padding: 16px;
+  }
+  
+  .conteiner-Titulos h1 {
+    font-size: 22px;
+  }
+  
+  .subtitulo-cursos {
+    font-size: 16px;
+  }
+  
+  .materias-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .materia-card {
+    padding: 20px;
+    font-size: 16px;
+    min-height: 100px;
+  }
+  
+  .materia-card span {
+    font-size: 14px;
+  }
+  
+  /* Ocultar hub em mobile */
+  .hub-home {
+    display: none !important;
+  }
+}
+
+/* Mobile pequeno */
+@media (max-width: 480px) {
+  .main-ano-content {
+    padding: 12px;
+  }
+  
+  .conteiner-Titulos h1 {
+    font-size: 18px;
+  }
+  
+  .materias-grid {
+    gap: 12px;
+  }
+  
+  .materia-card {
+    padding: 16px;
+    font-size: 14px;
+  }
+  
+  .materia-card span {
+    font-size: 12px;
+  }
 }

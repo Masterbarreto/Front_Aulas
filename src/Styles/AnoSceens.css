@@ -6,15 +6,6 @@
   /* Garante que padding e margin sejam incluídos no tamanho total */
 }
 
-@media screen and (max-width: 1200px) {
-  .main-ano-content {
-    margin-left: 14.5rem;
-    /* Ajusta para a largura do menu lateral */
-    box-sizing: border-box;
-    /* Garante que padding e margin sejam incluídos no tamanho total */
-  }
-}
-
 /* Container do título com a seta */
 .conteiner-Titulos-ano {
   margin-left: 1.5rem;
@@ -87,15 +78,15 @@
 .container-cards {
   width: 100%;
   /* Faz o container ocupar toda a largura disponível */
-  max-width: 1400px;
-  /* Aumenta o limite máximo de largura */
+  max-width: 1200px;
+  /* Reduz o limite máximo de largura */
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  /* Aumenta o tamanho mínimo das colunas */
-  gap: 1.5rem;
-  /* Aumenta o espaçamento entre os cards */
-  padding: 0 2rem;
-  /* Adiciona espaçamento interno nas laterais */
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  /* Otimiza o tamanho mínimo das colunas */
+  gap: 1rem;
+  /* Reduz o espaçamento entre os cards */
+  padding: 0 1rem;
+  /* Reduz o espaçamento interno nas laterais */
   margin: 0 auto;
   /* Centraliza os cards no container */
   box-sizing: border-box;
@@ -144,4 +135,138 @@
   font-weight: 500;
   text-align: center;
   word-wrap: break-word;
+}
+
+/* Resposivel */
+
+@media screen and (max-width: 1200px) {
+  .main-ano-content {
+    margin-left: 14.5rem;
+    box-sizing: border-box;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .comtainer-Titulos-ano {
+    font-size: 0rem;
+    /* Reduz o tamanho do texto */
+  }
+}
+
+/* Responsividade para tablets e celulares */
+@media screen and (max-width: 893px) {
+  .main-ano-content {
+    margin-left: 0;
+    padding: -20px;
+    width: 100%;
+  }
+  
+  .container-primeiro-ano {
+    width: 100%;
+    padding: 0px;
+  }
+  
+  .title-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-bottom: 40px;
+  }
+    .conteiner-Titulos-ano {
+    margin-left: 0;
+    gap: 0.8rem;
+    margin-bottom: 20px;
+    padding: 10px;
+    /* Adiciona padding para aumentar a área clicável */
+    border-radius: 8px;
+    /* Adiciona bordas arredondadas */
+    transition: background-color 0.3s ease;
+    /* Adiciona transição suave */
+    min-height: 44px;
+    /* Garante altura mínima para toque */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .conteiner-Titulos-ano:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Feedback visual no hover */
+  }
+  
+  .conteiner-Titulos-ano:active {
+    background-color: rgba(255, 255, 255, 0.2);
+    /* Feedback visual no toque */
+    transform: scale(0.98);
+    /* Pequena animação de toque */
+  }
+  
+  .conteiner-Titulos-ano h1 {
+    font-size: 1.5rem;
+  }
+  
+  .conteiner-Titulos-ano .arrow-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    /* Impede que o ícone encolha */
+  }
+  
+  .subtitulo-cursos {
+    font-size: 1.2rem;
+    margin-left: 0;
+    text-align: center;
+  }
+    .container-cards {
+    gap: 8px;
+    justify-content: center;
+    padding: 0 5px;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+/* Responsividade para celulares pequenos */
+@media screen and (max-width: 480px) {
+  .main-ano-content {
+    padding: 1px;
+  }
+    .title-container {
+    gap: 12px;
+    flex-direction: row;
+    /* Mantém na horizontal em mobile pequeno */
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  .conteiner-Titulos-ano {
+    padding: 8px;
+    /* Reduz um pouco o padding em telas muito pequenas */
+    min-height: 40px;
+    gap: 0.6rem;
+  }
+  
+  .conteiner-Titulos-ano h1 {
+    font-size: 1.2rem;
+    /* Reduz mais o tamanho da fonte */
+  }
+  
+  .conteiner-Titulos-ano .arrow-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+  
+  .subtitulo-cursos {
+    font-size: 1rem;
+  }
+    .container-cards {
+    gap: 6px;
+    padding: 0 3px;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
 }

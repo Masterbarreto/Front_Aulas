@@ -1,0 +1,149 @@
+/* Estilos para o componente MobileMenu */
+
+/* Container para o título e botão mobile */
+.title-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px; /* Espaço entre botão e título */
+  margin-bottom: 10px;
+}
+
+/* Botão do menu mobile inline com o título */
+.mobile-menu-button-inline {
+  display: none; /* Escondido por padrão */
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+}
+
+/* Estilos para menu mobile */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 110%;
+  height: 120%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: none;
+}
+
+.mobile-menu-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 180px;
+  background-color: #1a1f2e;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  z-index: 1001;
+  border-right: 2px solid #3b82f6;
+}
+
+.mobile-menu-content.active {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.mobile-menu-close {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 1px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.hub-mobile-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 60px);
+  padding: 10px 0 20px 0;
+  position: relative;
+  z-index: 1002;
+  background-color: #1a1f2e;
+}
+
+.mobile-hub-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1002;
+}
+
+.mobile-hub-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 16px;
+  color: #ffffff;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  z-index: 1002;
+  pointer-events: auto;
+  background-color: transparent;
+}
+
+.mobile-hub-item:hover {
+  background-color: #3b82f6;
+}
+
+.mobile-hub-item svg {
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+/* Responsividade para tablets e celulares */
+@media screen and (max-width: 893px) {
+  /* Mostrar botão do menu mobile inline APENAS em telas pequenas */
+  .mobile-menu-button-inline {
+    display: inline-flex !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .mobile-menu-overlay {
+    display: block;
+  }
+
+  .title-container {
+    gap: 15px;
+  }
+}
+
+/* Responsividade para celulares pequenos */
+@media screen and (max-width: 480px) {
+  /* Ajustar tamanho do menu mobile para telas pequenas */
+  .mobile-menu-content {
+    width: 250px;
+  }
+
+  .title-container {
+    gap: 12px;
+  }
+}

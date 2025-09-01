@@ -22,3 +22,54 @@
     transform: scale(1.05);
     cursor: pointer;
 }
+
+/* Responsividade para tablets */
+@media screen and (max-width: 1054px) {
+    .ano-card {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+/* Responsividade para celulares */
+@media screen and (max-width: 768px) {
+    .ano-card {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+/* Responsividade para celulares pequenos */
+@media screen and (max-width: 480px) {
+    .ano-card {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+/* Responsividade para ícones */
+.ano-card svg {
+    width: 42px;
+    height: 42px;
+}
+
+@media screen and (max-width: 1054px) {
+    .ano-card svg {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .ano-card svg {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .ano-card svg {
+        width: 24px;
+        height: 24px;
+    }
+}

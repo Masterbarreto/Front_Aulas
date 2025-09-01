@@ -212,3 +212,76 @@ button:disabled:hover {
 .container-editar-aula::-webkit-scrollbar-thumb:hover {
     background: #666;
 }
+
+/* Responsividade para tablets e celulares */
+@media screen and (max-width: 893px) {
+  .container-editar-aula {
+    margin: 10px auto;
+    padding: 20px;
+    width: calc(100% - 20px);
+    max-width: none;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0;
+  }
+  
+  .title-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    font-size: 1rem;
+    margin-bottom: 5px;
+  }
+  
+  input,
+  textarea {
+    padding: 12px;
+    font-size: 1rem;
+    min-height: 40px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+/* Responsividade para celulares pequenos */
+@media screen and (max-width: 480px) {
+  .container-editar-aula {
+    margin: 5px auto;
+    padding: 15px;
+    width: calc(100% - 10px);
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  .title-container {
+    gap: 12px;
+  }
+  
+  input,
+  textarea {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}

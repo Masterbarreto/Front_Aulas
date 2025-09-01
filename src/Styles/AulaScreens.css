@@ -4,7 +4,7 @@
     color: #fff;
     font-family: 'Inter', Arial, sans-serif;
     display: flex;
-    min-width: 1200px; /* Garante largura mínima */
+    width: 100%;
 }
 
 .aula-main-bg {
@@ -12,9 +12,9 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background: #181A20;
+    width: 100%;
     margin-left: 240px;
-    overflow-x: auto; /* Permite scroll horizontal se necessário */
-    min-width: 960px; /* Largura mínima para o conteúdo principal */
 }
 
 .aula-sidebar {
@@ -36,8 +36,7 @@
     background: #23242a;
     border-radius: 16px;
     padding: 16px;
-    min-width: 900px; /* Largura mínima fixa */
-    width: calc(100% - 32px); /* Largura total menos o padding */
+    width: calc(100% - 32px);
     min-height: 400px;
     margin: 16px;
     box-sizing: border-box;
@@ -52,7 +51,6 @@
     gap: 12px;
     width: 100%;
     align-items: flex-start;
-    min-width: 860px; /* Garante que o conteúdo mantenha largura mínima */
 }
 
 .aula-section {
@@ -61,7 +59,6 @@
     padding: 16px;
     flex: 2;
     min-height: 250px;
-    min-width: 500px; /* Largura mínima fixa para a seção principal */
     display: flex;
     flex-direction: column;
 }
@@ -121,8 +118,7 @@
     border-radius: 12px;
     padding: 16px;
     flex: 1;
-    min-width: 320px; /* Largura mínima fixa para o painel lateral */
-    width: 320px; /* Largura fixa */
+    min-width: 300px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -157,29 +153,9 @@
 .aula-details-links {
     display: flex;
     flex-direction: column;
-    gap: -30px;
+    gap: 12px;
     margin-bottom: 24px;
     width: 100%;
-}
-
-.aula-details-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 16px;
-    padding: 18px 60px;
-    color: #fff;
-    font-size: 1.2rem;
-    margin-bottom: 58px;
-    border: none;
-    width: 100%;
-    min-width: 120px;
-    min-height: 40px;
-    text-align: left;
-    cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 12px 0 #0008;
-    gap: 18px;
 }
 
 .aula-details-link {
@@ -195,6 +171,8 @@
     transition: background 0.2s;
     cursor: pointer;
     border: none;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .aula-details-link:hover {
@@ -213,7 +191,7 @@
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 8px 0;
+    padding: 12px 0;
     font-weight: 700;
     font-size: 14px;
     cursor: pointer;
@@ -241,7 +219,7 @@
     background: #2D2E36;
     border-radius: 8px;
     padding: 12px;
-    margin-bottom: 1px;
+    margin-bottom: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
@@ -277,7 +255,7 @@
     gap: 4px;
     margin-top: 48px;
     margin-bottom: 24px;
-    margin-left: 10px;
+    margin-left: 16px;
 }
 
 .aulasH1 {
@@ -296,4 +274,257 @@
     font-weight: 400;
     margin: 0;
     margin-left: 32px;
+}
+
+/* Responsividade */
+
+/* Desktop - ocultar menu mobile */
+@media (min-width: 894px) {
+    .mobile-menu-button-inline {
+        display: none !important;
+    }
+    
+    .mobile-menu-overlay {
+        display: none !important;
+    }
+}
+
+/* Tablet */
+@media (max-width: 893px) and (min-width: 768px) {
+    .aula-main-bg {
+        margin-left: 0;
+    }
+    
+    .aula-content {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .aula-section {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .aula-details {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .aulasH1 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .aula-main-bg {
+        margin-left: 0 !important;
+        min-width: auto;
+        width: 100%;
+        background: #181A20;
+    }
+    
+    .aulasTitulos {
+        margin: 16px 12px !important;
+        margin-top: 16px !important;
+    }
+      .aulasH1 {
+        font-size: 1.5rem !important;
+        line-height: 1.2;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+    }
+    
+    /* Melhorar botão de voltar no mobile */
+    .aulasH1 svg {
+        min-width: 44px !important;
+        min-height: 44px !important;
+        padding: 6px;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+        cursor: pointer !important;
+    }
+    
+    .aulasH1 svg:hover,
+    .aulasH1 svg:active {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+      .aula-content-container {
+        margin: 8px !important;
+        padding: 12px !important;
+        width: calc(100% - 16px) !important;
+        border-radius: 12px;
+    }
+    
+    .aula-content {
+        gap: 12px;
+        flex-direction: column;
+    }
+    
+    .aula-section {
+        padding: 12px;
+        min-height: auto;
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .aula-details {
+        padding: 12px;
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .aulasSubtitulo {
+        font-size: 0.9rem;
+        margin-left: 40px;
+    }
+    
+    .aula-content {
+        gap: 12px;
+    }
+    
+    .aula-section {
+        padding: 12px;
+        min-height: auto;
+    }
+    
+    .aula-details {
+        padding: 12px;
+    }
+    
+    .aulasTitulos {
+        margin: 16px 12px;
+    }
+    
+    .aulasH1 {
+        font-size: 1.5rem;
+        line-height: 1.2;
+    }
+    
+    .aulasSubtitulo {
+        font-size: 0.9rem;
+        margin-left: 24px;
+    }
+    
+    .aula-section-title {
+        font-size: 13px;
+    }
+    
+    .aula-section-desc-title {
+        font-size: 15px;
+    }
+    
+    .aula-section-desc {
+        font-size: 14px;
+    }
+    
+    .aula-details-title {
+        font-size: 13px;
+    }
+    
+    .aula-details-btn {
+        padding: 14px 0;
+        font-size: 16px;
+    }
+    
+    .link-container {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .link-header {
+        font-size: 1rem;
+    }
+    
+    .link-body {
+        font-size: 0.8rem;
+    }
+    
+    /* Ocultar hub em mobile */
+    .hub-home {
+        display: none !important;
+    }
+}
+
+/* Mobile pequeno */
+@media (max-width: 480px) {
+    .aula-content-container {
+        margin: 4px;
+        padding: 8px;
+        width: calc(100% - 8px);
+    }
+    
+    .aulasTitulos {
+        margin: 12px 8px;
+    }
+    
+    .aulasH1 {
+        font-size: 1.3rem;
+    }
+    
+    /* Área de toque ainda maior para mobile pequeno */
+    .aulasH1 svg {
+        min-width: 48px !important;
+        min-height: 48px !important;
+        padding: 8px;
+    }
+    
+    .aulasSubtitulo {
+        font-size: 0.8rem;
+        margin-left: 56px; /* Ajustado para alinhar com o texto após o ícone maior */
+    }
+    
+    .aula-section {
+        padding: 8px;
+    }
+    
+    .aula-details {
+        padding: 8px;
+    }
+    
+    .aula-details-btn {
+        padding: 12px 0;
+        font-size: 15px;
+    }
+      .aula-details-link {
+        padding: 10px 12px;
+    }
+}
+
+/* Ajustes específicos para tablets e mobile */
+@media (max-width: 893px) {
+    .aula-main-bg {
+        margin-left: 0 !important;
+    }
+    
+    .aulasTitulos {
+        margin: 16px 12px !important;
+        margin-top: 16px !important;
+    }
+    
+    .aula-content {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .aula-section {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .aula-details {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .aulasH1 {
+        font-size: 1.8rem;
+    }
+    
+    /* Ocultar hub em tablets e mobile */
+    .hub-home {
+        display: none !important;
+    }
 }

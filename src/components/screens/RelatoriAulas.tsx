@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Hub } from '../ui/hub';
 import { AulaRelatorioRow } from "../ui/AulaRelatorioRow";
+import { MobileMenu } from "../ui/MobileMenu";
 import "../../Styles/RelatorioAulas.css";
+import "../../Styles/MobileMenu.css";
 
 export default function RelatorioAulas() {
     const [aulas, setAulas] = useState<any[]>([]);
@@ -30,13 +32,13 @@ export default function RelatorioAulas() {
         const data = new Date(dataString);
         if (isNaN(data.getTime())) return "";
         return data.toLocaleDateString('pt-BR');
-    }
-
-    return (
+    }    return (
         <>
-            <Hub />
-            <div className="container-relatorio">
-                <h1>Relatório de Aulas Concluídas</h1>
+            <Hub className="hub-relatorio" />
+            <div className="container-relatorio">                <div className="title-container">
+                    <MobileMenu />
+                    <h1>Relatório de Aulas Concluídas</h1>
+                </div>
                 <div className="Container-AulasRelatorio">
                     <table className="relatorio-tabela">
                         <thead>

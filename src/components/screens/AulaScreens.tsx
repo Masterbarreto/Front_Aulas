@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Hub } from '../ui/hub';
+import { MobileMenu } from '../ui/MobileMenu';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, FileText, Download, Link2 } from 'lucide-react';
+import { ArrowLeft, FileText } from 'lucide-react';
 import '../../Styles/AulaScreens.css';
 import axios from 'axios';
 
@@ -24,6 +25,8 @@ interface Aula {
   concluida: boolean;
   arquivos: Arquivo[];
   arquivosIds: string[];
+  professor?: string;
+  createdAt?: string;
 }
 
 const AulaScreens: React.FC = () => {
@@ -52,21 +55,28 @@ const AulaScreens: React.FC = () => {
             setLoading(false);
         });
   }, [id]);
-
   if (loading) return <div style={{ color: '#fff' }}>Carregando...</div>;
   if (!aula || !aula.Materia) return <div style={{ color: '#fff' }}>Aula não encontrada.</div>;
 
-   console.log("Valor de createdAt:", aula.createdAt)
-  return (
+  console.log("Valor de createdAt:", aula.createdAt);
+    return (
     <div className="aula-main-bg">
+      <MobileMenu />
       <Hub />
-      <div className="aulasTitulos">
-        <h1 className="aulasH1">
+      <div className="aulasTitulos">        <h1 className="aulasH1">
           <ArrowLeft
             size={32}
             color="#fff"
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate(-1)} // Voltar para a página anterior
+            style={{ 
+              cursor: "pointer",
+              minWidth: "44px",
+              minHeight: "44px", 
+              padding: "6px",
+              borderRadius: "8px",
+              transition: "background-color 0.2s"
+            }}
+            onClick={() => navigate(-1)}
+            onTouchStart={() => {}} // Adiciona suporte a touch
           />
           Aula de {aula.titulo.charAt(0).toUpperCase() + aula.titulo.slice(1).toLowerCase()}
         </h1>
@@ -270,6 +280,10 @@ const AulaScreens: React.FC = () => {
             >
               {aula.concluida ? "Desconcluir Aula" : "Concluir Aula"}
             </button>
+
+              
+
+
           </div>
         </div>
       </div>

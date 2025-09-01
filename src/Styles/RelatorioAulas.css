@@ -205,3 +205,85 @@ tr:hover {
   margin-top: -17px;
   position: relative;
 }
+
+/* Responsividade para tablets e celulares */
+@media screen and (max-width: 893px) {
+  .container-relatorio {
+    position: static;
+    left: auto;
+    top: auto;
+    margin: 10px auto;
+    padding: 20px 10px;
+    max-width: calc(100% - 20px);
+    width: 100%;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0;
+    margin-left: 0;
+  }
+  
+  .title-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 0 10px;
+  }
+  
+  .Container-AulasRelatorio {
+    width: 100%;
+    height: auto;
+    min-height: 400px;
+    margin: 0;
+    margin-left: 0;
+    padding: 15px;
+    border-radius: 15px;
+  }
+  
+  .relatorio-tabela {
+    font-size: 0.9rem;
+  }
+  
+  .relatorio-tabela th,
+  .relatorio-tabela td {
+    padding: 8px 4px;
+  }
+  
+  .relatorio-tabela th:nth-child(n+3),
+  .relatorio-tabela td:nth-child(n+3) {
+    display: none; /* Ocultar colunas extras em mobile */
+  }
+}
+
+/* Responsividade para celulares pequenos */
+@media screen and (max-width: 480px) {
+  .container-relatorio {
+    margin: 5px auto;
+    padding: 15px 5px;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  .title-container {
+    gap: 12px;
+    padding: 0 5px;
+  }
+  
+  .Container-AulasRelatorio {
+    padding: 10px;
+  }
+  
+  .relatorio-tabela {
+    font-size: 0.8rem;
+  }
+  
+  .relatorio-tabela th,
+  .relatorio-tabela td {
+    padding: 6px 2px;
+  }
+}

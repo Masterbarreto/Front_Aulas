@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { HubItens } from "./hub_itens";
 import { LayoutDashboard, ArrowUpToLine, SquareLibrary, Building2, Users , Power } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import "../../Styles/hub.css";
 
-export function Hub() {
+interface HubProps {
+    className?: string;
+}
+
+export function Hub({ className }: HubProps) {
     const navigate = useNavigate();
     const [cargo, setCargo] = useState<string | null>(null);
 
@@ -23,10 +27,8 @@ export function Hub() {
     // Verifica se o usuário é admin ou Professor
     const isPrivileged = cargo === "admin" || cargo === "Professor";
 
-    console.log("Cargo do usuário:", cargo);
-
-    return (
-        <div className="sidebar">
+    console.log("Cargo do usuário:", cargo);    return (
+        <div className={`sidebar ${className || ''}`}>
             <div className="container-hub">
                 {/* Dashboard: apenas admin ou Professor */}
                 {isPrivileged && (

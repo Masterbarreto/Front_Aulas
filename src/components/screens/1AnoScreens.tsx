@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from 'lucide-react';
 import { Hub } from "../ui/hub";
 import { CursoCards } from "../ui/CursoCards";
+import { MobileMenu } from "../ui/MobileMenu";
 
 import imageIot from "../../assets/imageIot.png";
 import imageMmd from "../../assets/imageMmd.png";
@@ -12,6 +13,7 @@ import imageCdd from "../../assets/imageCdd.png";
 import imageIA from "../../assets/imageIA.png"
 
 import "../../Styles/AnoSceens.css";
+import "../../Styles/MobileMenu.css";
 
 export function YearScreen() {
   const { ano } = useParams();
@@ -26,22 +28,36 @@ export function YearScreen() {
     { image: imageMkt, title: "MKT – Marketing", id: "mkt" },
     { image: imageIA, title: "IA – Inteligência Artificial", id: "ia" },
   ];
-
   const handleCursoClick = (cursoId: string) => {
     navigate(`/${ano}/${cursoId}/materias`);
+  };
+
+  const handleBackNavigation = () => {
+    navigate(-1);
   };
 
   return (
     <>
       <Hub />
       <div className="container-primeiro-ano">
-        <div className="main-ano-content">
-          <div
-            className="conteiner-Titulos-ano"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeft className="arrow-icon" color="#fff" />
-            <h1>Turmas do {ano} – Senac</h1>
+        <div className="main-ano-content">          <div className="title-container">
+            <MobileMenu />            <div
+              className="conteiner-Titulos-ano"
+              onClick={handleBackNavigation}
+              onTouchStart={() => {}} 
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleBackNavigation();
+                }
+              }}
+              aria-label="Voltar para página anterior"
+            >
+              <ArrowLeft className="arrow-icon" color="#fff" />
+              <h1>Turmas do {ano} – Senac</h1>
+            </div>
           </div>
           <div className="subtitulo-cursos">
             <span>Cursos Técnicos:</span>
