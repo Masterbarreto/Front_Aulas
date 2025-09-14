@@ -42,9 +42,7 @@ export default function MateriasScreen() {
   ];
 
   const handleMateriaClick = (materiaId: string) => {
-    // Navigate to the next page, you can define the route later
-    console.log(`/${year}/${course}/${materiaId}/aulas`);
-    // router.push(`/${year}/${course}/${materiaId}/aulas`);
+    router.push(`/teacher/dashboard/courses/${year}/${course}/${materiaId}`);
   };
 
   return (
