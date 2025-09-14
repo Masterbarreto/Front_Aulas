@@ -20,3 +20,10 @@ export interface Aluno {
   updatedAt: string;
   __v: number;
 }
+
+export interface AulaConcluida {
+  _id: string;
+  Materia: string;
+  professor: string;
+  data: string;
+}
