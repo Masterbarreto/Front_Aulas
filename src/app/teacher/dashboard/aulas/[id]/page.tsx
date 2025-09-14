@@ -72,10 +72,10 @@ export default function AulaPage() {
         setAula(aulaAtual);
         try {
           const res = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas`);
-          const todasAsAulas = await res.json();
+          const todasAsAulas: AulaCompleta[] = await res.json();
           if (Array.isArray(todasAsAulas)) {
             const versoes = todasAsAulas.filter(
-              (a: AulaCompleta) => a.titulo === aulaAtual.titulo && a.Materia === aulaAtual.Materia
+              (a) => a.titulo === aulaAtual.titulo && a.Materia === aulaAtual.Materia && a.curso === aulaAtual.curso && a.anoEscolar === aulaAtual.anoEscolar
             );
             setTodasVersoesAula(versoes);
           }
