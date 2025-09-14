@@ -20,14 +20,17 @@ async function getAula(id: string): Promise<Aula | null> {
     // Garante que LinkAula seja sempre um array
     if (typeof data.LinkAula === 'string' && data.LinkAula.trim()) {
       try {
+        // Tenta fazer o parse da string JSON
         const parsedLinks = JSON.parse(data.LinkAula);
         data.LinkAula = Array.isArray(parsedLinks) ? parsedLinks : [];
       } catch (error) {
         console.error('Erro ao parsear LinkAula:', error);
-        data.LinkAula = []; // Define como array vazio em caso de erro
+        // Se o parse falhar, define como array vazio
+        data.LinkAula = [];
       }
     } else if (!Array.isArray(data.LinkAula)) {
-      data.LinkAula = []; // Define como array vazio se não for string nem array
+      // Se não for string nem array, define como array vazio
+      data.LinkAula = [];
     }
     return data;
   } catch (error) {
@@ -40,6 +43,7 @@ function formatarData(dataString: string | undefined) {
   if (!dataString) return 'Não informado';
   const data = new Date(dataString);
   if (isNaN(data.getTime())) return 'Data inválida';
+  // Adiciona timeZone: 'UTC' para evitar problemas de fuso horário
   return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
 }
 
