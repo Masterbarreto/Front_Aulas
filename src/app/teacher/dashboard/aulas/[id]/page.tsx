@@ -72,7 +72,6 @@ export default function AulaPage() {
       if (aulaAtual) {
         setAula(aulaAtual);
       }
-      // Busca todas as aulas para encontrar a correta na hora de concluir
       try {
         const res = await fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas');
         const data = await res.json();
@@ -93,7 +92,6 @@ export default function AulaPage() {
 
     if (!aula) return;
 
-    // Lógica para encontrar a aula correta
     const aulaParaConcluir = todasAulas.find(
       (a) =>
         a.titulo === aula.titulo &&
@@ -103,7 +101,7 @@ export default function AulaPage() {
     );
 
     if (!aulaParaConcluir) {
-      alert(`Nenhuma aula encontrada para a turma "${turma}". Verifique o nome da turma.`);
+      alert(`Nenhuma aula encontrada para a turma "${turma}". Verifique o nome da turma e tente novamente.`);
       return;
     }
 
