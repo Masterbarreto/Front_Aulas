@@ -132,21 +132,58 @@ export default function AulaPage({ params }: { params: { id: string } }) {
 
             <h3 className="font-semibold mb-2">Links e Arquivos</h3>
             <div className="flex flex-col gap-2">
-                {Array.isArray(aula.LinkAula) && aula.LinkAula.length > 0 ? (
-                    aula.LinkAula.map((link: any, idx: number) => (
-                        <a
-                        key={`link-${idx}`}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-400 hover:underline break-all"
-                        >
-                        {link.name || link.url}
-                        </a>
-                    ))
-                ) : (
-                    <p className="text-gray-400 text-xs">Nenhum link disponível</p>
-                )}
+              {/* Arquivos para download */}
+              {Array.isArray(aula.arquivos) && aula.arquivos.length > 0 ? (
+                aula.arquivos.map((arq: any, idx: number) => (
+                  <button
+                    key={`arquivo-${idx}`}
+                    className="flex items-center justify-between w-full text-left p-2 rounded-md hover:bg-gray-700"
+                    onClick={() => {
+                      const arquivoId = aula.arquivosIds[idx];
+                      if (arquivoId) {
+                        fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${arquivoId}/pdf`)
+                          .then(res => res.blob())
+                          .then(blob => {
+                            const urlBlob = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = urlBlob;
+                            a.download = arq.nome;
+                            a.click();
+                            window.URL.revokeObjectURL(urlBlob);
+                          });
+                      }
+                    }}
+                  >
+                    <span className="flex items-center gap-2 text-blue-400">
+                      <FileText size={20} />
+                      {arq.nome}
+                    </span>
+                    <svg width="20" height="20" fill="#fff"><path d="M5 13l4 4 4-4M12 17V7m-4 10V7"/></svg>
+                  </button>
+                ))
+              ) : (
+                <p className="text-gray-400 text-xs">Nenhum arquivo disponível</p>
+              )}
+
+              {/* Links externos */}
+              {Array.isArray(aula.LinkAula) && aula.LinkAula.length > 0 ? (
+                  aula.LinkAula.map((link: any, idx: number) => (
+                      <div
+                          key={`link-${idx}`}
+                          className="cursor-pointer p-3 bg-[#2D2E36] rounded-lg mb-3 flex flex-col gap-2 hover:bg-gray-700"
+                          onClick={() => window.open(link.url, "_blank")}
+                      >
+                          <div className="font-bold text-white">
+                              {link.name}
+                          </div>
+                          <div className="text-gray-400 text-xs break-all">
+                              {link.url}
+                          </div>
+                      </div>
+                  ))
+              ) : (
+                !aula.arquivos || aula.arquivos.length === 0 && <p className="text-gray-400 text-xs">Nenhum link ou arquivo disponível</p>
+              )}
             </div>
 
             <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-4">
