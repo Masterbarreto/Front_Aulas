@@ -6,6 +6,7 @@ import {
   FileText,
   LogOut,
   GraduationCap,
+  UserCog,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -47,12 +48,20 @@ export default function DashboardLayout({
           ))}
         </nav>
         <div className="mt-auto">
-          <Link href="/login">
-            <Button variant="ghost" className="w-full justify-start gap-3">
-              <LogOut className="h-5 w-5" />
-              Sair
-            </Button>
-          </Link>
+          <div className="flex flex-col gap-2">
+            <Link href="/login">
+              <Button variant="ghost" className="w-full justify-start gap-3">
+                <UserCog className="h-5 w-5" />
+                Login Administrativo
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button variant="ghost" className="w-full justify-start gap-3">
+                <LogOut className="h-5 w-5" />
+                Sair
+              </Button>
+            </Link>
+          </div>
         </div>
       </aside>
       <div className="flex flex-1 flex-col">
