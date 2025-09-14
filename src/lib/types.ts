@@ -26,4 +26,6 @@ export interface AulaConcluida {
   Materia: string;
   professor: string;
   data: string;
+  DayAula?: string; // Optional
+  dataAula?: string; // Optional
 }

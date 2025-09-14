@@ -20,14 +20,28 @@ export default function RelatorioPage() {
       .catch(() => setAulas([]));
   }, []);
 
+  function getAulaDate(aula: AulaConcluida): string {
+    return aula.data || aula.DayAula || aula.dataAula || '';
+  }
+
   function formatarData(dataString: string) {
-    if (!dataString) return '';
-    // Se vier no formato "dd/mm/yyyy hh:mm", pega só a data
-    if (dataString.includes('/')) return dataString.split(' ')[0];
-    // Se vier ISO, formata
+    if (!dataString) return 'N/A';
+
+    // Trata o formato "dd/mm/yyyy hh:mm:ss"
+    if (dataString.includes('/')) {
+      return dataString.split(' ')[0];
+    }
+
+    // Tenta converter de ISO 8601 ou outros formatos reconhecíveis
     const data = new Date(dataString);
-    if (isNaN(data.getTime())) return '';
-    return data.toLocaleDateString('pt-BR');
+    if (!isNaN(data.getTime())) {
+      // Adiciona o fuso horário para corrigir a data
+      return data.toLocaleDateString('pt-BR', {
+        timeZone: 'UTC',
+      });
+    }
+
+    return 'Data inválida';
   }
 
   return (
@@ -53,7 +67,7 @@ export default function RelatorioPage() {
                 <TableCell>
                   <span className="text-green-400">Concluída</span>
                 </TableCell>
-                <TableCell>{formatarData(aula.data)}</TableCell>
+                <TableCell>{formatarData(getAulaDate(aula))}</TableCell>
                 <TableCell>{aula.professor}</TableCell>
               </TableRow>
             ))}
