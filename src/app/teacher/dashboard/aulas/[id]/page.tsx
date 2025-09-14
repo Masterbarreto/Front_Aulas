@@ -3,6 +3,8 @@
 import { ArrowLeft, FileText, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
@@ -54,30 +56,64 @@ function formatarData(dataString: string | undefined) {
 
 export default function AulaPage() {
   const [aula, setAula] = useState<AulaCompleta | null>(null);
+  const [todasAulas, setTodasAulas] = useState<AulaCompleta[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [professor, setProfessor] = useState('');
+  const [turma, setTurma] = useState('');
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
-  
+
   useEffect(() => {
     if (!id) return;
+
     async function fetchData() {
       const aulaAtual = await getAula(id);
       if (aulaAtual) {
         setAula(aulaAtual);
       }
+      // Busca todas as aulas para encontrar a correta na hora de concluir
+      try {
+        const res = await fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas');
+        const data = await res.json();
+        setTodasAulas(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Erro ao buscar todas as aulas:', error);
+        setTodasAulas([]);
+      }
     }
     fetchData();
   }, [id]);
 
-
   const handleConcluirClick = async () => {
-    if (!aula?._id) return;
+    if (!professor || !turma) {
+      alert('Por favor, preencha o nome do professor e a turma.');
+      return;
+    }
+
+    if (!aula) return;
+
+    // Lógica para encontrar a aula correta
+    const aulaParaConcluir = todasAulas.find(
+      (a) =>
+        a.titulo === aula.titulo &&
+        a.curso === aula.curso &&
+        a.anoEscolar === aula.anoEscolar &&
+        a.Turma.trim().toLowerCase() === turma.trim().toLowerCase()
+    );
+
+    if (!aulaParaConcluir) {
+      alert(`Nenhuma aula encontrada para a turma "${turma}". Verifique o nome da turma.`);
+      return;
+    }
+
+    const idDaAulaCorreta = aulaParaConcluir._id;
 
     try {
-      const response = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/concluir`, {
+      const response = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${idDaAulaCorreta}/concluir`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ concluida: true }), 
+        body: JSON.stringify({ concluida: true, professor, turma }), 
       });
 
       if (!response.ok) {
@@ -86,7 +122,7 @@ export default function AulaPage() {
       }
 
       alert('Aula concluída com sucesso!');
-      setAula({ ...aula, concluida: true });
+      setShowModal(false);
       router.back();
     } catch (err) {
       console.error('Erro ao concluir aula:', err);
@@ -237,12 +273,66 @@ export default function AulaPage() {
               )}
             </div>
             
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-4" onClick={() => aula.concluida ? handleDesconcluirClick() : handleConcluirClick()}>
+            <Button
+              className="w-full bg-blue-600 hover:bg-blue-700 mt-4"
+              onClick={() => (aula.concluida ? handleDesconcluirClick() : setShowModal(true))}
+            >
               {aula.concluida ? 'Desconcluir Aula' : 'Concluir Aula'}
             </Button>
           </CardContent>
         </Card>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-[#1C1C24] p-8 rounded-lg shadow-lg w-full max-w-md relative">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+            >
+              <X size={24} />
+            </button>
+            <h2 className="text-2xl font-bold mb-2">Concluir Aula</h2>
+            <p className="text-gray-400 mb-6">Preencha essas informações para Concluir a Aula</p>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="professor-name" className="text-sm font-medium text-gray-300">
+                  Nome de Quem Deu a Aula
+                </Label>
+                <Input
+                  id="professor-name"
+                  type="text"
+                  placeholder="Professor Exemplo"
+                  value={professor}
+                  onChange={(e) => setProfessor(e.target.value)}
+                  className="bg-gray-800 border-gray-700 mt-2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="turma-name" className="text-sm font-medium text-gray-300">
+                  Turma Que a Aula foi dada
+                </Label>
+                <Input
+                  id="turma-name"
+                  type="text"
+                  placeholder="Ex: TI-1"
+                  value={turma}
+                  onChange={(e) => setTurma(e.target.value)}
+                  className="bg-gray-800 border-gray-700 mt-2"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-4 mt-8">
+              <Button variant="ghost" onClick={() => setShowModal(false)}>
+                Fechar
+              </Button>
+              <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleConcluirClick}>
+                Salvar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
