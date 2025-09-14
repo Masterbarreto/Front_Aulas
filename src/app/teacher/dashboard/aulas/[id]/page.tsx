@@ -56,27 +56,53 @@ function formatarData(dataString: string | undefined) {
 
 export default function AulaPage({ params }: { params: { id: string } }) {
   const [aula, setAula] = useState<AulaCompleta | null>(null);
+  const [todasVersoesAula, setTodasVersoesAula] = useState<AulaCompleta[]>([]);
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [professor, setProfessor] = useState('');
   const [turma, setTurma] = useState('');
 
   useEffect(() => {
-    getAula(params.id).then(setAula);
+    async function fetchData() {
+      const aulaAtual = await getAula(params.id);
+      if (aulaAtual) {
+        setAula(aulaAtual);
+        // Busca todas as aulas para encontrar duplicatas
+        const res = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas`);
+        const todasAsAulas = await res.json();
+        if (Array.isArray(todasAsAulas)) {
+          const versoes = todasAsAulas.filter(
+            (a: AulaCompleta) => a.titulo === aulaAtual.titulo && a.Materia === aulaAtual.Materia
+          );
+          setTodasVersoesAula(versoes);
+        }
+      }
+    }
+    fetchData();
   }, [params.id]);
 
+
   const handleConcluirClick = async () => {
-    if (!aula?._id) return;
+    // Encontra a aula correta com base na turma inserida
+    const aulaParaConcluir = todasVersoesAula.find(a => a.Turma === turma);
+    const idDaAulaCorreta = aulaParaConcluir?._id;
+
+    if (!idDaAulaCorreta) {
+      alert(`Aula para a turma ${turma} não foi encontrada.`);
+      return;
+    }
+
     try {
-      await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/concluir`, {
+      await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${idDaAulaCorreta}/concluir`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ concluida: true, professor, turma }), 
       });
       alert('Aula concluída com sucesso!');
       
-      // Apenas atualiza o estado visual, o backend que lida com a lógica
-      setAula({ ...aula, concluida: true, professor: professor });
+      if(aula) {
+        setAula({ ...aula, concluida: true, professor: professor });
+      }
       setShowModal(false);
       router.back();
     } catch (err) {
@@ -86,6 +112,8 @@ export default function AulaPage({ params }: { params: { id: string } }) {
   };
 
   const handleDesconcluirClick = async () => {
+    // Para desconcluir, pode ser necessário uma lógica similar se diferentes turmas
+    // podem ser desconcluídas individualmente. Por simplicidade, vamos usar o ID da URL.
     if (!aula?._id) return;
     try {
       await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/desconcluir`, {
