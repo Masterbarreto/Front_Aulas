@@ -2,12 +2,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Upload,
-  LogOut,
+  Users,
   LayoutDashboard,
-  FileText,
-  Wrench,
   GraduationCap,
+  Upload,
+  Wrench,
+  FileText,
+  LogOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -20,6 +21,12 @@ export default function DashboardLayout({
 
   const navItems = [
     { href: '/teacher/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    {
+      href: '/teacher/dashboard/turmas',
+      icon: GraduationCap,
+      label: 'Turmas',
+    },
+    { href: '/teacher/dashboard/alunos', icon: Users, label: 'Alunos' },
     {
       href: '/teacher/dashboard/upload',
       icon: Upload,
@@ -41,8 +48,8 @@ export default function DashboardLayout({
     <div className="flex min-h-screen w-full bg-[#1C1C24] text-white">
       <aside className="w-64 flex-col border-r border-gray-800 bg-[#111115] p-4 hidden md:flex">
         <div className="mb-8 flex items-center gap-2 p-4">
-          <LayoutDashboard className="h-8 w-8 text-white" />
-          <h1 className="text-xl font-bold">Dashboard</h1>
+          <GraduationCap className="h-8 w-8 text-white" />
+          <h1 className="text-xl font-bold">Subaulas</h1>
         </div>
         <nav className="flex flex-col gap-2">
           {navItems.map((item) => (

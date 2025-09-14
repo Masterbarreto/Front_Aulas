@@ -9,3 +9,14 @@ export interface Turma {
   updatedAt: string;
   __v: number;
 }
+
+export interface Aluno {
+  _id: string;
+  nome: string;
+  idade: number;
+  turma_id: string;
+  data_nascimento: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
