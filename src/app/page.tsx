@@ -1,19 +1,9 @@
-import { Header } from '@/components/header';
-import { HistoryTable } from '@/components/history-table';
-import { PendingRequestsTable } from '@/components/pending-requests-table';
-import { NewRequestButton } from '@/components/new-request-button';
+import { LoginForm } from '@/components/login-form';
 
-export default function Home() {
+export default function LoginPage() {
   return (
-    <div className="min-h-screen w-full bg-background text-foreground">
-      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/95 px-4 shadow-sm backdrop-blur-sm md:px-6">
-        <Header />
-        <NewRequestButton />
-      </header>
-      <main className="container mx-auto flex flex-1 flex-col gap-8 p-4 md:p-8">
-        <PendingRequestsTable />
-        <HistoryTable />
-      </main>
-    </div>
+    <main className="flex h-screen w-full items-center justify-center bg-gray-950 p-4">
+      <LoginForm />
+    </main>
   );
 }
