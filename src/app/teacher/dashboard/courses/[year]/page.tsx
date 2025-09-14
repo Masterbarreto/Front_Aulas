@@ -19,11 +19,10 @@ export default function YearScreen() {
   const router = useRouter();
   const params = useParams();
   const year = params.year as string;
+  const courseId = params.course as string;
 
   const handleCursoClick = (cursoId: string) => {
-    // Navigate to the next page, you can define the route later
-    // router.push(`/${year}/${cursoId}/materias`);
-    console.log(`Navigating to ${year} - ${cursoId}`);
+    router.push(`/teacher/dashboard/courses/${year}/${cursoId}`);
   };
 
   const getImageData = (imageId: string) => {
