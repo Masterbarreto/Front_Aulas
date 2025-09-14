@@ -48,6 +48,12 @@ export default function AulasListPage() {
       normalize(aula.Materia) === normalize(materia as string)
   );
 
+  const aulasUnicas = aulasFiltradas.filter((aula, index, self) =>
+    index === self.findIndex((a) => (
+      a.titulo === aula.titulo && a.DesAula === aula.DesAula
+    ))
+  );
+
   const handleClick = (aula: Aula) => {
     const id = aula.aulaId || aula._id;
     router.push(`/teacher/dashboard/aulas/${id}`);
@@ -64,8 +70,8 @@ export default function AulasListPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {aulasFiltradas.length > 0 ? (
-          aulasFiltradas.map((aula) => (
+        {aulasUnicas.length > 0 ? (
+          aulasUnicas.map((aula) => (
             <Card
               key={aula._id}
               className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer flex flex-col justify-between"
