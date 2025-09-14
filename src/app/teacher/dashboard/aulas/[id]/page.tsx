@@ -61,9 +61,9 @@ export default function AulaPage({ params }: { params: { id: string } }) {
   const [showModal, setShowModal] = useState(false);
   const [professor, setProfessor] = useState('');
   const [turma, setTurma] = useState('');
+  const id = params.id;
 
   useEffect(() => {
-    const id = params.id;
     if (!id) return;
     async function fetchData() {
       const aulaAtual = await getAula(id);
@@ -84,7 +84,7 @@ export default function AulaPage({ params }: { params: { id: string } }) {
       }
     }
     fetchData();
-  }, [params.id]);
+  }, [id]);
 
 
   const handleConcluirClick = async () => {
