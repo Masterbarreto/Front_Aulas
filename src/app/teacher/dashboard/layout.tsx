@@ -2,12 +2,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Bell,
-  Book,
-  Home,
+  Upload,
   LogOut,
-  User,
-  Users,
+  LayoutDashboard,
+  FileText,
+  Wrench,
+  GraduationCap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -19,18 +19,30 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   const navItems = [
-    { href: '/teacher/dashboard', icon: Home, label: 'Início' },
-    { href: '/teacher/dashboard/turmas', icon: Users, label: 'Turmas' },
-    { href: '/teacher/dashboard/alunos', icon: User, label: 'Alunos' },
-    { href: '/teacher/dashboard/materias', icon: Book, label: 'Matérias' },
+    { href: '/teacher/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    {
+      href: '/teacher/dashboard/upload',
+      icon: Upload,
+      label: 'Upload de Atividades',
+    },
+    {
+      href: '/teacher/dashboard/gerenciar',
+      icon: Wrench,
+      label: 'Gerenciar Atividades',
+    },
+    {
+      href: '/teacher/dashboard/relatorio',
+      icon: FileText,
+      label: 'Relatório de Aula',
+    },
   ];
 
   return (
-    <div className="flex min-h-screen w-full bg-gray-950 text-white">
-      <aside className="w-64 flex-col border-r border-gray-800 bg-gray-900 p-4 hidden md:flex">
-        <div className="mb-8 flex items-center gap-2">
-          <Book className="h-8 w-8 text-purple-500" />
-          <h1 className="text-2xl font-bold">SchoolApp</h1>
+    <div className="flex min-h-screen w-full bg-[#1C1C24] text-white">
+      <aside className="w-64 flex-col border-r border-gray-800 bg-[#111115] p-4 hidden md:flex">
+        <div className="mb-8 flex items-center gap-2 p-4">
+          <LayoutDashboard className="h-8 w-8 text-white" />
+          <h1 className="text-xl font-bold">Dashboard</h1>
         </div>
         <nav className="flex flex-col gap-2">
           {navItems.map((item) => (
@@ -54,15 +66,6 @@ export default function DashboardLayout({
         </div>
       </aside>
       <div className="flex flex-1 flex-col">
-        <header className="flex h-16 items-center justify-between border-b border-gray-800 bg-gray-900 px-6">
-          <div />
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon">
-              <Bell className="h-5 w-5" />
-            </Button>
-            <div className="h-10 w-10 rounded-full bg-gray-800" />
-          </div>
-        </header>
         <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
