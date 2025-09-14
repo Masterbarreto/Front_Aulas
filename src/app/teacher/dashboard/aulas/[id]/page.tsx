@@ -93,11 +93,16 @@ export default function AulaPage({ params }: { params: { id: string } }) {
     }
 
     try {
-      await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${idDaAulaCorreta}/concluir`, {
+      const response = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${idDaAulaCorreta}/concluir`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ concluida: true, professor, turma }), 
       });
+
+      if (!response.ok) {
+        throw new Error('Falha ao concluir a aula. Status: ' + response.status);
+      }
+
       alert('Aula concluída com sucesso!');
       
       if(aula) {
@@ -112,8 +117,6 @@ export default function AulaPage({ params }: { params: { id: string } }) {
   };
 
   const handleDesconcluirClick = async () => {
-    // Para desconcluir, pode ser necessário uma lógica similar se diferentes turmas
-    // podem ser desconcluídas individualmente. Por simplicidade, vamos usar o ID da URL.
     if (!aula?._id) return;
     try {
       await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/desconcluir`, {
