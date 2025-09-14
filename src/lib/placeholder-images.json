@@ -1,3 +1,28 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "teacher-1",
+      "description": "Avatar of Dr. Evelyn Reed",
+      "imageUrl": "https://picsum.photos/seed/1/150/150",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "teacher-2",
+      "description": "Avatar of Mr. Samuel Chen",
+      "imageUrl": "https://picsum.photos/seed/2/150/150",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "teacher-3",
+      "description": "Avatar of Ms. Clara Bell",
+      "imageUrl": "https://picsum.photos/seed/3/150/150",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "teacher-4",
+      "description": "Avatar of Dr. Ben Carter",
+      "imageUrl": "https://picsum.photos/seed/4/150/150",
+      "imageHint": "man portrait"
+    }
+  ]
 }
