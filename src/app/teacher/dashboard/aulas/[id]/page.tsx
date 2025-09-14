@@ -64,6 +64,7 @@ export default function AulaPage({ params }: { params: { id: string } }) {
   const { id } = params;
 
   useEffect(() => {
+    if (!id) return;
     async function fetchData() {
       const aulaAtual = await getAula(id);
       if (aulaAtual) {
@@ -75,7 +76,6 @@ export default function AulaPage({ params }: { params: { id: string } }) {
             const versoes = todasAsAulas.filter(
               (a: AulaCompleta) => a.titulo === aulaAtual.titulo && a.Materia === aulaAtual.Materia
             );
-            console.log('Versões da aula encontradas:', versoes);
             setTodasVersoesAula(versoes);
           }
         } catch (error) {
@@ -88,9 +88,6 @@ export default function AulaPage({ params }: { params: { id: string } }) {
 
 
   const handleConcluirClick = async () => {
-    console.log('Botão Salvar clicado.');
-    console.log('Professor:', professor, 'Turma:', turma);
-
     if (!professor.trim() || !turma.trim()) {
       alert('Por favor, preencha o nome do professor e a turma.');
       return;
@@ -100,15 +97,12 @@ export default function AulaPage({ params }: { params: { id: string } }) {
         a.Turma && a.Turma.trim().toLowerCase() === turma.trim().toLowerCase()
     );
     
-    console.log('Aula para concluir encontrada:', aulaParaConcluir);
-
     if (!aulaParaConcluir) {
       alert(`Aula para a turma "${turma}" não foi encontrada. Verifique o número da turma.`);
       return;
     }
 
     const idDaAulaCorreta = aulaParaConcluir._id;
-    console.log('ID da aula correta:', idDaAulaCorreta);
 
     try {
       const response = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${idDaAulaCorreta}/concluir`, {
@@ -117,10 +111,8 @@ export default function AulaPage({ params }: { params: { id: string } }) {
         body: JSON.stringify({ concluida: true, professor, turma }), 
       });
 
-      console.log('Resposta da API:', response);
-
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao tentar ler a resposta.' }));
+        const errorData = await response.json().catch(() => ({ message: 'Erro ao ler a resposta da API.' }));
         console.error('Dados do erro da API:', errorData);
         throw new Error(`Falha ao concluir a aula. Status: ${response.status}. Mensagem: ${errorData.message}`);
       }
