@@ -68,14 +68,14 @@ export default function AulaPage({ params }: { params: { id: string } }) {
   const handleConcluirClick = async () => {
     if (!aula?._id) return;
     try {
-      // Logic to find all related classes could be added here if needed
-      // For now, we conclude the one we are viewing, as per original logic.
       await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/concluir`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ concluida: true, professor, turma }), // Sending extra info
+        body: JSON.stringify({ concluida: true, professor, turma }), 
       });
       alert('Aula concluída com sucesso!');
+      
+      // Apenas atualiza o estado visual, o backend que lida com a lógica
       setAula({ ...aula, concluida: true, professor: professor });
       setShowModal(false);
       router.back();
