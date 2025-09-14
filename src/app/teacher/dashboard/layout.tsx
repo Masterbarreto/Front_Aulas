@@ -2,13 +2,10 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Users,
   LayoutDashboard,
-  GraduationCap,
-  Upload,
-  Wrench,
   FileText,
   LogOut,
+  GraduationCap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -21,22 +18,6 @@ export default function DashboardLayout({
 
   const navItems = [
     { href: '/teacher/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    {
-      href: '/teacher/dashboard/turmas',
-      icon: GraduationCap,
-      label: 'Turmas',
-    },
-    { href: '/teacher/dashboard/alunos', icon: Users, label: 'Alunos' },
-    {
-      href: '/teacher/dashboard/upload',
-      icon: Upload,
-      label: 'Upload de Atividades',
-    },
-    {
-      href: '/teacher/dashboard/gerenciar',
-      icon: Wrench,
-      label: 'Gerenciar Atividades',
-    },
     {
       href: '/teacher/dashboard/relatorio',
       icon: FileText,
