@@ -1,4 +1,40 @@
 
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "iot",
+      "src": "https://picsum.photos/seed/iot/400/225",
+      "data-ai-hint": "students technology"
+    },
+    {
+      "id": "ti",
+      "src": "https://picsum.photos/seed/ti/400/225",
+      "data-ai-hint": "students laptop"
+    },
+    {
+      "id": "mmd",
+      "src": "https://picsum.photos/seed/mmd/400/225",
+      "data-ai-hint": "students together"
+    },
+    {
+      "id": "cdd",
+      "src": "https://picsum.photos/seed/cdd/400/225",
+      "data-ai-hint": "student coding"
+    },
+    {
+      "id": "adm",
+      "src": "https://picsum.photos/seed/adm/400/225",
+      "data-ai-hint": "students classroom"
+    },
+    {
+      "id": "mkt",
+      "src": "https://picsum.photos/seed/mkt/400/225",
+      "data-ai-hint": "students collaborating"
+    },
+    {
+      "id": "ia",
+      "src": "https://picsum.photos/seed/ia/400/225",
+      "data-ai-hint": "students learning"
+    }
+  ]
 }
