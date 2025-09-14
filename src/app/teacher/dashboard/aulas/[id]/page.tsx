@@ -7,7 +7,17 @@ import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-async function getAula(id: string): Promise<Aula | null> {
+interface Arquivo {
+  nome: string;
+  mimetype: string;
+}
+
+interface AulaCompleta extends Aula {
+  arquivos?: Arquivo[];
+  arquivosIds?: string[];
+}
+
+async function getAula(id: string): Promise<AulaCompleta | null> {
   try {
     const response = await fetch(
       `https://apisubaulas.onrender.com/api/v1/aulas/aula-id/${id}`
@@ -48,7 +58,7 @@ function formatarData(dataString: string | undefined) {
 }
 
 export default function AulaPage({ params }: { params: { id: string } }) {
-  const [aula, setAula] = useState<Aula | null>(null);
+  const [aula, setAula] = useState<AulaCompleta | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -139,7 +149,7 @@ export default function AulaPage({ params }: { params: { id: string } }) {
                     key={`arquivo-${idx}`}
                     className="flex items-center justify-between w-full text-left p-2 rounded-md hover:bg-gray-700"
                     onClick={() => {
-                      const arquivoId = aula.arquivosIds[idx];
+                      const arquivoId = aula.arquivosIds && aula.arquivosIds[idx];
                       if (arquivoId) {
                         fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${arquivoId}/pdf`)
                           .then(res => res.blob())
@@ -182,7 +192,7 @@ export default function AulaPage({ params }: { params: { id: string } }) {
                       </div>
                   ))
               ) : (
-                !aula.arquivos || aula.arquivos.length === 0 && <p className="text-gray-400 text-xs">Nenhum link ou arquivo disponível</p>
+                (!aula.arquivos || aula.arquivos.length === 0) && <p className="text-gray-400 text-xs">Nenhum link ou arquivo disponível</p>
               )}
             </div>
 
