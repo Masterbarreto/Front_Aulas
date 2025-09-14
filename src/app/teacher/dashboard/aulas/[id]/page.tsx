@@ -6,8 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 interface Arquivo {
   nome: string;
@@ -56,13 +54,9 @@ function formatarData(dataString: string | undefined) {
 
 export default function AulaPage() {
   const [aula, setAula] = useState<AulaCompleta | null>(null);
-  const [todasVersoesAula, setTodasVersoesAula] = useState<AulaCompleta[]>([]);
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
-  const [showModal, setShowModal] = useState(false);
-  const [professor, setProfessor] = useState('');
-  const [turma, setTurma] = useState('');
   
   useEffect(() => {
     if (!id) return;
@@ -70,18 +64,6 @@ export default function AulaPage() {
       const aulaAtual = await getAula(id);
       if (aulaAtual) {
         setAula(aulaAtual);
-        try {
-          const res = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas`);
-          const todasAsAulas: AulaCompleta[] = await res.json();
-          if (Array.isArray(todasAsAulas)) {
-            const versoes = todasAsAulas.filter(
-              (a) => a.titulo === aulaAtual.titulo && a.Materia === aulaAtual.Materia && a.curso === aulaAtual.curso && a.anoEscolar === aulaAtual.anoEscolar
-            );
-            setTodasVersoesAula(versoes);
-          }
-        } catch (error) {
-          console.error("Erro ao buscar todas as aulas:", error);
-        }
       }
     }
     fetchData();
@@ -89,41 +71,22 @@ export default function AulaPage() {
 
 
   const handleConcluirClick = async () => {
-    if (!professor.trim() || !turma.trim()) {
-      alert('Por favor, preencha o nome do professor e a turma.');
-      return;
-    }
-
-    const aulaParaConcluir = todasVersoesAula.find(a => 
-        a.Turma && a.Turma.trim().toLowerCase() === turma.trim().toLowerCase()
-    );
-    
-    if (!aulaParaConcluir) {
-      alert(`Aula para a turma "${turma}" não foi encontrada. Verifique o número da turma.`);
-      return;
-    }
-
-    const idDaAulaCorreta = aulaParaConcluir._id;
+    if (!aula?._id) return;
 
     try {
-      const response = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${idDaAulaCorreta}/concluir`, {
+      const response = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/concluir`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ concluida: true, professor, turma }), 
+        body: JSON.stringify({ concluida: true }), 
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'Erro ao ler a resposta da API.' }));
-        console.error('Dados do erro da API:', errorData);
         throw new Error(`Falha ao concluir a aula. Status: ${response.status}. Mensagem: ${errorData.message}`);
       }
 
       alert('Aula concluída com sucesso!');
-      
-      if(aula) {
-        setAula({ ...aula, concluida: true, professor: professor });
-      }
-      setShowModal(false); 
+      setAula({ ...aula, concluida: true });
       router.back();
     } catch (err) {
       console.error('Erro ao concluir aula:', err);
@@ -141,6 +104,7 @@ export default function AulaPage() {
       });
       alert('Aula marcada como não concluída!');
       setAula({ ...aula, concluida: false });
+      router.back();
     } catch (err) {
       console.error('Erro ao desconcluir aula:', err);
       alert('Erro ao desconcluir a aula!');
@@ -273,38 +237,12 @@ export default function AulaPage() {
               )}
             </div>
             
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-4" onClick={() => aula.concluida ? handleDesconcluirClick() : setShowModal(true)}>
+            <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-4" onClick={() => aula.concluida ? handleDesconcluirClick() : handleConcluirClick()}>
               {aula.concluida ? 'Desconcluir Aula' : 'Concluir Aula'}
             </Button>
           </CardContent>
         </Card>
       </div>
-      
-      {showModal && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-[#1C1C24] p-8 rounded-lg shadow-lg w-full max-w-md text-white border border-gray-700">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">Concluir Aula</h2>
-                <Button variant="ghost" size="icon" onClick={() => setShowModal(false)}><X className="h-6 w-6"/></Button>
-            </div>
-            <p className="text-gray-400 mb-6">Preencha essas informações para Concluir a Aula</p>
-            <div className="space-y-4">
-                <div>
-                    <Label htmlFor="professor-name">Nome de Quem Deu a Aula</Label>
-                    <Input id="professor-name" type="text" placeholder="Professor Exemplo" value={professor} onChange={e => setProfessor(e.target.value)} className="bg-gray-800 border-gray-700 mt-2"/>
-                </div>
-                <div>
-                    <Label htmlFor="turma-name">Turma Que a Aula foi dada</Label>
-                    <Input id="turma-name" type="text" placeholder="Ex: 1, 2, 3" value={turma} onChange={e => setTurma(e.target.value)} className="bg-gray-800 border-gray-700 mt-2"/>
-                </div>
-            </div>
-            <div className="flex justify-end gap-4 mt-8">
-                <Button variant="ghost" onClick={() => setShowModal(false)}>Fechar</Button>
-                <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleConcluirClick}>Salvar</Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
