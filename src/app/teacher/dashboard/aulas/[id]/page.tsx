@@ -61,13 +61,13 @@ export default function AulaPage({ params }: { params: { id: string } }) {
   const [showModal, setShowModal] = useState(false);
   const [professor, setProfessor] = useState('');
   const [turma, setTurma] = useState('');
+  const { id } = params;
 
   useEffect(() => {
     async function fetchData() {
-      const aulaAtual = await getAula(params.id);
+      const aulaAtual = await getAula(id);
       if (aulaAtual) {
         setAula(aulaAtual);
-        // Busca todas as aulas para encontrar duplicatas
         try {
           const res = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas`);
           const todasAsAulas = await res.json();
@@ -84,20 +84,18 @@ export default function AulaPage({ params }: { params: { id: string } }) {
       }
     }
     fetchData();
-  }, [params.id]);
+  }, [id]);
 
 
   const handleConcluirClick = async () => {
     console.log('Botão Salvar clicado.');
     console.log('Professor:', professor, 'Turma:', turma);
 
-    // 1. Validação dos campos do formulário
     if (!professor.trim() || !turma.trim()) {
       alert('Por favor, preencha o nome do professor e a turma.');
       return;
     }
 
-    // 2. Encontra a aula correta com base na turma inserida, de forma flexível
     const aulaParaConcluir = todasVersoesAula.find(a => 
         a.Turma && a.Turma.trim().toLowerCase() === turma.trim().toLowerCase()
     );
@@ -113,7 +111,6 @@ export default function AulaPage({ params }: { params: { id: string } }) {
     console.log('ID da aula correta:', idDaAulaCorreta);
 
     try {
-      // 3. Faz a chamada à API com o ID correto
       const response = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${idDaAulaCorreta}/concluir`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -123,23 +120,19 @@ export default function AulaPage({ params }: { params: { id: string } }) {
       console.log('Resposta da API:', response);
 
       if (!response.ok) {
-        // Se a resposta não for OK, tenta ler o corpo do erro
         const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido ao tentar ler a resposta.' }));
         console.error('Dados do erro da API:', errorData);
         throw new Error(`Falha ao concluir a aula. Status: ${response.status}. Mensagem: ${errorData.message}`);
       }
 
-      // 4. Sucesso
       alert('Aula concluída com sucesso!');
       
-      // Atualiza o estado local para refletir a mudança
       if(aula) {
         setAula({ ...aula, concluida: true, professor: professor });
       }
-      setShowModal(false); // Fecha o modal
-      router.back(); // Volta para a página anterior
+      setShowModal(false); 
+      router.back();
     } catch (err) {
-      // 5. Tratamento de erro
       console.error('Erro ao concluir aula:', err);
       const errorMessage = err instanceof Error ? err.message : 'Ocorreu um erro desconhecido.';
       alert(`Erro ao concluir a aula: ${errorMessage}`);
