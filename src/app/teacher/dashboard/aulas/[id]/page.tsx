@@ -1,11 +1,13 @@
 'use client';
 
-import { ArrowLeft, FileText } from 'lucide-react';
+import { ArrowLeft, FileText, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface Arquivo {
   nome: string;
@@ -27,19 +29,15 @@ async function getAula(id: string): Promise<AulaCompleta | null> {
       return null;
     }
     const data = await response.json();
-    // Garante que LinkAula seja sempre um array
     if (typeof data.LinkAula === 'string' && data.LinkAula.trim()) {
       try {
-        // Tenta fazer o parse da string JSON
         const parsedLinks = JSON.parse(data.LinkAula);
         data.LinkAula = Array.isArray(parsedLinks) ? parsedLinks : [];
       } catch (error) {
         console.error('Erro ao parsear LinkAula:', error);
-        // Se o parse falhar, define como array vazio
         data.LinkAula = [];
       }
     } else if (!Array.isArray(data.LinkAula)) {
-      // Se não for string nem array, define como array vazio
       data.LinkAula = [];
     }
     return data;
@@ -53,18 +51,55 @@ function formatarData(dataString: string | undefined) {
   if (!dataString) return 'Não informado';
   const data = new Date(dataString);
   if (isNaN(data.getTime())) return 'Data inválida';
-  // Adiciona timeZone: 'UTC' para evitar problemas de fuso horário
   return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
 }
 
 export default function AulaPage({ params }: { params: { id: string } }) {
   const [aula, setAula] = useState<AulaCompleta | null>(null);
   const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
+  const [professor, setProfessor] = useState('');
+  const [turma, setTurma] = useState('');
 
   useEffect(() => {
     getAula(params.id).then(setAula);
   }, [params.id]);
 
+  const handleConcluirClick = async () => {
+    if (!aula?._id) return;
+    try {
+      // Logic to find all related classes could be added here if needed
+      // For now, we conclude the one we are viewing, as per original logic.
+      await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/concluir`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ concluida: true, professor, turma }), // Sending extra info
+      });
+      alert('Aula concluída com sucesso!');
+      setAula({ ...aula, concluida: true, professor: professor });
+      setShowModal(false);
+      router.back();
+    } catch (err) {
+      console.error('Erro ao concluir aula:', err);
+      alert('Erro ao concluir a aula!');
+    }
+  };
+
+  const handleDesconcluirClick = async () => {
+    if (!aula?._id) return;
+    try {
+      await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/desconcluir`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      alert('Aula marcada como não concluída!');
+      setAula({ ...aula, concluida: false });
+    } catch (err) {
+      console.error('Erro ao desconcluir aula:', err);
+      alert('Erro ao desconcluir a aula!');
+    }
+  };
+  
   if (!aula) {
     return (
       <div className="flex flex-col text-white items-center justify-center h-full">
@@ -88,9 +123,8 @@ export default function AulaPage({ params }: { params: { id: string } }) {
     ? aula.titulo.charAt(0).toUpperCase() + aula.titulo.slice(1).toLowerCase()
     : 'Aula';
 
-
   return (
-    <div className="text-white">
+    <div className="text-white relative">
       <div className="flex items-center gap-4 mb-6">
         <button onClick={() => router.back()}>
             <ArrowLeft size={32} className="cursor-pointer" />
@@ -104,7 +138,6 @@ export default function AulaPage({ params }: { params: { id: string } }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Seção de Descrição */}
         <Card className="md:col-span-2 bg-[#111115] border-gray-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
@@ -119,7 +152,6 @@ export default function AulaPage({ params }: { params: { id: string } }) {
           </CardContent>
         </Card>
 
-        {/* Seção de Detalhes */}
         <Card className="bg-[#111115] border-gray-800">
           <CardHeader>
             <CardTitle className="text-xl">Detalhes da Aula</CardTitle>
@@ -142,7 +174,6 @@ export default function AulaPage({ params }: { params: { id: string } }) {
 
             <h3 className="font-semibold mb-2">Links e Arquivos</h3>
             <div className="flex flex-col gap-2">
-              {/* Arquivos para download */}
               {Array.isArray(aula.arquivos) && aula.arquivos.length > 0 ? (
                 aula.arquivos.map((arq: any, idx: number) => (
                   <button
@@ -171,11 +202,8 @@ export default function AulaPage({ params }: { params: { id: string } }) {
                     <svg width="20" height="20" fill="#fff"><path d="M5 13l4 4 4-4M12 17V7m-4 10V7"/></svg>
                   </button>
                 ))
-              ) : (
-                <p className="text-gray-400 text-xs">Nenhum arquivo disponível</p>
-              )}
+              ) : null }
 
-              {/* Links externos */}
               {Array.isArray(aula.LinkAula) && aula.LinkAula.length > 0 ? (
                   aula.LinkAula.map((link: any, idx: number) => (
                       <div
@@ -191,17 +219,45 @@ export default function AulaPage({ params }: { params: { id: string } }) {
                           </div>
                       </div>
                   ))
-              ) : (
-                (!aula.arquivos || aula.arquivos.length === 0) && <p className="text-gray-400 text-xs">Nenhum link ou arquivo disponível</p>
+              ) : null}
+
+              {(!aula.arquivos || aula.arquivos.length === 0) && (!aula.LinkAula || aula.LinkAula.length === 0) && (
+                <p className="text-gray-400 text-xs">Nenhum link ou arquivo disponível</p>
               )}
             </div>
-
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-4">
+            
+            <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-4" onClick={() => aula.concluida ? handleDesconcluirClick() : setShowModal(true)}>
               {aula.concluida ? 'Desconcluir Aula' : 'Concluir Aula'}
             </Button>
           </CardContent>
         </Card>
       </div>
+      
+      {showModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-[#1C1C24] p-8 rounded-lg shadow-lg w-full max-w-md text-white border border-gray-700">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold">Concluir Aula</h2>
+                <Button variant="ghost" size="icon" onClick={() => setShowModal(false)}><X className="h-6 w-6"/></Button>
+            </div>
+            <p className="text-gray-400 mb-6">Preencha essas informações para Concluir a Aula</p>
+            <div className="space-y-4">
+                <div>
+                    <Label htmlFor="professor-name">Nome de Quem Deu a Aula</Label>
+                    <Input id="professor-name" type="text" placeholder="Professor Exemplo" value={professor} onChange={e => setProfessor(e.target.value)} className="bg-gray-800 border-gray-700 mt-2"/>
+                </div>
+                <div>
+                    <Label htmlFor="turma-name">Turma Que a Aula foi dada</Label>
+                    <Input id="turma-name" type="text" placeholder="Ex: 1, 2, 3" value={turma} onChange={e => setTurma(e.target.value)} className="bg-gray-800 border-gray-700 mt-2"/>
+                </div>
+            </div>
+            <div className="flex justify-end gap-4 mt-8">
+                <Button variant="ghost" onClick={() => setShowModal(false)}>Fechar</Button>
+                <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleConcluirClick}>Salvar</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
