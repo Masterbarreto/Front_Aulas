@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -54,15 +54,16 @@ function formatarData(dataString: string | undefined) {
   return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
 }
 
-export default function AulaPage({ params }: { params: { id: string } }) {
+export default function AulaPage() {
   const [aula, setAula] = useState<AulaCompleta | null>(null);
   const [todasVersoesAula, setTodasVersoesAula] = useState<AulaCompleta[]>([]);
   const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
   const [showModal, setShowModal] = useState(false);
   const [professor, setProfessor] = useState('');
   const [turma, setTurma] = useState('');
-  const id = params.id;
-
+  
   useEffect(() => {
     if (!id) return;
     async function fetchData() {
