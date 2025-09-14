@@ -29,3 +29,19 @@ export interface AulaConcluida {
   DayAula?: string; // Optional
   dataAula?: string; // Optional
 }
+
+export interface Aula {
+    _id: string;
+    anoEscolar: string;
+    curso: string;
+    titulo: string;
+    Turma: string;
+    Materia: string;
+    DayAula: string;
+    Horario: string;
+    DesAula: string;
+    LinkAula: string;
+    concluida: boolean;
+    professor?: string;
+    createdAt?: string;
+}

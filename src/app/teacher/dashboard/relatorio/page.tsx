@@ -8,10 +8,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { AulaConcluida } from '@/lib/types';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function RelatorioPage() {
   const [aulas, setAulas] = useState<AulaConcluida[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas')
@@ -27,15 +29,12 @@ export default function RelatorioPage() {
   function formatarData(dataString: string) {
     if (!dataString) return 'N/A';
 
-    // Trata o formato "dd/mm/yyyy hh:mm:ss"
     if (dataString.includes('/')) {
       return dataString.split(' ')[0];
     }
 
-    // Tenta converter de ISO 8601 ou outros formatos reconhecíveis
     const data = new Date(dataString);
     if (!isNaN(data.getTime())) {
-      // Adiciona o fuso horário para corrigir a data
       return data.toLocaleDateString('pt-BR', {
         timeZone: 'UTC',
       });
@@ -43,6 +42,10 @@ export default function RelatorioPage() {
 
     return 'Data inválida';
   }
+
+  const handleRowClick = (aulaId: string) => {
+    router.push(`/teacher/dashboard/aulas/${aulaId}`);
+  };
 
   return (
     <div className="flex flex-col text-white">
@@ -62,6 +65,7 @@ export default function RelatorioPage() {
               <TableRow
                 key={aula._id}
                 className="border-gray-800 hover:bg-gray-800 cursor-pointer"
+                onClick={() => handleRowClick(aula._id)}
               >
                 <TableCell>{aula.Materia}</TableCell>
                 <TableCell>
