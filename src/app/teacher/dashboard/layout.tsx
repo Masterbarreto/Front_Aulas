@@ -47,10 +47,12 @@ export default function DashboardLayout({
           ))}
         </nav>
         <div className="mt-auto">
-          <Button variant="ghost" className="w-full justify-start gap-3">
-            <LogOut className="h-5 w-5" />
-            Sair
-          </Button>
+          <Link href="/login">
+            <Button variant="ghost" className="w-full justify-start gap-3">
+              <LogOut className="h-5 w-5" />
+              Sair
+            </Button>
+          </Link>
         </div>
       </aside>
       <div className="flex flex-1 flex-col">
