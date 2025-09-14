@@ -1,7 +1,6 @@
 'use client';
 
 import { ArrowLeft, FileText } from 'lucide-react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
@@ -18,13 +17,17 @@ async function getAula(id: string): Promise<Aula | null> {
       return null;
     }
     const data = await response.json();
-    if (typeof data.LinkAula === 'string' && data.LinkAula) {
+    // Garante que LinkAula seja sempre um array
+    if (typeof data.LinkAula === 'string' && data.LinkAula.trim()) {
       try {
-        data.LinkAula = JSON.parse(data.LinkAula);
+        const parsedLinks = JSON.parse(data.LinkAula);
+        data.LinkAula = Array.isArray(parsedLinks) ? parsedLinks : [];
       } catch (error) {
         console.error('Erro ao parsear LinkAula:', error);
-        data.LinkAula = [];
+        data.LinkAula = []; // Define como array vazio em caso de erro
       }
+    } else if (!Array.isArray(data.LinkAula)) {
+      data.LinkAula = []; // Define como array vazio se não for string nem array
     }
     return data;
   } catch (error) {
