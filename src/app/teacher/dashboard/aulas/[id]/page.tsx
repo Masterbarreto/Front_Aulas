@@ -1,8 +1,12 @@
+'use client';
+
 import { ArrowLeft, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 async function getAula(id: string): Promise<Aula | null> {
   try {
@@ -13,7 +17,16 @@ async function getAula(id: string): Promise<Aula | null> {
       console.error('Failed to fetch aula:', response.statusText);
       return null;
     }
-    return await response.json();
+    const data = await response.json();
+    if (typeof data.LinkAula === 'string' && data.LinkAula) {
+      try {
+        data.LinkAula = JSON.parse(data.LinkAula);
+      } catch (error) {
+        console.error('Erro ao parsear LinkAula:', error);
+        data.LinkAula = [];
+      }
+    }
+    return data;
   } catch (error) {
     console.error('Error fetching aula:', error);
     return null;
@@ -27,16 +40,29 @@ function formatarData(dataString: string | undefined) {
   return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
 }
 
-export default async function AulaPage({ params }: { params: { id: string } }) {
-  const aula = await getAula(params.id);
+export default function AulaPage({ params }: { params: { id: string } }) {
+  const [aula, setAula] = useState<Aula | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    getAula(params.id).then(setAula);
+  }, [params.id]);
 
   if (!aula) {
     return (
       <div className="flex flex-col text-white items-center justify-center h-full">
+        <p>Carregando aula...</p>
+      </div>
+    );
+  }
+    
+  if (!aula.Materia) {
+    return (
+      <div className="flex flex-col text-white items-center justify-center h-full">
         <p>Aula não encontrada.</p>
-        <Link href="/teacher/dashboard/relatorio" className="mt-4 text-blue-400 hover:underline">
-          Voltar ao relatório
-        </Link>
+        <button onClick={() => router.back()} className="mt-4 text-blue-400 hover:underline">
+          Voltar
+        </button>
       </div>
     );
   }
@@ -49,9 +75,9 @@ export default async function AulaPage({ params }: { params: { id: string } }) {
   return (
     <div className="text-white">
       <div className="flex items-center gap-4 mb-6">
-        <Link href="/teacher/dashboard/relatorio">
-          <ArrowLeft size={32} className="cursor-pointer" />
-        </Link>
+        <button onClick={() => router.back()}>
+            <ArrowLeft size={32} className="cursor-pointer" />
+        </button>
         <div>
             <h1 className="text-3xl font-bold">
             Aula de {titulo}
@@ -97,8 +123,25 @@ export default async function AulaPage({ params }: { params: { id: string } }) {
            
             <div className="border-t border-gray-700 my-2" />
 
-            <h3 className="font-semibold">Links e Arquivos</h3>
-             <p className="text-gray-400 text-xs">Nenhum link disponível</p>
+            <h3 className="font-semibold mb-2">Links e Arquivos</h3>
+            <div className="flex flex-col gap-2">
+                {Array.isArray(aula.LinkAula) && aula.LinkAula.length > 0 ? (
+                    aula.LinkAula.map((link: any, idx: number) => (
+                        <a
+                        key={`link-${idx}`}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:underline break-all"
+                        >
+                        {link.name || link.url}
+                        </a>
+                    ))
+                ) : (
+                    <p className="text-gray-400 text-xs">Nenhum link disponível</p>
+                )}
+            </div>
+
             <Button className="w-full bg-blue-600 hover:bg-blue-700 mt-4">
               {aula.concluida ? 'Desconcluir Aula' : 'Concluir Aula'}
             </Button>

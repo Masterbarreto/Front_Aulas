@@ -31,17 +31,17 @@ export interface AulaConcluida {
 }
 
 export interface Aula {
-    _id: string;
-    anoEscolar: string;
-    curso: string;
-    titulo: string;
-    Turma: string;
-    Materia: string;
-    DayAula: string;
-    Horario: string;
-    DesAula: string;
-    LinkAula: string;
-    concluida: boolean;
-    professor?: string;
-    createdAt?: string;
+  _id: string;
+  anoEscolar: string;
+  curso: string;
+  titulo: string;
+  Turma: string;
+  Materia: string;
+  DayAula: string;
+  Horario: string;
+  DesAula: string;
+  LinkAula: any; // Can be a string or an array of objects
+  concluida: boolean;
+  professor?: string;
+  createdAt?: string;
 }
