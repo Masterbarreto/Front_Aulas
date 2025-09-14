@@ -83,12 +83,20 @@ export default function AulaPage({ params }: { params: { id: string } }) {
 
 
   const handleConcluirClick = async () => {
-    // Encontra a aula correta com base na turma inserida
-    const aulaParaConcluir = todasVersoesAula.find(a => a.Turma === turma);
+    // Validação dos campos do formulário
+    if (!professor.trim() || !turma.trim()) {
+      alert('Por favor, preencha o nome do professor e a turma.');
+      return;
+    }
+
+    // Encontra a aula correta com base na turma inserida, de forma flexível
+    const aulaParaConcluir = todasVersoesAula.find(a => 
+        a.Turma && a.Turma.trim().toLowerCase() === turma.trim().toLowerCase()
+    );
     const idDaAulaCorreta = aulaParaConcluir?._id;
 
     if (!idDaAulaCorreta) {
-      alert(`Aula para a turma ${turma} não foi encontrada.`);
+      alert(`Aula para a turma "${turma}" não foi encontrada. Verifique o número da turma.`);
       return;
     }
 
@@ -100,7 +108,8 @@ export default function AulaPage({ params }: { params: { id: string } }) {
       });
 
       if (!response.ok) {
-        throw new Error('Falha ao concluir a aula. Status: ' + response.status);
+        const errorData = await response.json().catch(() => ({ message: 'Erro desconhecido' }));
+        throw new Error(`Falha ao concluir a aula. Status: ${response.status}. Mensagem: ${errorData.message}`);
       }
 
       alert('Aula concluída com sucesso!');
@@ -112,7 +121,7 @@ export default function AulaPage({ params }: { params: { id: string } }) {
       router.back();
     } catch (err) {
       console.error('Erro ao concluir aula:', err);
-      alert('Erro ao concluir a aula!');
+      alert(`Erro ao concluir a aula: ${err instanceof Error ? err.message : 'Erro desconhecido'}`);
     }
   };
 
