@@ -26,8 +26,10 @@ export default function LoginPage() {
         }
       );
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Falha no login. Verifique suas credenciais.');
+        throw new Error(data.message || 'Falha no login. Verifique suas credenciais.');
       }
 
       // Sucesso no login
