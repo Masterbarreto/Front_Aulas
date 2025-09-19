@@ -39,7 +39,7 @@ export default function LoginPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email: data.email, senha: data.password }),
+          body: JSON.stringify({ email: data.email, password: data.password }),
         }
       );
 
