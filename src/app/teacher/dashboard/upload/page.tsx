@@ -23,6 +23,8 @@ import {
   Clock,
   Plus,
   Trash2,
+  X,
+  FileText,
 } from 'lucide-react';
 import {
   Popover,
@@ -33,8 +35,13 @@ import { Calendar } from '@/components/ui/calendar';
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { format } from 'date-fns';
 
+interface LinkItem {
+  name: string;
+  url: string;
+}
+
 export default function UploadPage() {
-  const [links, setLinks] = useState<string[]>(['']);
+  const [structuredLinks, setStructuredLinks] = useState<LinkItem[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [anoEscolar, setAnoEscolar] = useState('');
   const [curso, setCurso] = useState('');
@@ -46,19 +53,27 @@ export default function UploadPage() {
   const [horario, setHorario] = useState('');
   const [descricao, setDescricao] = useState('');
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentLinkName, setCurrentLinkName] = useState('');
+  const [currentLinkUrl, setCurrentLinkUrl] = useState('');
+
   const handleAddLink = () => {
-    setLinks([...links, '']);
+    if (!currentLinkName || !currentLinkUrl) {
+      alert('Por favor, preencha o nome e o link.');
+      return;
+    }
+    setStructuredLinks([
+      ...structuredLinks,
+      { name: currentLinkName, url: currentLinkUrl },
+    ]);
+    setCurrentLinkName('');
+    setCurrentLinkUrl('');
+    setIsModalOpen(false);
   };
 
   const handleRemoveLink = (index: number) => {
-    const newLinks = links.filter((_, i) => i !== index);
-    setLinks(newLinks);
-  };
-
-  const handleLinkChange = (index: number, value: string) => {
-    const newLinks = [...links];
-    newLinks[index] = value;
-    setLinks(newLinks);
+    const newLinks = structuredLinks.filter((_, i) => i !== index);
+    setStructuredLinks(newLinks);
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +93,7 @@ export default function UploadPage() {
     setHorario('');
     setDescricao('');
     setFiles([]);
-    setLinks(['']);
+    setStructuredLinks([]);
   };
 
   const handleEnviar = async (e: FormEvent) => {
@@ -100,11 +115,7 @@ export default function UploadPage() {
       }
       formData.append('Horario', horario);
       formData.append('DesAula', descricao);
-
-      const linkAula = links
-        .filter((link) => link.trim() !== '')
-        .map((link) => ({ url: link, name: link }));
-      formData.append('LinkAula', JSON.stringify(linkAula));
+      formData.append('LinkAula', JSON.stringify(structuredLinks));
 
       files.forEach((file) => {
         formData.append('arquivos', file);
@@ -362,31 +373,32 @@ export default function UploadPage() {
 
             <div className="space-y-4">
               <Label>Links da Aula</Label>
-              {links.map((link, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <Input
-                    type="url"
-                    placeholder="https://example.com"
-                    className="bg-[#1C1C24] border-gray-700"
-                    value={link}
-                    onChange={(e) => handleLinkChange(index, e.target.value)}
-                  />
-                  {links.length > 1 && (
+              <div className="space-y-2">
+                {structuredLinks.map((link, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between gap-2 bg-[#1C1C24] p-2 rounded-md"
+                  >
+                    <div className="flex items-center gap-2">
+                      <FileText size={16} className="text-gray-400" />
+                      <span className="text-sm">{link.name}</span>
+                    </div>
                     <Button
                       variant="ghost"
                       size="icon"
+                      className="h-6 w-6"
                       onClick={() => handleRemoveLink(index)}
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
                     </Button>
-                  )}
-                </div>
-              ))}
+                  </div>
+                ))}
+              </div>
               <Button
                 type="button"
                 variant="outline"
                 className="w-full border-gray-600 hover:bg-gray-800"
-                onClick={handleAddLink}
+                onClick={() => setIsModalOpen(true)}
               >
                 <Plus className="mr-2 h-4 w-4" /> ADICIONAR LINK
               </Button>
@@ -394,6 +406,59 @@ export default function UploadPage() {
           </div>
         </div>
       </form>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-[#1C1C24] p-8 rounded-lg shadow-lg w-full max-w-md relative text-white">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+            >
+              <X size={24} />
+            </button>
+            <h2 className="text-2xl font-bold mb-6">Cadastrar Link</h2>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="link-name" className="text-sm font-medium">
+                  Nome:
+                </Label>
+                <Input
+                  id="link-name"
+                  type="text"
+                  placeholder="Ex: Exercício"
+                  value={currentLinkName}
+                  onChange={(e) => setCurrentLinkName(e.target.value)}
+                  className="bg-gray-800 border-gray-700 mt-2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="link-url" className="text-sm font-medium">
+                  Link:
+                </Label>
+                <Input
+                  id="link-url"
+                  type="url"
+                  placeholder="https://exemplo.com"
+                  value={currentLinkUrl}
+                  onChange={(e) => setCurrentLinkUrl(e.target.value)}
+                  className="bg-gray-800 border-gray-700 mt-2"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-4 mt-8">
+              <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+                FECHAR
+              </Button>
+              <Button
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={handleAddLink}
+              >
+                SALVAR
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
