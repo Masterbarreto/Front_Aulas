@@ -132,22 +132,19 @@ export default function UploadPage() {
 
     try {
       const responses = await Promise.all(promises);
-      const results = await Promise.all(
-        responses.map((res) => {
-          if (!res.ok) {
-            return res.json().then((err) => Promise.reject(err));
-          }
-          return res.json();
-        })
-      );
+      
+      const errorResponses = responses.filter(res => !res.ok);
+
+      if (errorResponses.length > 0) {
+        const errorData = await errorResponses[0].json();
+        throw errorData;
+      }
 
       alert('Aulas criadas com sucesso!');
       handleCancelar();
-    } catch (error) {
+    } catch (error: any) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : JSON.stringify(error) || 'Ocorreu um erro desconhecido.';
+        error?.message || JSON.stringify(error) || 'Ocorreu um erro desconhecido.';
       console.error('Erro ao criar aula:', error);
       alert(`Erro ao criar a aula: ${errorMessage}`);
     }
