@@ -108,7 +108,7 @@ export default function UploadPage() {
       const formData = new FormData();
       formData.append('anoEscolar', anoEscolar);
       formData.append('curso', curso);
-      formData.append('Turma', turmaAtual);
+      formData.append('Turma', String(turmaAtual)); // Garantir que seja string
       formData.append('Materia', materia);
       formData.append('professor', professor);
       formData.append('titulo', titulo);
