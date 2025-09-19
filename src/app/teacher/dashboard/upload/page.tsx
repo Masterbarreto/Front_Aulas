@@ -100,7 +100,9 @@ export default function UploadPage() {
     e.preventDefault();
 
     const turmasParaEnviar =
-      turma === 'all' ? ['1', '2', '3', '4', '5', '6', '7', '8'] : [turma];
+      turma === 'all'
+        ? ['1', '2', '3', '4', '5', '6', '7', '8']
+        : [turma];
 
     const promises = turmasParaEnviar.map((turmaAtual) => {
       const formData = new FormData();
@@ -127,24 +129,29 @@ export default function UploadPage() {
           method: 'POST',
           body: formData,
         }
-      );
+      ).then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({
+            message: 'Erro ao ler a resposta da API.',
+          }));
+          throw new Error(
+            errorData.message ||
+              `Erro no servidor com status ${res.status}`
+          );
+        }
+        return res.json();
+      });
     });
 
     try {
-      const responses = await Promise.all(promises);
-      
-      const errorResponses = responses.filter(res => !res.ok);
-
-      if (errorResponses.length > 0) {
-        const errorData = await errorResponses[0].json();
-        throw errorData;
-      }
-
+      await Promise.all(promises);
       alert('Aulas criadas com sucesso!');
       handleCancelar();
     } catch (error: any) {
       const errorMessage =
-        error?.message || JSON.stringify(error) || 'Ocorreu um erro desconhecido.';
+        error?.message ||
+        JSON.stringify(error) ||
+        'Ocorreu um erro desconhecido.';
       console.error('Erro ao criar aula:', error);
       alert(`Erro ao criar a aula: ${errorMessage}`);
     }
