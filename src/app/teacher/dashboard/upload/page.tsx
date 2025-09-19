@@ -101,14 +101,8 @@ export default function UploadPage() {
 
     const formData = new FormData();
 
-    const turmasParaEnviar =
-      turma === 'all'
-        ? ['1', '2', '3', '4', '5', '6', '7', '8']
-        : turma;
-
     formData.append('anoEscolar', anoEscolar);
     formData.append('curso', curso);
-    formData.append('Turma', turma === 'all' ? JSON.stringify(turmasParaEnviar) : turmasParaEnviar);
     formData.append('Materia', materia);
     formData.append('professor', professor);
     formData.append('titulo', titulo);
@@ -123,6 +117,13 @@ export default function UploadPage() {
       formData.append('arquivos', file);
     });
 
+    if (turma === 'all') {
+      const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
+      formData.append('Turma', JSON.stringify(turmasParaEnviar));
+    } else {
+      formData.append('Turma', String(turma));
+    }
+    
     try {
       const res = await fetch(
         'https://apisubaulas.onrender.com/api/v1/aulas',
