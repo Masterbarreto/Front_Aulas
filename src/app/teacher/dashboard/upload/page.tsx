@@ -350,7 +350,8 @@ export default function UploadPage() {
               <div className="relative">
                 <Input
                   id="horario"
-                  type="time"
+                  type="text"
+                  placeholder="HH:MM"
                   className="bg-[#1C1C24] border-gray-700 pr-10"
                   value={horario}
                   onChange={(e) => setHorario(e.target.value)}
