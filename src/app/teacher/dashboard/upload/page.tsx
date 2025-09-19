@@ -124,7 +124,7 @@ export default function UploadPage() {
       });
 
       return fetch(
-        'https://apisubaulas.onrender.com/api/v1/aulas/CriarAula',
+        'https://apisubaulas.onrender.com/api/v1/aulas',
         {
           method: 'POST',
           body: formData,
