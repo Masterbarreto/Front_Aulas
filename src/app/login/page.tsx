@@ -30,9 +30,8 @@ export default function LoginPage() {
         throw new Error('Falha no login. Verifique suas credenciais.');
       }
 
-      const data = await response.json();
-
-      // Você pode querer salvar o token (data.token) no localStorage ou em cookies aqui
+      // Sucesso no login
+      localStorage.setItem('isLoggedIn', 'true');
       
       router.push('/teacher/dashboard');
     } catch (error) {
