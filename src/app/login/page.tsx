@@ -7,13 +7,30 @@ import { Label } from '@/components/ui/label';
 import { GraduationCap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const loginSchema = z.object({
+  email: z.string().email('Email inválido.').min(1, 'Email é obrigatório.'),
+  password: z.string().min(1, 'Senha é obrigatória.'),
+});
+
+type LoginSchema = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [apiError, setApiError] = useState<string | null>(null);
   const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
+  });
 
-  const handleLogin = async () => {
+  const handleLogin = async (data: LoginSchema) => {
+    setApiError(null);
     try {
       const response = await fetch(
         'https://apisubaulas.onrender.com/api/v1/users/login',
@@ -22,25 +39,26 @@ export default function LoginPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email: email, senha: password }),
+          body: JSON.stringify({ email: data.email, senha: data.password }),
         }
       );
 
-      const data = await response.json();
+      const responseData = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Falha no login. Verifique suas credenciais.');
+        throw new Error(
+          responseData.message || 'Falha no login. Verifique suas credenciais.'
+        );
       }
 
       // Sucesso no login
       localStorage.setItem('isLoggedIn', 'true');
-      
       router.push('/teacher/dashboard');
     } catch (error) {
       if (error instanceof Error) {
-        alert(error.message);
+        setApiError(error.message);
       } else {
-        alert('Ocorreu um erro desconhecido.');
+        setApiError('Ocorreu um erro desconhecido.');
       }
     }
   };
@@ -55,34 +73,43 @@ export default function LoginPage() {
           </div>
           <CardTitle className="text-2xl">Login Administrativo</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="admin@example.com"
-              className="bg-gray-800 border-gray-700"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Senha</Label>
-            <Input
-              id="password"
-              type="password"
-              className="bg-gray-800 border-gray-700"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <Button
-            className="mt-4 w-full bg-blue-600 hover:bg-blue-700"
-            onClick={handleLogin}
-          >
-            Entrar
-          </Button>
+        <CardContent>
+          <form onSubmit={handleSubmit(handleLogin)} className="flex flex-col gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="admin@example.com"
+                className="bg-gray-800 border-gray-700"
+                {...register('email')}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                type="password"
+                className="bg-gray-800 border-gray-700"
+                {...register('password')}
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+            {apiError && <p className="text-sm text-red-500">{apiError}</p>}
+            <Button
+              type="submit"
+              className="mt-4 w-full bg-blue-600 hover:bg-blue-700"
+            >
+              Entrar
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>
