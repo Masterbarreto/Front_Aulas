@@ -99,54 +99,52 @@ export default function UploadPage() {
   const handleEnviar = async (e: FormEvent) => {
     e.preventDefault();
 
+    const formData = new FormData();
+
     const turmasParaEnviar =
       turma === 'all'
         ? ['1', '2', '3', '4', '5', '6', '7', '8']
-        : [turma];
+        : turma;
 
-    const promises = turmasParaEnviar.map((turmaAtual) => {
-      const formData = new FormData();
-      formData.append('anoEscolar', anoEscolar);
-      formData.append('curso', curso);
-      formData.append('Turma', String(turmaAtual)); // Garantir que seja string
-      formData.append('Materia', materia);
-      formData.append('professor', professor);
-      formData.append('titulo', titulo);
-      if (diaAula) {
-        formData.append('DayAula', format(diaAula, 'yyyy-MM-dd'));
-      }
-      formData.append('Horario', horario);
-      formData.append('DesAula', descricao);
-      formData.append('LinkAula', JSON.stringify(structuredLinks));
+    formData.append('anoEscolar', anoEscolar);
+    formData.append('curso', curso);
+    formData.append('Turma', turma === 'all' ? JSON.stringify(turmasParaEnviar) : turmasParaEnviar);
+    formData.append('Materia', materia);
+    formData.append('professor', professor);
+    formData.append('titulo', titulo);
+    if (diaAula) {
+      formData.append('DayAula', format(diaAula, 'yyyy-MM-dd'));
+    }
+    formData.append('Horario', horario);
+    formData.append('DesAula', descricao);
+    formData.append('LinkAula', JSON.stringify(structuredLinks));
 
-      files.forEach((file) => {
-        formData.append('arquivos', file);
-      });
+    files.forEach((file) => {
+      formData.append('arquivos', file);
+    });
 
-      return fetch(
+    try {
+      const res = await fetch(
         'https://apisubaulas.onrender.com/api/v1/aulas',
         {
           method: 'POST',
           body: formData,
         }
-      ).then(async (res) => {
-        if (!res.ok) {
-          const errorData = await res.json().catch(() => ({
-            message: 'Erro ao ler a resposta da API.',
-          }));
-          throw new Error(
-            errorData.message ||
-              `Erro no servidor com status ${res.status}`
-          );
-        }
-        return res.json();
-      });
-    });
-
-    try {
-      await Promise.all(promises);
-      alert('Aulas criadas com sucesso!');
+      );
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({
+          message: 'Erro ao ler a resposta da API.',
+        }));
+        throw new Error(
+          errorData.message || `Erro no servidor com status ${res.status}`
+        );
+      }
+      
+      await res.json();
+      alert('Aula(s) criada(s) com sucesso!');
       handleCancelar();
+
     } catch (error: any) {
       const errorMessage =
         error?.message ||
@@ -156,6 +154,7 @@ export default function UploadPage() {
       alert(`Erro ao criar a aula: ${errorMessage}`);
     }
   };
+
 
   return (
     <div className="text-white">
