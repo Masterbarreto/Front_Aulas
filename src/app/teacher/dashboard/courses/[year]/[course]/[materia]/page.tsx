@@ -10,21 +10,7 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card';
-
-type Aula = {
-  _id?: string;
-  aulaId?: string;
-  titulo?: string;
-  Horario?: string;
-  DesAula?: string;
-  anoEscolar?: string;
-  cursos?: string[];
-  curso?: string;
-  Turma?: string;
-  Materia?: string;
-  materias?: string | string[];
-  professor?: string;
-};
+import type { Aula } from '@/lib/types';
 
 // Normaliza strings (minúsculas, sem espaços, sem acentos, sem hífen)
 function normalize(str?: string) {
@@ -105,11 +91,11 @@ export default function AulasListPage() {
   });
 
   const aulasUnicas = aulasFiltradas.filter(
-    (aula, index, self) => index === self.findIndex((a) => (a.aulaId || a._id) === (aula.aulaId || a._id))
+    (aula, index, self) => index === self.findIndex((a) => a._id === aula._id)
   );
 
   const handleCardClick = (aula: Aula) => {
-    const id = aula._id || aula.aulaId;
+    const id = aula._id;
     if (id) {
       router.push(`/teacher/dashboard/aulas/${id}`);
     } else {
@@ -156,7 +142,7 @@ export default function AulasListPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {aulasUnicas.map((aula) => (
             <Card
-              key={aula._id || aula.aulaId}
+              key={aula._id}
               className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer"
               onClick={() => handleCardClick(aula)}
             >
