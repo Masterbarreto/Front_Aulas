@@ -53,7 +53,7 @@ export default function MateriasScreen() {
       >
         <ArrowLeft className="h-6 w-6" />
         <h1 className="text-2xl font-bold">
-          Matérias de {course?.toUpperCase()} – {year?.replace('-', ' ')}
+          Matérias de {course?.toUpperCase()} – {year?.replace('-', 'º ')}
         </h1>
       </div>
 

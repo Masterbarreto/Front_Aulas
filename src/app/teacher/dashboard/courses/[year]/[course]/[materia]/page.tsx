@@ -4,31 +4,24 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { Aula } from '@/lib/types';
 
-interface Aula {
-  _id: string;
-  aulaId?: string;
-  titulo: string;
-  Horario: string;
-  DesAula: string;
-  anoEscolar?: string;
-  curso?: string;
-  Turma?: string;
-  Materia?: string;
+function normalize(str?: string): string {
+  return (str || '').toLowerCase().replace(/\s+/g, '-');
 }
 
-function normalize(str?: string) {
-  return (str || '')
-    .toLowerCase()
-    .replace(/\s/g, '')
-    .replace(/-/g, '');
+function capitalize(str: string): string {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export default function AulasListPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
   const router = useRouter();
   const params = useParams();
-  const { year, course, materia } = params;
+  const year = params.year as string;
+  const course = params.course as string;
+  const materia = params.materia as string;
 
   useEffect(() => {
     fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
@@ -41,12 +34,16 @@ export default function AulasListPage() {
     return <p className="text-white">Parâmetros da URL ausentes.</p>;
   }
 
-  const aulasFiltradas = aulas.filter(
-    (aula) =>
-      normalize(aula.anoEscolar) === normalize(year as string) &&
-      normalize(aula.curso) === normalize(course as string) &&
-      normalize(aula.Materia) === normalize(materia as string)
-  );
+  const aulasFiltradas = aulas.filter((aula) => {
+    const anoMatch = normalize(aula.anoEscolar) === normalize(year);
+    
+    const cursoArray = Array.isArray(aula.curso) ? aula.curso : [aula.curso];
+    const cursoMatch = cursoArray.some(c => normalize(c).includes(normalize(course)));
+
+    const materiaMatch = normalize(aula.Materia as string) === normalize(materia);
+
+    return anoMatch && cursoMatch && materiaMatch;
+  });
 
   const aulasUnicas = aulasFiltradas.filter((aula, index, self) =>
     index === self.findIndex((a) => (
@@ -58,6 +55,8 @@ export default function AulasListPage() {
     const id = aula.aulaId || aula._id;
     router.push(`/teacher/dashboard/aulas/${id}`);
   };
+  
+  const materiaCapitalized = capitalize(materia.replace('-', ' '));
 
   return (
     <div className="flex flex-col text-white">
@@ -66,7 +65,7 @@ export default function AulasListPage() {
         onClick={() => router.back()}
       >
         <ArrowLeft className="h-6 w-6" />
-        <h1 className="text-2xl font-bold">Aulas – Senac</h1>
+        <h1 className="text-2xl font-bold">Aulas de {materiaCapitalized} – Senac</h1>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
