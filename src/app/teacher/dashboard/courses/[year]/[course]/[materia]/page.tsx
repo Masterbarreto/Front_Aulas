@@ -36,14 +36,16 @@ export default function AulasListPage() {
   }
 
   const aulasFiltradas = aulas.filter((aula) => {
-    // Ano: compara diretamente sem normalizar para manter o hífen (ex: "2-ano")
+    // Ano: compara diretamente para manter o hífen (ex: "2-ano")
     const anoMatch = aula.anoEscolar === year;
     
-    // Curso: verifica se o curso da URL está no array de cursos da aula
-    const cursoArray = Array.isArray(aula.curso) ? aula.curso : [aula.curso];
+    // Curso: verifica se o curso da URL está no array de cursos da aula.
+    // O backend retorna 'cursos' no plural.
+    const cursoArray = Array.isArray(aula.curso) ? aula.curso : [];
     const cursoMatch = cursoArray.some(c => normalize(c).includes(normalize(course)));
 
     // Matéria: normaliza para comparar (ex: "Inglês" com "ingles")
+    // O backend retorna 'Materia'.
     const materiaMatch = normalize(aula.Materia as string) === normalize(materia);
 
     return anoMatch && cursoMatch && materiaMatch;
@@ -51,7 +53,7 @@ export default function AulasListPage() {
 
   const aulasUnicas = aulasFiltradas.filter((aula, index, self) =>
     index === self.findIndex((a) => (
-      a.titulo === aula.titulo && a.DesAula === aula.DesAula
+      a.titulo === aula.titulo && a.DesAula === a.DesAula
     ))
   );
 
