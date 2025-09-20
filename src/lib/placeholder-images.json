@@ -1,4 +1,53 @@
 
 {
-  "placeholderImages": []
+  "courseImages": {
+    "iot": {
+      "src": "https://picsum.photos/seed/iot/400/225",
+      "width": 400,
+      "height": 225,
+      "hint": "circuits technology"
+    },
+    "ti": {
+      "src": "https://picsum.photos/seed/ti/400/225",
+      "width": 400,
+      "height": 225,
+      "hint": "students coding"
+    },
+    "mmd": {
+      "src": "https://picsum.photos/seed/mmd/400/225",
+      "width": 400,
+      "height": 225,
+      "hint": "video editing"
+    },
+    "cdd": {
+      "src": "https://picsum.photos/seed/cdd/400/225",
+      "width": 400,
+      "height": 225,
+      "hint": "data charts"
+    },
+    "adm": {
+      "src": "https://picsum.photos/seed/adm/400/225",
+      "width": 400,
+      "height": 225,
+      "hint": "business meeting"
+    },
+    "mkt": {
+      "src": "https://picsum.photos/seed/mkt/400/225",
+      "width": 400,
+      "height": 225,
+      "hint": "social media"
+    },
+    "ia": {
+      "src": "https://picsum.photos/seed/ia/400/225",
+      "width": 400,
+      "height": 225,
+      "hint": "artificial intelligence"
+    },
+    "default": {
+      "src": "https://picsum.photos/seed/default/400/225",
+      "width": 400,
+      "height": 225,
+      "hint": "modern classroom"
+    }
+  }
 }
