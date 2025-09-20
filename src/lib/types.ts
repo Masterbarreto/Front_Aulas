@@ -34,10 +34,12 @@ export interface Aula {
   _id: string;
   aulaId?: string;
   anoEscolar: string;
-  curso: string;
+  curso?: string; // Legacy field
+  cursos?: string[]; // New field
   titulo: string;
   Turma: string;
   Materia: string | string[];
+  materias?: string | string[]; // New field
   DayAula: string;
   Horario: string;
   DesAula: string;

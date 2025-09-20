@@ -6,9 +6,10 @@ import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 
-function capitalize(str: string): string {
+// Função para normalizar strings para comparação
+function normalize(str: string | undefined): string {
   if (!str) return '';
-  return str.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  return str.toLowerCase().replace(/[\s-]/g, '');
 }
 
 export default function AulasListPage() {
@@ -24,13 +25,11 @@ export default function AulasListPage() {
     fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
       .then((res) => {
         if (!res.ok) {
-          // Se a resposta não for OK, lança um erro para o catch
           throw new Error('Falha ao buscar dados da API');
         }
         return res.json();
       })
       .then((data) => {
-        // Garante que 'data' seja um array antes de setar o estado
         if (Array.isArray(data)) {
           setAulas(data);
         } else {
@@ -49,11 +48,32 @@ export default function AulasListPage() {
     return <p className="text-white">Carregando aulas...</p>;
   }
 
+  const aulasFiltradas = aulas.filter((aula) => {
+    // 1. Filtro de Ano
+    const yearFromUrl = year.split('-')[0]; // Extrai "2" de "2-ano"
+    const anoMatch = aula.anoEscolar === yearFromUrl;
+
+    // 2. Filtro de Curso
+    const normalizedCourseFromUrl = normalize(course);
+    const cursoMatch = Array.isArray(aula.cursos) && aula.cursos.some(c => normalize(c) === normalizedCourseFromUrl);
+
+    // 3. Filtro de Matéria
+    const normalizedMateriaFromUrl = normalize(materia);
+    const materiaMatch = normalize(aula.Materia as string) === normalizedMateriaFromUrl;
+
+    return anoMatch && cursoMatch && materiaMatch;
+  });
+
   const handleClick = (aula: Aula) => {
     const id = aula.aulaId || aula._id;
     router.push(`/teacher/dashboard/aulas/${id}`);
   };
   
+  function capitalize(str: string): string {
+    if (!str) return '';
+    return str.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  }
+
   const materiaCapitalized = capitalize(materia);
   const courseFormatted = course.toUpperCase();
   const yearFormatted = year ? year.replace('-', 'º ') : '';
@@ -71,8 +91,8 @@ export default function AulasListPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {aulas.length > 0 ? (
-          aulas.map((aula, index) => (
+        {aulasFiltradas.length > 0 ? (
+          aulasFiltradas.map((aula, index) => (
             <Card
               key={`${aula._id}-${index}`}
               className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer flex flex-col justify-between"
@@ -106,7 +126,7 @@ export default function AulasListPage() {
               Nenhuma aula encontrada.
             </p>
             <p className="text-sm text-gray-500">
-              Verifique se existem aulas cadastradas.
+              Verifique se existem aulas cadastradas para este filtro.
             </p>
           </div>
         )}
