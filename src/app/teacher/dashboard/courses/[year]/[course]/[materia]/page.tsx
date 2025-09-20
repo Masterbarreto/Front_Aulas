@@ -64,13 +64,13 @@ export default function AulasListPage() {
     // 1. Filtro por ano escolar
     const anoMatch = aula.anoEscolar === yearNumber;
 
-    // 2. Filtro por curso (robusto)
+    // 2. Filtro por curso (robusto) - verifica se a sigla da URL está contida no nome do curso
     const normalizedCourseParam = normalize(course);
     const cursoMatch =
       Array.isArray(aula.cursos) &&
       aula.cursos.some((c) => normalize(c).includes(normalizedCourseParam));
 
-    // 3. Filtro por matéria (robusto)
+    // 3. Filtro por matéria (robusto) - verifica `Materia` e `materias`
     const normalizedMateriaParam = normalize(materia);
     const materiaApi = aula.Materia || aula.materias;
     let materiaMatch = false;
