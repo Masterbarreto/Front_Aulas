@@ -14,9 +14,15 @@ interface Arquivo {
   mimetype: string;
 }
 
+interface LinkItem {
+  name: string;
+  url: string;
+}
+
 interface AulaCompleta extends Aula {
   arquivos?: Arquivo[];
   arquivosIds?: string[];
+  LinkAula: LinkItem[];
 }
 
 async function getAula(id: string): Promise<AulaCompleta | null> {
@@ -29,6 +35,8 @@ async function getAula(id: string): Promise<AulaCompleta | null> {
       return null;
     }
     const data = await response.json();
+    
+    // Garante que LinkAula seja sempre um array de objetos
     if (typeof data.LinkAula === 'string' && data.LinkAula.trim()) {
       try {
         const parsedLinks = JSON.parse(data.LinkAula);
@@ -40,6 +48,7 @@ async function getAula(id: string): Promise<AulaCompleta | null> {
     } else if (!Array.isArray(data.LinkAula)) {
       data.LinkAula = [];
     }
+    
     return data;
   } catch (error) {
     console.error('Error fetching aula:', error);
@@ -69,9 +78,8 @@ export default function AulaPage() {
 
     async function fetchData() {
       const aulaAtual = await getAula(id);
-      if (aulaAtual) {
-        setAula(aulaAtual);
-      }
+      setAula(aulaAtual);
+
       try {
         const res = await fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas');
         const data = await res.json();
@@ -137,7 +145,9 @@ export default function AulaPage() {
         headers: { 'Content-Type': 'application/json' },
       });
       alert('Aula marcada como não concluída!');
-      setAula({ ...aula, concluida: false });
+      if(aula) {
+        setAula({ ...aula, concluida: false });
+      }
       router.back();
     } catch (err) {
       console.error('Erro ao desconcluir aula:', err);
@@ -178,7 +188,7 @@ export default function AulaPage() {
             <h1 className="text-3xl font-bold">
             Aula de {titulo}
             </h1>
-            <p className="text-gray-400">matéria: {aula.Materia}</p>
+            <p className="text-gray-400">matéria: {Array.isArray(aula.Materia) ? aula.Materia.join(', ') : aula.Materia}</p>
         </div>
       </div>
 
@@ -249,8 +259,8 @@ export default function AulaPage() {
                 ))
               ) : null }
 
-              {Array.isArray(aula.LinkAula) && aula.LinkAula.length > 0 ? (
-                  aula.LinkAula.map((link: any, idx: number) => (
+              {aula.LinkAula.length > 0 ? (
+                  aula.LinkAula.map((link: LinkItem, idx: number) => (
                       <div
                           key={`link-${idx}`}
                           className="cursor-pointer p-3 bg-[#2D2E36] rounded-lg mb-3 flex flex-col gap-2 hover:bg-gray-700"
