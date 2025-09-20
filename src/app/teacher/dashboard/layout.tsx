@@ -7,6 +7,7 @@ import {
   LogOut,
   Upload,
   Settings,
+  GraduationCap,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
@@ -57,7 +58,7 @@ export default function DashboardLayout({
     <div className="flex min-h-screen w-full bg-[#1C1C24] text-white">
       <aside className="w-64 flex-col border-r border-gray-800 bg-[#111115] p-4 hidden md:flex">
         <div className="mb-8 flex items-center gap-2 p-4">
-          <Image src="/Logo.png" alt="Sub_Aulas Logo" width={32} height={32} />
+          <GraduationCap className="h-8 w-8" />
           <h1 className="text-xl font-bold">Sub_Aulas</h1>
         </div>
         <nav className="flex flex-col gap-2">
