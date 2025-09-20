@@ -61,9 +61,6 @@ export default function GerenciarPage() {
       fetch(
         'https://apisubaulas.onrender.com/api/v1/relatorios/materias-mais-substituicoes'
       ).then((res) => res.json()),
-      fetch(
-        'https://apisubaulas.onrender.com/api/v1/relatorios/total-aulas-concluidas'
-      ).then((res) => res.json()),
     ])
       .then(
         ([
@@ -71,7 +68,6 @@ export default function GerenciarPage() {
           aulasConcluidasData,
           relatorioSemanal,
           topMaterias,
-          totalConcluidas,
         ]) => {
           const naoConcluidas = Array.isArray(aulasNaoConcluidasData)
             ? aulasNaoConcluidasData
@@ -80,6 +76,9 @@ export default function GerenciarPage() {
             ? aulasConcluidasData
             : [];
           setAulas([...naoConcluidas, ...concluidas]);
+          
+          // Use a contagem de aulas concluídas diretamente
+          setAulasConcluidasCount(concluidas.length);
 
           if (Array.isArray(relatorioSemanal)) {
             const dayShiftMap: { [key: string]: string } = {
@@ -119,10 +118,6 @@ export default function GerenciarPage() {
               substituicoes: item.substituicoes || 0,
             }));
             setBarChartData(formattedTopMaterias as any);
-          }
-
-          if (totalConcluidas && typeof totalConcluidas.total === 'number') {
-            setAulasConcluidasCount(totalConcluidas.total);
           }
         }
       )
