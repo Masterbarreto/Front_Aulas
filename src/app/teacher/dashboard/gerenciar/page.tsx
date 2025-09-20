@@ -83,9 +83,11 @@ export default function GerenciarPage() {
 
           if (Array.isArray(relatorioSemanal)) {
             const dayOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            const formattedSemanal = relatorioSemanal
-              .map((item) => ({ day: item.dia, value: item.aulas }))
-              .sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
+            const dataMap = new Map(relatorioSemanal.map(item => [item.dia, item.aulas]));
+            const formattedSemanal = dayOrder.map(day => ({
+              day,
+              value: dataMap.get(day) || 0
+            }));
             setAreaChartData(formattedSemanal as any);
           }
 
