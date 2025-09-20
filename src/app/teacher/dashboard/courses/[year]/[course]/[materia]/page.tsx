@@ -6,8 +6,10 @@ import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 
+// Função de normalização inspirada na aplicação antiga para garantir consistência
 function normalize(str?: string): string {
-  return (str || '').toLowerCase().replace(/\s+/g, '');
+  if (!str) return '';
+  return str.toLowerCase().replace(/\s+/g, '').replace(/-/g, '');
 }
 
 function capitalize(str: string): string {
@@ -34,18 +36,18 @@ export default function AulasListPage() {
     return <p className="text-white">Parâmetros da URL ausentes.</p>;
   }
 
+  // Lógica de filtro robusta, inspirada no código antigo
   const aulasFiltradas = aulas.filter((aula) => {
-    // Ano: compara diretamente para manter o hífen (ex: "2-ano")
-    const anoMatch = aula.anoEscolar === year;
+    const anoMatch = normalize(year) === "all" || normalize(aula.anoEscolar) === "all" || normalize(aula.anoEscolar) === normalize(year);
     
-    // Curso: Compara a string do curso normalizada
-    const cursoMatch = normalize(aula.curso).includes(normalize(course));
+    // O backend retorna `cursos` como um array. Verificamos se o curso da URL está nesse array.
+    const cursoMatch = normalize(course) === "all" || (Array.isArray(aula.cursos) && aula.cursos.some(c => normalize(c) === normalize(course)));
 
-    // Matéria: normaliza para comparar (ex: "Inglês" com "ingles")
-    const materiaMatch = normalize(aula.Materia as string) === normalize(materia);
+    const materiaMatch = normalize(materia) === "all" || normalize(aula.Materia as string) === "all" || normalize(aula.Materia as string) === normalize(materia);
 
     return anoMatch && cursoMatch && materiaMatch;
   });
+
 
   const aulasUnicas = aulasFiltradas.filter((aula, index, self) =>
     index === self.findIndex((a) => (
