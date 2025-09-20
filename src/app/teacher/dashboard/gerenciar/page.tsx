@@ -109,7 +109,7 @@ export default function GerenciarPage() {
       .filter((aula) => aula.concluida)
       .forEach((aula) => {
         const materia = Array.isArray(aula.materias) ? aula.materias[0] : (aula.materias || aula.Materia || 'N/A') as string;
-        if (materia !== 'N/A') {
+        if (materia && materia !== 'N/A') {
           substituicoesPorMateria[materia] = (substituicoesPorMateria[materia] || 0) + 1;
         }
       });
@@ -201,7 +201,7 @@ export default function GerenciarPage() {
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig} className="h-[150px] w-full">
-              <AreaChart data={areaChartData} margin={{ left: 0, right: 20 }}>
+              <AreaChart data={areaChartData} margin={{ left: 0, right: 20, top: 10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorAulas" x1="0" y1="0" x2="0" y2="1">
                     <stop
@@ -248,7 +248,7 @@ export default function GerenciarPage() {
               config={barChartConfig}
               className="h-[150px] w-full"
             >
-              <BarChart data={barChartData} margin={{ left: 0, right: 20 }}>
+              <BarChart data={barChartData} margin={{ left: 0, right: 20, top: 10, bottom: 0 }}>
                 <CartesianGrid
                   vertical={false}
                   strokeDasharray="3 3"
