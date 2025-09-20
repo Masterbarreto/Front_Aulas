@@ -140,9 +140,9 @@ export default function AulasListPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {aulasUnicas.map((aula) => (
+          {aulasUnicas.map((aula, index) => (
             <Card
-              key={aula._id}
+              key={aula._id || aula.aulaId || index}
               className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer"
               onClick={() => handleCardClick(aula)}
             >
