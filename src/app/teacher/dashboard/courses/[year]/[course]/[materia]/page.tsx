@@ -19,6 +19,7 @@ function capitalize(str: string): string {
 
 export default function AulasListPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const params = useParams();
   const year = params.year as string;
@@ -28,33 +29,47 @@ export default function AulasListPage() {
   useEffect(() => {
     fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
       .then((res) => res.json())
-      .then((data) => setAulas(Array.isArray(data) ? data : []))
-      .catch((error) => console.error('Erro ao buscar aulas:', error));
+      .then((data) => {
+        setAulas(Array.isArray(data) ? data : []);
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar aulas:', error);
+        setAulas([]);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   if (!year || !course || !materia) {
     return <p className="text-white">Parâmetros da URL ausentes.</p>;
   }
 
-  const aulasFiltradas = aulas.filter((aula) => {
-    const anoMatch = normalize(aula.anoEscolar) === normalize(year);
+  if (loading) {
+    return <p className="text-white">Carregando aulas...</p>;
+  }
 
-    // Lógica para o curso, que pode ser string ou array
-    const normalizedCourse = normalize(course);
-    const cursoMatch = (
-        (typeof aula.curso === 'string' && normalize(aula.curso) === normalizedCourse) ||
-        (Array.isArray(aula.cursos) && aula.cursos.some(c => normalize(c) === normalizedCourse))
-    );
+  const aulasFiltradas = aulas.filter((aula) => {
+    // 1. Filtro por ano escolar - Compara o número do ano (ex: "2" com "2-ano")
+    const yearNumber = year.split('-')[0];
+    const anoMatch = aula.anoEscolar === yearNumber;
+
+    // 2. Filtro por curso - Verifica se o curso da URL está no array de cursos da aula
+    const normalizedCourseParam = normalize(course);
+    const cursoMatch =
+      Array.isArray(aula.cursos) &&
+      aula.cursos.some((c: string) => normalize(c) === normalizedCourseParam);
     
+    // 3. Filtro por matéria
     const materiaMatch = normalize(aula.Materia as string) === normalize(materia);
     
-    // Validando apenas o filtro de ano por enquanto
-    return anoMatch;
+    return anoMatch && cursoMatch && materiaMatch;
   });
   
+  // Remove duplicatas baseado em título e descrição
   const aulasUnicas = aulasFiltradas.filter((aula, index, self) =>
     index === self.findIndex((a) => (
-      a.titulo === aula.titulo && a.DesAula === aula.DesAula
+      a.titulo === aula.titulo && 
+      a.DesAula === aula.DesAula &&
+      a.professor === aula.professor
     ))
   );
 
@@ -74,7 +89,9 @@ export default function AulasListPage() {
         onClick={() => router.back()}
       >
         <ArrowLeft className="h-6 w-6" />
-        <h1 className="text-2xl font-bold">Aulas de {materiaCapitalized} – {courseFormatted} ({yearFormatted} Ano)</h1>
+        <h1 className="text-2xl font-bold">
+          Aulas de {materiaCapitalized} – {courseFormatted} ({yearFormatted} Ano)
+        </h1>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
@@ -89,18 +106,34 @@ export default function AulasListPage() {
                 <CardTitle className="text-lg font-semibold">{aula.titulo}</CardTitle>
               </CardHeader>
               <CardContent className="flex-grow">
-                <p className="text-sm text-gray-400">{aula.Horario}</p>
+                <p className="text-sm text-gray-400">
+                  {aula.Horario ? `Horário: ${aula.Horario}` : 'Horário não definido'}
+                </p>
+                <p className="text-sm text-gray-400">
+                  Professor: {aula.professor || 'Não informado'}
+                </p>
+                <p className="text-sm text-gray-400">
+                  Matéria: {Array.isArray(aula.Materia) ? aula.Materia.join(', ') : aula.Materia || 'Não informado'}
+                </p>
                 <p className="text-xs text-gray-500 mt-2">
-                  Breve descrição: {aula.DesAula}
+                  {aula.DesAula || 'Sem descrição disponível'}
                 </p>
               </CardContent>
               <div className="p-4 pt-0 mt-auto">
-                 <MoreHorizontal className="text-gray-500" />
+                <MoreHorizontal className="text-gray-500" />
               </div>
             </Card>
           ))
         ) : (
-          <p>Nenhuma aula encontrada para este filtro.</p>
+          <div className="col-span-full text-center py-8">
+            <p className="text-lg text-gray-400 mb-2">
+              Nenhuma aula encontrada para este filtro.
+            </p>
+            <p className="text-sm text-gray-500">
+              Verifique se existem aulas cadastradas para: <br />
+              <strong>{materiaCapitalized}</strong> no curso <strong>{courseFormatted}</strong> do <strong>{yearFormatted} Ano</strong>
+            </p>
+          </div>
         )}
       </div>
     </div>
