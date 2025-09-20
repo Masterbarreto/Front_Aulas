@@ -117,13 +117,13 @@ export default function UploadPage() {
     // Matérias - sempre como string simples (uma única matéria)
     formData.append('materias', materia);
 
-    // Turmas - garantir que seja string ou array de strings
+    // Turmas - garantir que seja sempre um array JSON
     if (turma === 'all') {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
       formData.append('Turma', JSON.stringify(turmasParaEnviar));
     } else {
-      // Garantir que seja string usando template literal
-      formData.append('Turma', `${turma}`);
+      // Sempre envia como array de string
+      formData.append('Turma', JSON.stringify([turma]));
     }
     
     formData.append('professor', professor);
