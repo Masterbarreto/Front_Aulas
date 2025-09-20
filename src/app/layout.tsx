@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 export const metadata: Metadata = {
   title: 'Sub_Aulas',
   description: 'Sistema de Gestão de Substituição de Aulas',
+  icons: {
+    icon: '/Logo.png',
+  },
 };
 
 export default function RootLayout({
