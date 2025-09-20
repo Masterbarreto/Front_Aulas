@@ -19,14 +19,13 @@ export default function RelatorioPage() {
   useEffect(() => {
     async function fetchAulas() {
       try {
-        // Corrigido para buscar do endpoint de aulas concluídas
-        const response = await fetch('https://apisubaulas.onrender.com/api/v1/aulas/concluidas');
+        const response = await fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas');
         if (!response.ok) {
           throw new Error('Falha ao buscar as aulas concluídas.');
         }
         const data = await response.json();
-        // A API retorna um objeto { aulasConcluidas: [...] }
-        setAulas(Array.isArray(data.aulasConcluidas) ? data.aulasConcluidas : []);
+        // A API retorna um array diretamente
+        setAulas(Array.isArray(data) ? data : []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ocorreu um erro desconhecido.');
         setAulas([]);
