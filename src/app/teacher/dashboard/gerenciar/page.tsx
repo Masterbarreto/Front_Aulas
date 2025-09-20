@@ -231,7 +231,7 @@ export default function GerenciarPage() {
           </TableHeader>
           <TableBody>
             {aulas.map((aula, index) => (
-              <TableRow key={aula._id || index} className="border-gray-800">
+              <TableRow key={aula.aulaId || aula._id || index} className="border-gray-800">
                 <TableCell>{aula.titulo}</TableCell>
                 <TableCell>
                   <span
@@ -256,8 +256,8 @@ export default function GerenciarPage() {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleDelete(aula._id)}
-                    disabled={!aula._id}
+                    onClick={() => handleDelete(aula.aulaId || aula._id)}
+                    disabled={!aula.aulaId && !aula._id}
                   >
                     DELETAR
                   </Button>
