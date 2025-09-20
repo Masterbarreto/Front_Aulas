@@ -8,37 +8,37 @@ const coursesData = [
   {
     id: 'iot',
     title: 'IOT – Internet das Coisas',
-    imageUrl: 'https://picsum.photos/seed/iot/300/200',
+    imageUrl: '/iot.png',
   },
   {
     id: 'ti',
     title: 'TI – Informática',
-    imageUrl: 'https://picsum.photos/seed/tech/300/200',
+    imageUrl: '/ti.png',
   },
   {
     id: 'mmd',
     title: 'MMD – Multimídia',
-    imageUrl: 'https://picsum.photos/seed/multimedia/300/200',
+    imageUrl: '/mmd.png',
   },
   {
     id: 'cdd',
     title: 'CDD – Ciências de Dados',
-    imageUrl: 'https://picsum.photos/seed/data/300/200',
+    imageUrl: '/cdd.png',
   },
   {
     id: 'adm',
     title: 'ADM – Administração',
-    imageUrl: 'https://picsum.photos/seed/business/300/200',
+    imageUrl: '/adm.png',
   },
   {
     id: 'mkt',
     title: 'MKT – Marketing',
-    imageUrl: 'https://picsum.photos/seed/marketing/300/200',
+    imageUrl: '/mkt.png',
   },
   {
     id: 'ia',
     title: 'IA – Inteligência Artificial',
-    imageUrl: 'https://picsum.photos/seed/ai/300/200',
+    imageUrl: '/ia.png',
   },
 ];
 
