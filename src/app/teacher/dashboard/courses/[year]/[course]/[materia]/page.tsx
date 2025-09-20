@@ -1,58 +1,48 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Loader2, ArrowLeft, FileText } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { Loader2, ArrowLeft, FileText } from 'lucide-react';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 
-interface Aula {
-  _id?: string;
-  aulaId?: string;
-  titulo?: string;
-  Horario?: string;
-  DesAula?: string;
-  anoEscolar?: string;
-  cursos?: string[];
-  curso?: string;
-  Turma?: string;
-  Materia?: string;
-  materias?: string | string[];
-  professor?: string;
-  arquivos?: { nome: string }[];
-  arquivosIds?: string[];
+type AulaSimplificada = {
+  id?: string;
+  titulo: string;
+  descricao: string;
+  horario: string;
+  ano: number;
+  curso: string;
+  materia: string;
+  professor: string;
+};
+
+// função para normalizar strings (sem acento, minúsculo, sem espaços)
+function normalize(str: string): string {
+  return str
+    ? str
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/\s+/g, '')
+    : '';
 }
 
-// Normaliza strings (minúsculas, sem espaços, sem acentos, sem hífen)
-function normalize(str?: string) {
-  return (str || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/\s+/g, "")
-    .replace(/-/g, "");
-}
-
-// Corrige mapeamento de anos (API manda "2" mas pode significar 1º ano)
-function matchAno(anoApi?: string, anoParam?: string) {
-  if (!anoApi || !anoParam) return false;
-  // Extrai apenas o número do ano da URL (ex: '1-ano' -> '1')
-  const paramNum = parseInt(anoParam.replace(/\D/g, ""), 10);
-  const apiNum = parseInt(anoApi, 10);
-
-  return apiNum === paramNum || apiNum - 1 === paramNum;
+// ajusta ano da API para o ano da URL
+function matchAno(anoApi: number, anoParam: number): boolean {
+  return anoApi === anoParam;
 }
 
 export default function AulasListPage() {
   const params = useParams();
   const router = useRouter();
 
-  const [aulas, setAulas] = useState<Aula[]>([]);
+  const [aulas, setAulas] = useState<AulaSimplificada[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,22 +50,40 @@ export default function AulasListPage() {
   const course = params.course as string;
   const materia = params.materia as string;
 
+  const anoParam = parseInt(year.replace(/\D/g, ''), 10);
+
   useEffect(() => {
     async function fetchAulas() {
       setLoading(true);
       setError(null);
       try {
         const res = await fetch(
-          "https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas"
+          'https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas'
         );
         if (!res.ok) {
-          throw new Error("Falha ao buscar dados da API.");
+          throw new Error('Falha ao buscar dados da API.');
         }
         const data = await res.json();
-        setAulas(Array.isArray(data) ? data : []);
+        if (!Array.isArray(data)) {
+          throw new Error('A API não retornou um array de aulas.');
+        }
+
+        const aulasSimplificadas: AulaSimplificada[] = data.map(
+          (aula: any) => ({
+            id: aula.aulaId,
+            titulo: aula.titulo ?? 'Sem título',
+            descricao: aula.DesAula ?? 'Sem descrição',
+            horario: aula.Horario ?? 'N/I',
+            ano: parseInt(String(aula.anoEscolar || '0').replace(/\D/g, ''), 10),
+            curso: Array.isArray(aula.cursos) ? aula.cursos.join(', ') : aula.curso,
+            materia: Array.isArray(aula.materias) ? aula.materias.join(', ') : aula.Materia,
+            professor: aula.professor ?? 'N/I',
+          })
+        );
+        setAulas(aulasSimplificadas);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Ocorreu um erro desconhecido."
+          err instanceof Error ? err.message : 'Ocorreu um erro desconhecido.'
         );
         setAulas([]);
       } finally {
@@ -85,38 +93,29 @@ export default function AulasListPage() {
     fetchAulas();
   }, []);
 
-  // Filtro robusto
   const aulasFiltradas = aulas.filter((aula) => {
-    if (!year || !course || !materia) return false;
+    if (!course || !materia) return false;
 
-    const anoOk = matchAno(aula.anoEscolar, year);
-
-    const cursoApi = Array.isArray(aula.cursos) ? aula.cursos[0] : aula.curso;
-    const cursoOk = normalize(cursoApi).includes(normalize(course));
-
-    const materiaApi = aula.Materia || aula.materias;
-    let materiaOk = false;
-    if (typeof materiaApi === "string") {
-      materiaOk = normalize(materiaApi) === normalize(materia);
-    } else if (Array.isArray(materiaApi)) {
-      materiaOk = materiaApi.some(m => normalize(m) === normalize(materia));
-    }
+    const anoOk = matchAno(aula.ano, anoParam);
+    const cursoOk = normalize(aula.curso).includes(normalize(course as string));
+    const materiaOk = normalize(aula.materia).includes(normalize(materia as string));
 
     return anoOk && cursoOk && materiaOk;
   });
-  
+
   const aulasUnicas = aulasFiltradas.filter(
-    (aula, index, self) =>
-      index === self.findIndex((a) => a.aulaId === aula.aulaId)
+    (aula, index, self) => index === self.findIndex((a) => a.id === aula.id)
   );
 
-  const handleCardClick = (aula: Aula) => {
-    const id = aula.aulaId || aula._id;
+  const handleCardClick = (aula: AulaSimplificada) => {
+    const id = aula.id;
     if (id) {
       router.push(`/teacher/dashboard/aulas/${id}`);
+    } else {
+      console.error('ID da aula não encontrado para navegação.');
     }
   };
-  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-40 text-white">
@@ -138,7 +137,8 @@ export default function AulasListPage() {
       >
         <ArrowLeft className="h-6 w-6" />
         <h1 className="text-2xl font-bold">
-          Aulas de {decodeURIComponent(materia)} - {decodeURIComponent(course).toUpperCase()}
+          Aulas de {decodeURIComponent(materia as string)} -{' '}
+          {decodeURIComponent(course as string).toUpperCase()}
         </h1>
       </div>
 
@@ -155,27 +155,27 @@ export default function AulasListPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {aulasUnicas.map((aula) => (
             <Card
-              key={aula.aulaId || aula._id}
+              key={aula.id}
               className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer"
               onClick={() => handleCardClick(aula)}
             >
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <FileText size={20} />
-                  {aula.titulo || "Tema da Aula"}
+                  {aula.titulo}
                 </CardTitle>
                 <CardDescription className="text-sm text-gray-400 pt-1">
-                  {aula.DesAula || 'Sem descrição.'}
+                  {aula.descricao}
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Professor:</span>
-                  <span className="font-medium">{aula.professor || "N/I"}</span>
+                  <span className="font-medium">{aula.professor}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Horário:</span>
-                  <span className="font-medium">{aula.Horario || "N/I"}</span>
+                  <span className="font-medium">{aula.horario}</span>
                 </div>
               </CardContent>
             </Card>
