@@ -24,13 +24,10 @@ import type { Aula } from '@/lib/types';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { format, parseISO, getDay } from 'date-fns';
 
 const chartConfig: ChartConfig = {
   aulas: {
-    label: 'Aulas',
-    color: 'hsl(var(--chart-1))',
-  },
-  value: {
     label: 'Aulas',
     color: 'hsl(var(--chart-1))',
   },
@@ -45,8 +42,6 @@ const barChartConfig: ChartConfig = {
 
 export default function GerenciarPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
-  const [areaChartData, setAreaChartData] = useState([]);
-  const [barChartData, setBarChartData] = useState([]);
   const router = useRouter();
 
   const fetchAulas = () => {
@@ -57,64 +52,73 @@ export default function GerenciarPage() {
       fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas').then(
         (res) => res.json()
       ),
-      fetch(
-        'https://apisubaulas.onrender.com/api/v1/graficos/aulas-por-dia'
-      ).then((res) => res.json()),
-      fetch(
-        'https://apisubaulas.onrender.com/api/v1/graficos/top-5-materias'
-      ).then((res) => res.json()),
     ])
-      .then(
-        ([
-          aulasNaoConcluidasData,
-          aulasConcluidasData,
-          areaData,
-          barData,
-        ]) => {
-          const naoConcluidas = Array.isArray(aulasNaoConcluidasData)
-            ? aulasNaoConcluidasData
-            : [];
-          const concluidas = Array.isArray(aulasConcluidasData)
-            ? aulasConcluidasData
-            : [];
-          setAulas([...naoConcluidas, ...concluidas]);
-
-          if (Array.isArray(areaData)) {
-            const daysOrder = [
-              'Seg',
-              'Ter',
-              'Qua',
-              'Qui',
-              'Sex',
-              'Sáb',
-              'Dom',
-            ];
-            areaData.sort(
-              (a, b) => daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day)
-            );
-            setAreaChartData(areaData);
-          } else {
-            setAreaChartData([]);
-          }
-
-          if (Array.isArray(barData)) {
-            setBarChartData(barData);
-          } else {
-            setBarChartData([]);
-          }
-        }
-      )
+      .then(([aulasNaoConcluidasData, aulasConcluidasData]) => {
+        const naoConcluidas = Array.isArray(aulasNaoConcluidasData)
+          ? aulasNaoConcluidasData
+          : [];
+        const concluidas = Array.isArray(aulasConcluidasData)
+          ? aulasConcluidasData
+          : [];
+        setAulas([...naoConcluidas, ...concluidas]);
+      })
       .catch((error) => {
         console.error('Erro ao buscar dados:', error);
         setAulas([]);
-        setAreaChartData([]);
-        setBarChartData([]);
       });
   };
 
   useEffect(() => {
     fetchAulas();
   }, []);
+
+  const areaChartData = useMemo(() => {
+    const aulasPorDia: { [key: string]: number } = {
+      Dom: 0,
+      Seg: 0,
+      Ter: 0,
+      Qua: 0,
+      Qui: 0,
+      Sex: 0,
+      Sáb: 0,
+    };
+    const dayMapping = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+    aulas.forEach((aula) => {
+      if (aula.createdAt) {
+        try {
+          const date = parseISO(aula.createdAt);
+          const dayOfWeek = getDay(date);
+          const dayName = dayMapping[dayOfWeek];
+          if (dayName) {
+            aulasPorDia[dayName]++;
+          }
+        } catch (e) {
+          console.error('Data inválida:', aula.createdAt);
+        }
+      }
+    });
+
+    return dayMapping.map((day) => ({ day, value: aulasPorDia[day] }));
+  }, [aulas]);
+
+  const barChartData = useMemo(() => {
+    const substituicoesPorMateria: { [key: string]: number } = {};
+
+    aulas
+      .filter((aula) => aula.concluida)
+      .forEach((aula) => {
+        const materia = Array.isArray(aula.materias) ? aula.materias[0] : (aula.materias || aula.Materia || 'N/A') as string;
+        if (materia !== 'N/A') {
+          substituicoesPorMateria[materia] = (substituicoesPorMateria[materia] || 0) + 1;
+        }
+      });
+    
+    return Object.entries(substituicoesPorMateria)
+      .map(([materia, substituicoes]) => ({ materia, substituicoes }))
+      .sort((a, b) => b.substituicoes - a.substituicoes)
+      .slice(0, 5);
+  }, [aulas]);
 
   const handleRowClick = (aula: Aula) => {
     const id = aula.aulaId || aula._id;
@@ -136,7 +140,7 @@ export default function GerenciarPage() {
   };
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
-    e.stopPropagation(); // Impede que o evento de clique na linha seja disparado
+    e.stopPropagation();
     if (!id) {
       alert('ID da aula não encontrado. Não é possível deletar.');
       return;
@@ -178,13 +182,12 @@ export default function GerenciarPage() {
 
   function formatarData(dataString: string) {
     if (!dataString) return 'Sem data';
-    const data = new Date(dataString);
-    if (!isNaN(data.getTime())) {
-      return new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(
-        data
-      );
+    try {
+      const data = parseISO(dataString);
+      return format(data, 'dd/MM/yyyy');
+    } catch {
+      return 'Data inválida';
     }
-    return 'Data inválida';
   }
 
   return (
