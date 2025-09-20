@@ -1,146 +1,173 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, MoreHorizontal } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { Aula } from '@/lib/types';
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import type { Aula } from "@/lib/types";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
-function capitalize(str: string): string {
-  if (!str) return '';
-  return str.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+type AulaSimplificada = {
+  _id: string;
+  aulaId: string;
+  titulo: string;
+  DesAula: string;
+  Horario: string;
+  anoEscolar: string;
+  cursos?: string[];
+  Materia: string;
+  materias?: string | string[];
+  professor: string;
+};
+
+// Função para normalizar strings (remover acentos, converter para minúsculas)
+function normalizeString(str: string | undefined | null): string {
+  if (!str) return "";
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 }
 
 export default function AulasListPage() {
-  const [aulas, setAulas] = useState<Aula[]>([]);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
   const params = useParams();
+  const router = useRouter();
   const year = params.year as string;
   const course = params.course as string;
   const materia = params.materia as string;
 
+  const [aulas, setAulas] = useState<AulaSimplificada[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Extrai o número do ano do parâmetro da URL (ex: "1-ano" -> 1)
+  const anoParam = parseInt(year?.replace(/\D/g, "") || "0", 10);
+  const courseParamNorm = normalizeString(course);
+  const materiaParamNorm = normalizeString(materia);
+
   useEffect(() => {
-    fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
-      .then((res) => {
+    async function fetchAulas() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(
+          "https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas"
+        );
         if (!res.ok) {
-          throw new Error('Falha ao buscar dados da API');
+          throw new Error("Falha ao buscar dados da API.");
         }
-        return res.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setAulas(data);
-        } else {
-          console.error('API não retornou um array de aulas:', data);
-          setAulas([]);
-        }
-      })
-      .catch((error) => {
-        console.error('Erro ao buscar aulas:', error);
+        const data = await res.json();
+        setAulas(Array.isArray(data) ? data : []);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Ocorreu um erro desconhecido."
+        );
         setAulas([]);
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAulas();
   }, []);
 
-  if (loading) {
-    return <p className="text-white text-center">Carregando aulas...</p>;
-  }
-  
-  const aulasUnicas = aulas.filter((aula, index, self) =>
-    index === self.findIndex((a) => (
-      a.titulo === aula.titulo && 
-      a.DesAula === aula.DesAula &&
-      a.professor === aula.professor
-    ))
+  const aulasFiltradas = aulas.filter((aula) => {
+    // 1. Filtro de Ano
+    const anoApi = parseInt(aula.anoEscolar, 10);
+    const anoMatch = anoApi === anoParam;
+
+    // 2. Filtro de Curso
+    const cursoMatch =
+      aula.cursos?.some((c) => normalizeString(c).includes(courseParamNorm)) ??
+      false;
+
+    // 3. Filtro de Matéria
+    let materiaApiNorm = normalizeString(aula.Materia);
+    if (!materiaApiNorm && aula.materias) {
+      if (Array.isArray(aula.materias)) {
+        materiaApiNorm = normalizeString(aula.materias[0]);
+      } else {
+        materiaApiNorm = normalizeString(aula.materias);
+      }
+    }
+    const materiaMatch = materiaApiNorm.includes(materiaParamNorm);
+
+    return anoMatch && cursoMatch && materiaMatch;
+  });
+
+  // Remove duplicatas com base no ID da aula
+  const aulasUnicas = aulasFiltradas.filter(
+    (aula, index, self) =>
+      index === self.findIndex((a) => a.aulaId === aula.aulaId)
   );
 
-  const handleClick = (aula: Aula) => {
-    const id = aula.aulaId || aula._id;
-    router.push(`/teacher/dashboard/aulas/${id}`);
-  };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-40 text-white">
+        <Loader2 className="animate-spin w-6 h-6" />
+        <span className="ml-2">Carregando aulas...</span>
+      </div>
+    );
+  }
 
-  const materiaCapitalized = capitalize(materia);
-  const courseFormatted = course.toUpperCase();
-  const yearFormatted = year ? year.replace('-', 'º ') : '';
-
-  const yearNumber = year ? year.split('-')[0] : '';
+  if (error) {
+    return <p className="text-red-500">Erro: {error}</p>;
+  }
 
   return (
-    <div className="flex flex-col text-white">
+    <div className="p-4 text-white">
       <div
         className="flex items-center gap-4 mb-8 cursor-pointer"
         onClick={() => router.back()}
       >
         <ArrowLeft className="h-6 w-6" />
         <h1 className="text-2xl font-bold">
-          Aulas de {materiaCapitalized} – {courseFormatted} ({yearFormatted} Ano)
+          Aulas de {decodeURIComponent(materia)} - {decodeURIComponent(course).toUpperCase()} (
+          {anoParam}º ano)
         </h1>
       </div>
-      
-      {/* Bloco de depuração */}
-      <div className="bg-red-900/50 border border-red-500 text-white p-4 rounded-md mb-6 text-sm">
-        <h3 className="font-bold text-lg mb-2">Informações de Depuração</h3>
-        <p><strong>Filtros da URL:</strong></p>
-        <ul className="list-disc list-inside">
-          <li>Ano (URL): <strong>{year}</strong> (Número esperado: <strong>{yearNumber}</strong>)</li>
-          <li>Curso (URL): <strong>{course}</strong></li>
-          <li>Matéria (URL): <strong>{materia}</strong></li>
-        </ul>
-        <p className="mt-2"><strong>Total de aulas recebidas da API:</strong> {aulas.length}</p>
-        <p><strong>Total de aulas únicas (antes do filtro):</strong> {aulasUnicas.length}</p>
-      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {aulasUnicas.length > 0 ? (
-          aulasUnicas.map((aula, index) => (
+      {aulasUnicas.length === 0 ? (
+        <div className="flex flex-col items-center justify-center text-center bg-[#111115] border-gray-800 rounded-lg p-10">
+          <p className="text-lg font-semibold text-gray-300">
+            Nenhuma aula encontrada
+          </p>
+          <p className="text-gray-400 mt-2">
+            Não há aulas disponíveis para os filtros selecionados.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {aulasUnicas.map((aula) => (
             <Card
-              key={`${aula._id}-${index}`}
-              className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer flex flex-col justify-between"
-              onClick={() => handleClick(aula)}
+              key={aula.aulaId}
+              className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer"
+              onClick={() => router.push(`/teacher/dashboard/aulas/${aula.aulaId}`)}
             >
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">
-                  {aula.titulo}
-                </CardTitle>
+                <CardTitle className="text-lg">{aula.titulo}</CardTitle>
+                <CardDescription className="text-sm text-gray-400 pt-1">
+                  {aula.DesAula}
+                </CardDescription>
               </CardHeader>
-              <CardContent className="flex-grow text-xs text-gray-400 space-y-1">
-                <p className="text-sm text-gray-300">
-                  Professor: {aula.professor || 'N/I'}
-                </p>
-                <p className="text-sm text-gray-300">
-                  Horário: {aula.Horario || 'N/I'}
-                </p>
-                <div className="border-t border-gray-700 my-2"></div>
-                <p className="mt-2 text-gray-500 truncate">
-                  {aula.DesAula || 'Sem descrição.'}
-                </p>
-                
-                {/* Dados da API para depuração */}
-                <div className="mt-4 pt-2 border-t border-dashed border-gray-600 text-xs text-yellow-300 space-y-1">
-                    <p><strong>Ano (API):</strong> {aula.anoEscolar}</p>
-                    <p><strong>Cursos (API):</strong> {JSON.stringify(aula.cursos)}</p>
-                    <p><strong>Materia (API):</strong> {aula.Materia}</p>
-                    <p><strong>Materias (API):</strong> {JSON.stringify(aula.materias)}</p>
+              <CardContent className="flex flex-col gap-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Professor:</span>
+                  <span className="font-medium">{aula.professor}</span>
                 </div>
-
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Horário:</span>
+                  <span className="font-medium">{aula.Horario}</span>
+                </div>
               </CardContent>
-              <div className="p-4 pt-0 mt-auto">
-                <MoreHorizontal className="text-gray-500" />
-              </div>
             </Card>
-          ))
-        ) : (
-          <div className="col-span-full text-center py-8">
-            <p className="text-lg text-gray-400 mb-2">
-              Nenhuma aula encontrada para este filtro.
-            </p>
-            <p className="text-sm text-gray-500">
-              Filtros: <strong>{materiaCapitalized}</strong> no curso <strong>{courseFormatted}</strong> do <strong>{yearFormatted} Ano</strong>
-            </p>
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
