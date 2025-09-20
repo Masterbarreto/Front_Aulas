@@ -100,9 +100,8 @@ export default function UploadPage() {
     e.preventDefault();
 
     const formData = new FormData();
-
+    
     const anoEscolarValue = anoEscolar ? anoEscolar.split('-')[0] : '';
-
     formData.append('anoEscolar', anoEscolarValue);
     formData.append('curso', JSON.stringify([curso]));
     
@@ -119,8 +118,8 @@ export default function UploadPage() {
     if (diaAula) {
       formData.append('DayAula', format(diaAula, 'yyyy-MM-dd'));
     }
-    formData.append('horario', horario);
-    formData.append('descricao', descricao);
+    formData.append('Horario', horario);
+    formData.append('DesAula', descricao);
 
     const linksParaEnviar = structuredLinks.map(link => ({ name: link.name, url: link.url }));
     formData.append('LinkAula', JSON.stringify(linksParaEnviar));
