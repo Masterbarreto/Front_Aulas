@@ -6,12 +6,6 @@ import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 
-// Função para normalizar strings para comparação
-function normalize(str: string | undefined): string {
-  if (!str) return '';
-  return str.toLowerCase().replace(/[\s-]/g, '');
-}
-
 export default function AulasListPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,21 +42,8 @@ export default function AulasListPage() {
     return <p className="text-white">Carregando aulas...</p>;
   }
 
-  const aulasFiltradas = aulas.filter((aula) => {
-    // 1. Filtro de Ano
-    const yearFromUrl = year.split('-')[0]; // Extrai "2" de "2-ano"
-    const anoMatch = aula.anoEscolar === yearFromUrl;
-
-    // 2. Filtro de Curso
-    const normalizedCourseFromUrl = normalize(course);
-    const cursoMatch = Array.isArray(aula.cursos) && aula.cursos.some(c => normalize(c) === normalizedCourseFromUrl);
-
-    // 3. Filtro de Matéria
-    const normalizedMateriaFromUrl = normalize(materia);
-    const materiaMatch = normalize(aula.Materia as string) === normalizedMateriaFromUrl;
-
-    return anoMatch && cursoMatch && materiaMatch;
-  });
+  // Filtros removidos para depuração
+  const aulasFiltradas = aulas;
 
   const handleClick = (aula: Aula) => {
     const id = aula.aulaId || aula._id;
@@ -101,18 +82,22 @@ export default function AulasListPage() {
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">{aula.titulo}</CardTitle>
               </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-sm text-gray-400">
-                  {aula.Horario ? `Horário: ${aula.Horario}` : 'Horário não definido'}
+              <CardContent className="flex-grow text-xs text-gray-400 space-y-1">
+                <p className="text-sm text-gray-300">
+                  Professor: {aula.professor || 'N/I'}
                 </p>
-                <p className="text-sm text-gray-400">
-                  Professor: {aula.professor || 'Não informado'}
+                <div className="border-t border-gray-700 my-2"></div>
+                <p>
+                  <strong>Ano Escolar (API):</strong> {aula.anoEscolar}
                 </p>
-                <p className="text-sm text-gray-400">
-                  Matéria: {Array.isArray(aula.Materia) ? aula.Materia.join(', ') : (aula.Materia || 'Não informado')}
+                <p>
+                  <strong>Cursos (API):</strong> {Array.isArray(aula.cursos) ? aula.cursos.join(', ') : 'N/D'}
                 </p>
-                <p className="text-xs text-gray-500 mt-2">
-                  {aula.DesAula || 'Sem descrição disponível'}
+                 <p>
+                  <strong>Matéria (API):</strong> {aula.Materia || aula.materias || 'N/D'}
+                </p>
+                 <p className="mt-2 text-gray-500 truncate">
+                  {aula.DesAula || 'Sem descrição.'}
                 </p>
               </CardContent>
               <div className="p-4 pt-0 mt-auto">
