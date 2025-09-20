@@ -110,6 +110,25 @@ export default function GerenciarPage() {
     return 'Data inválida';
   }
 
+  // Função para formatar o campo de matéria
+  function formatarMateria(materia: string | string[] | undefined) {
+    if (!materia) return 'N/A';
+    if (Array.isArray(materia)) return materia.join(', ');
+
+    // Tenta tratar como JSON stringificado
+    try {
+      const parsed = JSON.parse(materia);
+      if (Array.isArray(parsed)) {
+        return parsed.join(', ');
+      }
+    } catch (e) {
+      // Não é um JSON válido, retorna a string como está
+      return materia;
+    }
+    
+    return materia;
+  }
+
   return (
     <div className="flex flex-col text-white">
       <h1 className="text-3xl font-bold mb-6">Gerenciar Atividades</h1>
@@ -246,9 +265,7 @@ export default function GerenciarPage() {
                 </TableCell>
                 <TableCell>{aula.Turma}</TableCell>
                 <TableCell>
-                  {aula.materias || (Array.isArray(aula.Materia)
-                    ? aula.Materia.join(', ')
-                    : aula.Materia)}
+                  {formatarMateria(aula.materias || aula.Materia)}
                 </TableCell>
                 <TableCell>
                   <Button
