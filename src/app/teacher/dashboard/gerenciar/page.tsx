@@ -249,7 +249,7 @@ export default function GerenciarPage() {
               config={barChartConfig}
               className="h-[150px] w-full"
             >
-              <BarChart data={barChartData} margin={{ left: -10, right: 20, top: 10, bottom: -10 }} barGap={4} barCategoryGap="20%">
+              <BarChart data={barChartData} margin={{ left: -10, right: 20, top: 10, bottom: -10 }} barGap={4} barCategoryGap="35%">
                 <CartesianGrid
                   vertical={false}
                   strokeDasharray="3 3"
