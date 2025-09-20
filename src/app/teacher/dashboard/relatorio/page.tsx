@@ -19,12 +19,14 @@ export default function RelatorioPage() {
   useEffect(() => {
     async function fetchAulas() {
       try {
-        const response = await fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas');
+        // Corrigido para buscar do endpoint de aulas concluídas
+        const response = await fetch('https://apisubaulas.onrender.com/api/v1/aulas/concluidas');
         if (!response.ok) {
-          throw new Error('Falha ao buscar as aulas.');
+          throw new Error('Falha ao buscar as aulas concluídas.');
         }
         const data = await response.json();
-        setAulas(Array.isArray(data) ? data : []);
+        // A API retorna um objeto { aulasConcluidas: [...] }
+        setAulas(Array.isArray(data.aulasConcluidas) ? data.aulasConcluidas : []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ocorreu um erro desconhecido.');
         setAulas([]);
@@ -43,8 +45,6 @@ export default function RelatorioPage() {
     return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
   }
   
-  const aulasConcluidas = aulas.filter(aula => aula.concluida);
-
   return (
     <div className="flex flex-col text-white">
       <h1 className="text-3xl font-bold mb-6">Relatório de Aulas Concluídas</h1>
@@ -62,8 +62,8 @@ export default function RelatorioPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {aulasConcluidas.length > 0 ? (
-                aulasConcluidas.map((aula) => (
+              {aulas.length > 0 ? (
+                aulas.map((aula) => (
                   <TableRow key={aula._id} className="border-gray-800">
                     <TableCell>{aula.titulo}</TableCell>
                     <TableCell>
