@@ -239,7 +239,7 @@ export default function GerenciarPage() {
         </Card>
         <Card className="bg-[#111115] border-gray-800">
           <CardHeader>
-            <CardTitle className="whitespace-nowrap">
+            <CardTitle>
               Aulas Com Mais Substituição
             </CardTitle>
           </CardHeader>
