@@ -6,6 +6,15 @@ import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 
+// Função para normalizar strings (minúsculas, sem acentos, etc.)
+function normalize(str: string | undefined): string {
+  if (!str) return '';
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
 export default function AulasListPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,17 +51,33 @@ export default function AulasListPage() {
     return <p className="text-white">Carregando aulas...</p>;
   }
 
-  // Filtros removidos para depuração
-  const aulasFiltradas = aulas;
+  const aulasFiltradas = aulas.filter((aula) => {
+    // 1. Filtro de Ano
+    const yearFromUrl = year ? year.split('-')[0] : '';
+    const anoMatch = aula.anoEscolar === yearFromUrl;
+
+    // 2. Filtro de Curso
+    const courseFromUrl = normalize(course);
+    const cursoMatch =
+      Array.isArray(aula.cursos) &&
+      aula.cursos.some(c => normalize(c.split(' ')[0]) === courseFromUrl);
+
+    // 3. Filtro de Matéria
+    const materiaFromUrl = normalize(materia);
+    const materiaApi = normalize(aula.Materia as string) || normalize(aula.materias as string);
+    const materiaMatch = materiaApi === materiaFromUrl;
+
+    return anoMatch && cursoMatch && materiaMatch;
+  });
 
   const handleClick = (aula: Aula) => {
     const id = aula.aulaId || aula._id;
     router.push(`/teacher/dashboard/aulas/${id}`);
   };
-  
+
   function capitalize(str: string): string {
     if (!str) return '';
-    return str.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return str.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
   }
 
   const materiaCapitalized = capitalize(materia);
@@ -67,7 +92,8 @@ export default function AulasListPage() {
       >
         <ArrowLeft className="h-6 w-6" />
         <h1 className="text-2xl font-bold">
-          Aulas de {materiaCapitalized} – {courseFormatted} ({yearFormatted} Ano)
+          Aulas de {materiaCapitalized} – {courseFormatted} ({yearFormatted}{' '}
+          Ano)
         </h1>
       </div>
 
@@ -80,23 +106,16 @@ export default function AulasListPage() {
               onClick={() => handleClick(aula)}
             >
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">{aula.titulo}</CardTitle>
+                <CardTitle className="text-lg font-semibold">
+                  {aula.titulo}
+                </CardTitle>
               </CardHeader>
               <CardContent className="flex-grow text-xs text-gray-400 space-y-1">
                 <p className="text-sm text-gray-300">
                   Professor: {aula.professor || 'N/I'}
                 </p>
                 <div className="border-t border-gray-700 my-2"></div>
-                <p>
-                  <strong>Ano Escolar (API):</strong> {aula.anoEscolar}
-                </p>
-                <p>
-                  <strong>Cursos (API):</strong> {Array.isArray(aula.cursos) ? aula.cursos.join(', ') : 'N/D'}
-                </p>
-                 <p>
-                  <strong>Matéria (API):</strong> {aula.Materia || aula.materias || 'N/D'}
-                </p>
-                 <p className="mt-2 text-gray-500 truncate">
+                <p className="mt-2 text-gray-500 truncate">
                   {aula.DesAula || 'Sem descrição.'}
                 </p>
               </CardContent>
