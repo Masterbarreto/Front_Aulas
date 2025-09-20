@@ -20,23 +20,21 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
     setIsLoggedIn(loggedIn);
-    setIsLoading(false);
-
-    const protectedRoutes = ['/teacher/dashboard/upload', '/teacher/dashboard/gerenciar'];
-    const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-
-    if (!loggedIn && isProtectedRoute) {
-      router.push('/teacher/dashboard');
+    // Definir cookie para o middleware usar
+    if (loggedIn) {
+      document.cookie = "isLoggedIn=true; path=/";
+    } else {
+      document.cookie = "isLoggedIn=false; path=/; max-age=0";
     }
-  }, [pathname, router]);
+  }, [pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
+    document.cookie = "isLoggedIn=false; path=/; max-age=0"; // Remove o cookie
     setIsLoggedIn(false);
     router.push('/teacher/dashboard');
   };
@@ -55,15 +53,6 @@ export default function DashboardLayout({
     { href: '/teacher/dashboard/gerenciar', icon: Settings, label: 'Gerenciar Atividades' },
   ];
   
-  const protectedRoutes = ['/teacher/dashboard/upload', '/teacher/dashboard/gerenciar'];
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-
-  if (isLoading) {
-    return null; 
-  }
-
-  const canRenderChildren = !isProtectedRoute || isLoggedIn;
-
   return (
     <div className="flex min-h-screen w-full bg-[#1C1C24] text-white">
       <aside className="w-64 flex-col border-r border-gray-800 bg-[#111115] p-4 hidden md:flex">
@@ -125,7 +114,7 @@ export default function DashboardLayout({
         </div>
       </aside>
       <div className="flex flex-1 flex-col">
-        <main className="flex-1 p-6">{canRenderChildren ? children : null}</main>
+        <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
   );

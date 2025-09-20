@@ -53,6 +53,7 @@ export default function LoginPage() {
 
       // Sucesso no login
       localStorage.setItem('isLoggedIn', 'true');
+      document.cookie = "isLoggedIn=true; path=/"; // Define o cookie para o middleware
       router.push('/teacher/dashboard');
     } catch (error) {
       if (error instanceof Error) {
