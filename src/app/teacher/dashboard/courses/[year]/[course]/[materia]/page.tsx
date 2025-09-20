@@ -60,16 +60,20 @@ export default function AulasListPage() {
   // Lógica de filtro robusta no frontend
   const aulasFiltradas = aulas.filter((aula) => {
     // 1. Filtro por ano escolar
-    const anoMatch = normalize(aula.anoEscolar) === normalize(year.split('-')[0]);
+    const anoMatch = aula.anoEscolar === year.split('-')[0];
 
     // 2. Filtro por curso (robusto)
     const normalizedCourseParam = normalize(course);
-    const cursoMatch = Array.isArray(aula.cursos) && aula.cursos.some(c => normalize(c).includes(normalizedCourseParam));
-    
+    const cursoMatch =
+      Array.isArray(aula.cursos) &&
+      aula.cursos.some((c) => normalize(c).includes(normalizedCourseParam));
+
     // 3. Filtro por matéria (robusto)
     const normalizedMateriaParam = normalize(materia);
-    const materiaApi = aula.materias || aula.Materia;
-    const materiaMatch = typeof materiaApi === 'string' && normalize(materiaApi) === normalizedMateriaParam;
+    const materiaApi = aula.Materia || aula.materias;
+    const materiaMatch =
+      typeof materiaApi === 'string' &&
+      normalize(materiaApi) === normalizedMateriaParam;
 
     return anoMatch && cursoMatch && materiaMatch;
   });
