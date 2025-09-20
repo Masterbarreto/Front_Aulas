@@ -24,7 +24,7 @@ import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 
 const chartConfig: ChartConfig = {
   aulas: {
@@ -82,25 +82,36 @@ export default function GerenciarPage() {
           setAulas([...naoConcluidas, ...concluidas]);
 
           if (Array.isArray(relatorioSemanal)) {
-            const dayOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            
             const dayShiftMap: { [key: string]: string } = {
-                'Dom': 'Sáb', 'Seg': 'Dom', 'Ter': 'Seg', 'Qua': 'Ter', 'Qui': 'Qua', 'Sex': 'Qui', 'Sáb': 'Sex'
+              Dom: 'Sáb',
+              Seg: 'Dom',
+              Ter: 'Seg',
+              Qua: 'Ter',
+              Qui: 'Qua',
+              Sex: 'Qui',
+              Sáb: 'Sex',
             };
+            const displayOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            const dataMap = new Map(
+              relatorioSemanal.map((item) => [item.dia, item.aulas || 0])
+            );
 
-            const dataMap = new Map(relatorioSemanal.map(item => [item.dia, item.aulas || 0]));
+            const finalData = displayOrder.map((day) => ({
+              day: day,
+              value: dataMap.get(
+                Object.keys(dayShiftMap).find(
+                  (key) => dayShiftMap[key] === day
+                )
+              ) || dataMap.get(day) || 0,
+            }));
             
-            const finalData = dayOrder.map(originalDay => {
-                const shiftedDay = dayShiftMap[originalDay];
-                return {
-                    day: shiftedDay,
-                    value: dataMap.get(originalDay) || 0,
-                };
-            }).sort((a,b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
+            const reorderedFinalData = relatorioSemanal.map(item => ({
+              day: dayShiftMap[item.dia] || item.dia,
+              value: item.aulas || 0,
+            })).sort((a, b) => displayOrder.indexOf(a.day) - displayOrder.indexOf(b.day));
 
-            setAreaChartData(finalData as any);
+            setAreaChartData(reorderedFinalData as any);
           }
-
 
           if (Array.isArray(topMaterias)) {
             const formattedTopMaterias = topMaterias.map((item: any) => ({
@@ -184,11 +195,11 @@ export default function GerenciarPage() {
     }
   };
 
-  function formatarData(dataString: string) {
+  function formatarData(dataString: string | undefined) {
     if (!dataString) return 'Sem data';
     try {
-      // Adicionar o deslocamento de fuso horário local para evitar que a data mude
       const date = new Date(dataString);
+      // Adiciona o deslocamento do fuso horário para garantir que a data não mude.
       const userTimezoneOffset = date.getTimezoneOffset() * 60000;
       const correctedDate = new Date(date.getTime() + userTimezoneOffset);
       return format(correctedDate, 'dd/MM/yyyy');
@@ -364,5 +375,3 @@ export default function GerenciarPage() {
     </div>
   );
 }
-
-    
