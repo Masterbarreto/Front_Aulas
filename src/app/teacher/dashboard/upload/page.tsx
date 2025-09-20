@@ -106,14 +106,14 @@ export default function UploadPage() {
     
     // Send as simple strings as per backend validation
     formData.append('curso', curso);
-    formData.append('materias', materia); // Corrected field name
+    formData.append('materias', materia);
 
     // Handle 'Turma' specifically
     if (turma === 'all') {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
       formData.append('Turma', JSON.stringify(turmasParaEnviar));
     } else {
-      formData.append('Turma', turma); // Send as a simple string
+      formData.append('Turma', String(turma));
     }
     
     formData.append('professor', professor);
