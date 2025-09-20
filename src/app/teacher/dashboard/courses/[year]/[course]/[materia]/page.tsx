@@ -56,7 +56,7 @@ export default function AulasListPage() {
     const normalizedCourseParam = normalize(course);
     const cursoMatch =
       Array.isArray(aula.cursos) &&
-      aula.cursos.some((c: string) => normalize(c) === normalizedCourseParam);
+      aula.cursos.some((c: string) => normalize(c).includes(normalizedCourseParam));
     
     // 3. Filtro por matéria - Verifica tanto 'materias' quanto 'Materia' para compatibilidade
     const materiaDaAula = aula.materias || aula.Materia;
