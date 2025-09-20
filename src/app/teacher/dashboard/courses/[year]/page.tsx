@@ -2,15 +2,44 @@
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
 
 const coursesData = [
-  { id: 'iot', title: 'IOT – Internet das Coisas' },
-  { id: 'ti', title: 'TI – Informática' },
-  { id: 'mmd', title: 'MMD – Multimídia' },
-  { id: 'cdd', title: 'CDD – Ciências de Dados' },
-  { id: 'adm', title: 'ADM – Administração' },
-  { id: 'mkt', title: 'MKT – Marketing' },
-  { id: 'ia', title: 'IA – Inteligência Artificial' },
+  {
+    id: 'iot',
+    title: 'IOT – Internet das Coisas',
+    imageUrl: 'https://picsum.photos/seed/iot/300/200',
+  },
+  {
+    id: 'ti',
+    title: 'TI – Informática',
+    imageUrl: 'https://picsum.photos/seed/tech/300/200',
+  },
+  {
+    id: 'mmd',
+    title: 'MMD – Multimídia',
+    imageUrl: 'https://picsum.photos/seed/multimedia/300/200',
+  },
+  {
+    id: 'cdd',
+    title: 'CDD – Ciências de Dados',
+    imageUrl: 'https://picsum.photos/seed/data/300/200',
+  },
+  {
+    id: 'adm',
+    title: 'ADM – Administração',
+    imageUrl: 'https://picsum.photos/seed/business/300/200',
+  },
+  {
+    id: 'mkt',
+    title: 'MKT – Marketing',
+    imageUrl: 'https://picsum.photos/seed/marketing/300/200',
+  },
+  {
+    id: 'ia',
+    title: 'IA – Inteligência Artificial',
+    imageUrl: 'https://picsum.photos/seed/ai/300/200',
+  },
 ];
 
 export default function CoursesPage() {
@@ -34,15 +63,23 @@ export default function CoursesPage() {
         </h1>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {coursesData.map((course) => (
           <Card
             key={course.id}
-            className="bg-[#111115] border-gray-800 rounded-lg p-4 flex flex-col items-center justify-center aspect-square text-white hover:bg-gray-800 transition-colors cursor-pointer"
+            className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer overflow-hidden"
             onClick={() => handleCourseClick(course.id)}
           >
-            <CardContent className="flex items-center justify-center text-center p-0">
-              <CardTitle className="text-md font-semibold">
+            <div className="relative w-full aspect-video">
+              <Image
+                src={course.imageUrl}
+                alt={`Imagem do curso ${course.title}`}
+                fill
+                className="object-cover"
+              />
+            </div>
+            <CardContent className="p-4">
+              <CardTitle className="text-md font-semibold text-center">
                 {course.title}
               </CardTitle>
             </CardContent>
