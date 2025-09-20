@@ -37,8 +37,9 @@ export interface Aula {
   curso?: string; // Legacy field
   cursos?: string[]; // New field
   titulo: string;
-  Turma: string;
-  Materia: string | string[];
+  Turma: string; // Legacy field
+  turmas?: string[]; // New field
+  Materia: string | string[]; // Legacy field
   materias?: string | string[]; // New field
   DayAula: string;
   Horario: string;

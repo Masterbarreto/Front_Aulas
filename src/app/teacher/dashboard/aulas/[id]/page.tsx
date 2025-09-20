@@ -31,6 +31,7 @@ interface AulaCompleta extends Aula {
   arquivos: Arquivo[];
   arquivosIds: string[];
   LinkAula: LinkItem[];
+  turmas: string[];
 }
 
 async function getAula(id: string): Promise<AulaCompleta | null> {
@@ -44,7 +45,6 @@ async function getAula(id: string): Promise<AulaCompleta | null> {
     }
     const data = await response.json();
 
-    // Assegura que LinkAula seja sempre um array
     if (typeof data.LinkAula === 'string' && data.LinkAula.trim()) {
       try {
         const parsedLinks = JSON.parse(data.LinkAula);
@@ -55,6 +55,13 @@ async function getAula(id: string): Promise<AulaCompleta | null> {
       }
     } else if (!Array.isArray(data.LinkAula)) {
       data.LinkAula = [];
+    }
+    
+    // Garante que `turmas` seja sempre um array
+    if (data.Turma && !data.turmas) {
+      data.turmas = [String(data.Turma)];
+    } else if (!Array.isArray(data.turmas)) {
+      data.turmas = [];
     }
 
     return data;
@@ -86,6 +93,9 @@ export default function AulaPage() {
     async function fetchData() {
       const aulaAtual = await getAula(id);
       setAula(aulaAtual);
+      if (aulaAtual?.turmas?.length) {
+        setTurmaParaConcluir(aulaAtual.turmas[0]);
+      }
     }
     fetchData();
   }, [id]);
@@ -168,7 +178,8 @@ export default function AulaPage() {
     ? aula.titulo.charAt(0).toUpperCase() + aula.titulo.slice(1).toLowerCase()
     : 'Aula';
 
-  const materia = aula.materias || 'Não informada';
+  const materia = Array.isArray(aula.materias) ? aula.materias.join(', ') : aula.materias;
+
 
   return (
     <div className="text-white relative">
@@ -225,7 +236,7 @@ export default function AulaPage() {
                       key={`arquivo-${idx}`}
                       className="flex items-center justify-between w-full text-left p-2 rounded-md hover:bg-gray-700"
                       onClick={() => {
-                        const arquivoId = arq._id;
+                        const arquivoId = aula.arquivosIds[idx];
                         if (arquivoId) {
                           fetch(
                             `https://apisubaulas.onrender.com/api/v1/aulas/${arquivoId}/pdf`
@@ -255,7 +266,7 @@ export default function AulaPage() {
                   ))
                 : null}
 
-              {aula.LinkAula.length > 0
+              {Array.isArray(aula.LinkAula) && aula.LinkAula.length > 0
                 ? aula.LinkAula.map((link: LinkItem, idx: number) => (
                     <div
                       key={`link-${idx}`}
@@ -334,15 +345,12 @@ export default function AulaPage() {
                     <SelectValue placeholder="Selecione a turma" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#111115] border-gray-700 text-white">
-                    <SelectItem value="all">Todas as Turmas</SelectItem>
-                    <SelectItem value="1">Turma 1</SelectItem>
-                    <SelectItem value="2">Turma 2</SelectItem>
-                    <SelectItem value="3">Turma 3</SelectItem>
-                    <SelectItem value="4">Turma 4</SelectItem>
-                    <SelectItem value="5">Turma 5</SelectItem>
-                    <SelectItem value="6">Turma 6</SelectItem>
-                    <SelectItem value="7">Turma 7</SelectItem>
-                    <SelectItem value="8">Turma 8</SelectItem>
+                    {aula.turmas.length > 1 && <SelectItem value="all">Todas as Turmas</SelectItem>}
+                    {aula.turmas.map((turma) => (
+                      <SelectItem key={turma} value={turma}>
+                        Turma {turma}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
