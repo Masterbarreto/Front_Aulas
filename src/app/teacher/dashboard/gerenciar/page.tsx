@@ -82,14 +82,12 @@ export default function GerenciarPage() {
           setAulas([...naoConcluidas, ...concluidas]);
 
           if (Array.isArray(relatorioSemanal)) {
-            const dayOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            const dataMap = new Map(relatorioSemanal.map(item => [item.dia, item.aulas]));
-            const formattedSemanal = dayOrder.map(day => ({
-              day,
-              value: dataMap.get(day) || 0
+            const formattedSemanal = relatorioSemanal.map((item: any) => ({
+                day: item.dia,
+                value: item.aulas || 0
             }));
             setAreaChartData(formattedSemanal as any);
-          }
+        }
 
           if (Array.isArray(topMaterias)) {
             setBarChartData(topMaterias as any);
