@@ -100,19 +100,19 @@ export default function UploadPage() {
     e.preventDefault();
 
     const formData = new FormData();
-    
+
     const anoEscolarValue = anoEscolar ? anoEscolar.split('-')[0] : '';
     formData.append('anoEscolar', anoEscolarValue);
-    formData.append('curso', JSON.stringify([curso]));
+    formData.append('curso', curso);
     
     if (turma === 'all') {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
       formData.append('Turma', JSON.stringify(turmasParaEnviar));
     } else {
-      formData.append('Turma', JSON.stringify([turma]));
+      formData.append('Turma', turma);
     }
     
-    formData.append('Materia', JSON.stringify([materia]));
+    formData.append('Materia', materia);
     formData.append('professor', professor);
     formData.append('titulo', titulo);
     if (diaAula) {
