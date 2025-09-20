@@ -106,7 +106,7 @@ export default function UploadPage() {
     
     // Send as simple strings as per backend validation
     formData.append('curso', curso);
-    formData.append('Materia', materia);
+    formData.append('materias', materia); // Corrected field name
 
     // Handle 'Turma' specifically
     if (turma === 'all') {
