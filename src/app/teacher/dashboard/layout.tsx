@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 
 export default function DashboardLayout({
   children,
