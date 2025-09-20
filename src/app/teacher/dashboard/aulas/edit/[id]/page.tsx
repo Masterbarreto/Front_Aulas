@@ -120,13 +120,13 @@ export default function EditAulaPage() {
   };
   
   const handleRemoveExistingFile = async (fileIdToRemove: string) => {
-    if (!fileIdToRemove) {
-      alert('ID do arquivo inválido.');
+    if (!fileIdToRemove || !id) {
+      alert('ID do arquivo ou da aula é inválido.');
       return;
     }
     if (confirm('Tem certeza de que deseja remover este arquivo?')) {
       try {
-        const res = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/arquivos/${fileIdToRemove}`, {
+        const res = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${id}/arquivos/${fileIdToRemove}`, {
           method: 'DELETE',
         });
   
@@ -556,3 +556,5 @@ export default function EditAulaPage() {
     </div>
   );
 }
+
+    
