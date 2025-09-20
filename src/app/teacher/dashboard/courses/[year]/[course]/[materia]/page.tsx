@@ -6,6 +6,7 @@ import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 
+// Função para normalizar strings, removendo espaços e hifens e convertendo para minúsculas.
 function normalize(str?: string): string {
   if (!str) return '';
   return str.toLowerCase().replace(/\s+/g, '').replace(/-/g, '');
@@ -35,12 +36,23 @@ export default function AulasListPage() {
     return <p className="text-white">Parâmetros da URL ausentes.</p>;
   }
 
-  // Filtro removido para depuração
-  const aulasFiltradas = aulas;
+  const aulasFiltradas = aulas.filter((aula) => {
+    const anoMatch = normalize(aula.anoEscolar) === normalize(year);
+
+    // O campo 'curso' na API pode ser um array de strings.
+    // Verificamos se o 'course' da URL corresponde a algum dos cursos no array.
+    const cursoMatch = Array.isArray(aula.curso) 
+      ? aula.curso.some(c => normalize(c) === normalize(course)) 
+      : normalize(aula.curso) === normalize(course);
+      
+    const materiaMatch = normalize(aula.Materia as string) === normalize(materia);
+
+    return anoMatch && cursoMatch && materiaMatch;
+  });
 
   const aulasUnicas = aulasFiltradas.filter((aula, index, self) =>
     index === self.findIndex((a) => (
-      a.titulo === aula.titulo && a.DesAula === a.DesAula
+      a.titulo === aula.titulo && a.DesAula === aula.DesAula
     ))
   );
 
