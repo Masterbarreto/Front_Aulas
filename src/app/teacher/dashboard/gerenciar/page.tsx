@@ -102,7 +102,7 @@ export default function GerenciarPage() {
           if (Array.isArray(topMaterias)) {
             const formattedTopMaterias = topMaterias.map((item: any) => ({
               materia: item.materia,
-              substituicoes: item.substituicoes || 0,
+              substituicoes: item.total || 0,
             }));
             setBarChartData(formattedTopMaterias as any);
           }
