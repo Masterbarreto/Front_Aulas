@@ -36,7 +36,6 @@ async function getAula(id: string): Promise<AulaCompleta | null> {
     }
     const data = await response.json();
     
-    // Garante que LinkAula seja sempre um array de objetos
     if (typeof data.LinkAula === 'string' && data.LinkAula.trim()) {
       try {
         const parsedLinks = JSON.parse(data.LinkAula);
@@ -65,10 +64,8 @@ function formatarData(dataString: string | undefined) {
 
 export default function AulaPage() {
   const [aula, setAula] = useState<AulaCompleta | null>(null);
-  const [todasAulas, setTodasAulas] = useState<AulaCompleta[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [professor, setProfessor] = useState('');
-  const [turma, setTurma] = useState('');
   const router = useRouter();
   const params = useParams();
   const id = params.id ? decodeURIComponent(params.id as string) : '';
@@ -79,47 +76,25 @@ export default function AulaPage() {
     async function fetchData() {
       const aulaAtual = await getAula(id);
       setAula(aulaAtual);
-
-      try {
-        const res = await fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas');
-        const data = await res.json();
-        setTodasAulas(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error('Erro ao buscar todas as aulas:', error);
-        setTodasAulas([]);
-      }
     }
     fetchData();
   }, [id]);
 
   const handleConcluirClick = async () => {
-    if (!professor || !turma) {
-      alert('Por favor, preencha o nome do professor e a turma.');
+    if (!professor) {
+      alert('Por favor, preencha o nome do professor.');
       return;
     }
 
     if (!aula) return;
 
-    const aulaParaConcluir = todasAulas.find(
-      (a) =>
-        a.titulo === aula.titulo &&
-        a.curso === aula.curso &&
-        a.anoEscolar === aula.anoEscolar &&
-        a.Turma.trim().toLowerCase() === turma.trim().toLowerCase()
-    );
-
-    if (!aulaParaConcluir) {
-      alert(`Nenhuma aula encontrada para a turma "${turma}". Verifique o nome da turma e tente novamente.`);
-      return;
-    }
-
-    const idDaAulaCorreta = aulaParaConcluir._id;
+    const turmaDaAula = Array.isArray(aula.Turma) ? aula.Turma.join(', ') : aula.Turma;
 
     try {
-      const response = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${idDaAulaCorreta}/concluir`, {
+      const response = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${id}/concluir`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ concluida: true, professor, turma }), 
+        body: JSON.stringify({ concluida: true, professor, turma: turmaDaAula }), 
       });
 
       if (!response.ok) {
@@ -129,6 +104,9 @@ export default function AulaPage() {
 
       alert('Aula concluída com sucesso!');
       setShowModal(false);
+      if(aula) {
+        setAula({ ...aula, concluida: true });
+      }
       router.back();
     } catch (err) {
       console.error('Erro ao concluir aula:', err);
@@ -138,9 +116,9 @@ export default function AulaPage() {
   };
 
   const handleDesconcluirClick = async () => {
-    if (!aula?._id) return;
+    if (!id) return;
     try {
-      await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${aula._id}/desconcluir`, {
+      await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${id}/desconcluir`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -313,19 +291,6 @@ export default function AulaPage() {
                   placeholder="Professor Exemplo"
                   value={professor}
                   onChange={(e) => setProfessor(e.target.value)}
-                  className="bg-gray-800 border-gray-700 mt-2"
-                />
-              </div>
-              <div>
-                <Label htmlFor="turma-name" className="text-sm font-medium text-gray-300">
-                  Turma Que a Aula foi dada
-                </Label>
-                <Input
-                  id="turma-name"
-                  type="text"
-                  placeholder="Ex: TI-1"
-                  value={turma}
-                  onChange={(e) => setTurma(e.target.value)}
                   className="bg-gray-800 border-gray-700 mt-2"
                 />
               </div>
