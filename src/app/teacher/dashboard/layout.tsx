@@ -55,13 +55,14 @@ export default function DashboardLayout({
     { href: '/teacher/dashboard/gerenciar', icon: Settings, label: 'Gerenciar Atividades' },
   ];
   
-  const isProtectedRoute = ['/teacher/dashboard/upload', '/teacher/dashboard/gerenciar'].some(route => pathname.startsWith(route));
+  const protectedRoutes = ['/teacher/dashboard/upload', '/teacher/dashboard/gerenciar'];
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
 
   if (isLoading) {
     return null; 
   }
 
-  const canRenderChildren = !isProtectedRoute || (isProtectedRoute && isLoggedIn);
+  const canRenderChildren = !isProtectedRoute || isLoggedIn;
 
   return (
     <div className="flex min-h-screen w-full bg-[#1C1C24] text-white">
@@ -103,15 +104,14 @@ export default function DashboardLayout({
         </nav>
         <div className="mt-auto">
           <div className="flex flex-col gap-2">
-            {!isLoggedIn && (
+            {!isLoggedIn ? (
               <Link href="/login">
                 <Button variant="ghost" className="w-full justify-start gap-3">
                   <LogOut className="h-5 w-5" />
                   Login Administrativo
                 </Button>
               </Link>
-            )}
-            {isLoggedIn && (
+            ) : (
               <Button
                 variant="ghost"
                 className="w-full justify-start gap-3"
