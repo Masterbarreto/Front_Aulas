@@ -3,38 +3,38 @@
   "placeholderImages": [
     {
       "id": "iot",
-      "src": "https://picsum.photos/seed/iot/400/225",
-      "data-ai-hint": "students technology"
+      "src": "https://picsum.photos/seed/future-tech/400/225",
+      "data-ai-hint": "future technology"
     },
     {
       "id": "ti",
-      "src": "https://picsum.photos/seed/ti/400/225",
-      "data-ai-hint": "students laptop"
+      "src": "https://picsum.photos/seed/coding-class/400/225",
+      "data-ai-hint": "coding class"
     },
     {
       "id": "mmd",
-      "src": "https://picsum.photos/seed/mmd/400/225",
-      "data-ai-hint": "students together"
+      "src": "https://picsum.photos/seed/creative-team/400/225",
+      "data-ai-hint": "creative team"
     },
     {
       "id": "cdd",
-      "src": "https://picsum.photos/seed/cdd/400/225",
-      "data-ai-hint": "student coding"
+      "src": "https://picsum.photos/seed/data-analysis/400/225",
+      "data-ai-hint": "data analysis"
     },
     {
       "id": "adm",
-      "src": "https://picsum.photos/seed/adm/400/225",
-      "data-ai-hint": "students classroom"
+      "src": "https://picsum.photos/seed/business-meeting/400/225",
+      "data-ai-hint": "business meeting"
     },
     {
       "id": "mkt",
-      "src": "https://picsum.photos/seed/mkt/400/225",
-      "data-ai-hint": "students collaborating"
+      "src": "https://picsum.photos/seed/marketing-strategy/400/225",
+      "data-ai-hint": "marketing strategy"
     },
     {
       "id": "ia",
-      "src": "https://picsum.photos/seed/ia/400/225",
-      "data-ai-hint": "students learning"
+      "src": "https://picsum.photos/seed/ai-robot/400/225",
+      "data-ai-hint": "ai robot"
     }
   ]
 }
