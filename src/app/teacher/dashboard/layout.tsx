@@ -21,11 +21,13 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
       setIsLoggedIn(loggedIn);
+      setIsLoading(false); 
 
       const protectedRoutes = ['/teacher/dashboard/upload', '/teacher/dashboard/gerenciar'];
       const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
@@ -55,6 +57,15 @@ export default function DashboardLayout({
     { href: '/teacher/dashboard/upload', icon: Upload, label: 'Upload de Atividades' },
     { href: '/teacher/dashboard/gerenciar', icon: Settings, label: 'Gerenciar Atividades' },
   ];
+  
+  const isProtectedRoute = ['/teacher/dashboard/upload', '/teacher/dashboard/gerenciar'].some(route => pathname.startsWith(route));
+
+  const canRenderChildren = !isProtectedRoute || (isProtectedRoute && isLoggedIn);
+
+  if (isLoading && isProtectedRoute) {
+    return null; 
+  }
+
 
   return (
     <div className="flex min-h-screen w-full bg-[#1C1C24] text-white">
@@ -118,7 +129,7 @@ export default function DashboardLayout({
         </div>
       </aside>
       <div className="flex flex-1 flex-col">
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-6">{canRenderChildren ? children : null}</main>
       </div>
     </div>
   );
