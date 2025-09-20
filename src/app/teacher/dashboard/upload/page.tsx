@@ -103,16 +103,16 @@ export default function UploadPage() {
 
     const anoEscolarValue = anoEscolar ? anoEscolar.split('-')[0] : '';
     formData.append('anoEscolar', anoEscolarValue);
-    formData.append('curso', curso);
+    formData.append('curso', JSON.stringify([curso]));
     
     if (turma === 'all') {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
       formData.append('Turma', JSON.stringify(turmasParaEnviar));
     } else {
-      formData.append('Turma', turma);
+      formData.append('Turma', JSON.stringify([turma]));
     }
     
-    formData.append('Materia', materia);
+    formData.append('Materia', JSON.stringify([materia]));
     formData.append('professor', professor);
     formData.append('titulo', titulo);
     if (diaAula) {
@@ -152,7 +152,6 @@ export default function UploadPage() {
     } catch (error: any) {
       const errorMessage =
         error?.message ||
-        JSON.stringify(error) ||
         'Ocorreu um erro desconhecido.';
       console.error('Erro ao criar aula:', error);
       alert(`Erro ao criar a aula: ${errorMessage}`);
