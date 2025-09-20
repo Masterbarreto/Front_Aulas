@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Loader2, ArrowLeft, FileText } from 'lucide-react';
+import { Loader2, ArrowLeft, MoreHorizontal } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -91,7 +91,7 @@ export default function AulasListPage() {
   });
 
   const aulasUnicas = aulasFiltradas.filter(
-    (aula, index, self) => index === self.findIndex((a) => (a.aulaId || a._id) === (aula.aulaId || aula._id))
+    (aula, index, self) => index === self.findIndex((a) => (a.aulaId || a._id) === (aula.aulaId || a._id))
   );
 
   const handleCardClick = (aula: Aula) => {
@@ -139,32 +139,23 @@ export default function AulasListPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {aulasUnicas.map((aula, index) => (
             <Card
               key={aula.aulaId || aula._id || index}
-              className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer"
+              className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer flex flex-col justify-between"
               onClick={() => handleCardClick(aula)}
             >
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <FileText size={20} />
-                  {aula.titulo || 'Sem Título'}
-                </CardTitle>
-                <CardDescription className="text-sm text-gray-400 pt-1">
-                  {aula.DesAula || 'Sem descrição.'}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Professor:</span>
-                  <span className="font-medium">{aula.professor || 'N/I'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Horário:</span>
-                  <span className="font-medium">{aula.Horario || 'N/I'}</span>
-                </div>
-              </CardContent>
+              <div className="p-4 flex flex-col gap-2">
+                <h2 className="text-xl font-bold">{aula.titulo || 'Sem Título'}</h2>
+                <p className="text-gray-400">{aula.Horario || 'Sem horário'}</p>
+                <p className="text-gray-400 truncate">
+                  Breve descrição: {aula.DesAula || 'Sem descrição.'}
+                </p>
+              </div>
+              <div className="p-4 pt-0 mt-auto">
+                 <MoreHorizontal className="text-gray-500" />
+              </div>
             </Card>
           ))}
         </div>
