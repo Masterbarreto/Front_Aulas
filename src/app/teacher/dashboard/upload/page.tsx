@@ -100,8 +100,8 @@ export default function UploadPage() {
     e.preventDefault();
 
     // Validações básicas
-    if (!anoEscolar || !curso || !turma || !materia || !professor || !titulo) {
-      alert('Por favor, preencha todos os campos obrigatórios.');
+    if (!anoEscolar || !curso || !turma || !materia || !professor || !titulo || !diaAula) {
+      alert('Por favor, preencha todos os campos obrigatórios, incluindo a data da aula.');
       return;
     }
 
@@ -353,7 +353,7 @@ export default function UploadPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="dia-aula">Dia da Aula</Label>
+              <Label htmlFor="dia-aula">Dia da Aula *</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
