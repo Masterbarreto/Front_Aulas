@@ -230,7 +230,7 @@ export default function UploadPage() {
               
               <div className="space-y-2">
                 <Label htmlFor="turma">Turma *</Label>
-                <Select value={turma} onValueChange={(value) => setTurma(value)}>
+                <Select value={turma} onValueChange={(value) => setTurma(String(value))}>
                   <SelectTrigger
                     id="turma"
                     className="bg-[#111115] border-gray-700"
