@@ -1,8 +1,7 @@
 'use client';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Book } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import Image from 'next/image';
 
 const coursesData = [
   { id: 'iot', title: 'IOT – Internet das Coisas' },
@@ -35,21 +34,16 @@ export default function YearScreen() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {coursesData.map((curso) => {
             return (
-              <div key={curso.id} onClick={() => handleCursoClick(curso.id)} className="cursor-pointer group">
-                <Card className="bg-transparent border-none overflow-hidden">
-                  <CardContent className="p-0">
-                    <div className="aspect-video relative w-full rounded-lg overflow-hidden">
-                      <Image
-                        src="/images/course-image.jpg"
-                        alt={curso.title}
-                        fill
-                        className="object-cover transition-transform group-hover:scale-105"
-                      />
-                    </div>
-                    <p className="font-semibold text-md mt-2">{curso.title}</p>
-                  </CardContent>
-                </Card>
-              </div>
+              <Card
+                key={curso.id}
+                onClick={() => handleCursoClick(curso.id)}
+                className="bg-[#111115] border-gray-800 rounded-lg p-4 flex flex-col items-center justify-center aspect-[4/3] text-white hover:bg-gray-800 transition-colors cursor-pointer"
+              >
+                <CardContent className="flex flex-col items-center justify-center p-0 text-center">
+                  <Book className="h-10 w-10 mb-3" />
+                  <p className="font-semibold text-md">{curso.title}</p>
+                </CardContent>
+              </Card>
             );
           })}
         </div>
