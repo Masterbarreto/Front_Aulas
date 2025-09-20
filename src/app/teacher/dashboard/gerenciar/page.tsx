@@ -256,9 +256,9 @@ export default function GerenciarPage() {
                 </TableCell>
                 <TableCell>{aula.Turma}</TableCell>
                 <TableCell>
-                  {Array.isArray(aula.Materia)
+                  {aula.materias || (Array.isArray(aula.Materia)
                     ? aula.Materia.join(', ')
-                    : aula.Materia}
+                    : aula.Materia)}
                 </TableCell>
                 <TableCell>
                   <Button
