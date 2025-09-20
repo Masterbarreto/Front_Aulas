@@ -12,6 +12,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 
+const protectedRoutes = ['/teacher/dashboard/upload', '/teacher/dashboard/gerenciar'];
+
 export default function DashboardLayout({
   children,
 }: {
@@ -20,21 +22,22 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    setIsLoggedIn(loggedIn);
-    // Definir cookie para o middleware usar
-    if (loggedIn) {
-      document.cookie = "isLoggedIn=true; path=/";
-    } else {
-      document.cookie = "isLoggedIn=false; path=/; max-age=0";
+    const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
+    setIsLoggedIn(loggedInStatus);
+    setIsLoading(false);
+
+    // Se a rota é protegida e o usuário não está logado, redireciona.
+    if (protectedRoutes.includes(pathname) && !loggedInStatus) {
+      router.push('/login');
     }
-  }, [pathname]);
+  }, [pathname, router]);
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
-    document.cookie = "isLoggedIn=false; path=/; max-age=0"; // Remove o cookie
+    document.cookie = "isLoggedIn=false; path=/; max-age=0";
     setIsLoggedIn(false);
     router.push('/teacher/dashboard');
   };
@@ -52,7 +55,17 @@ export default function DashboardLayout({
     { href: '/teacher/dashboard/upload', icon: Upload, label: 'Upload de Atividades' },
     { href: '/teacher/dashboard/gerenciar', icon: Settings, label: 'Gerenciar Atividades' },
   ];
+
+  // Não renderiza nada até que a verificação de login seja concluída.
+  if (isLoading) {
+    return null; 
+  }
   
+  // Se a rota é protegida e o usuário não está logado, não renderiza o conteúdo para evitar "piscar"
+  if (protectedRoutes.includes(pathname) && !isLoggedIn) {
+    return null;
+  }
+
   return (
     <div className="flex min-h-screen w-full bg-[#1C1C24] text-white">
       <aside className="w-64 flex-col border-r border-gray-800 bg-[#111115] p-4 hidden md:flex">
