@@ -58,8 +58,9 @@ export default function AulasListPage() {
       Array.isArray(aula.cursos) &&
       aula.cursos.some((c: string) => normalize(c) === normalizedCourseParam);
     
-    // 3. Filtro por matéria
-    const materiaMatch = normalize(aula.Materia as string) === normalize(materia);
+    // 3. Filtro por matéria - Verifica tanto 'materias' quanto 'Materia' para compatibilidade
+    const materiaDaAula = aula.materias || aula.Materia;
+    const materiaMatch = normalize(materiaDaAula as string) === normalize(materia);
     
     return anoMatch && cursoMatch && materiaMatch;
   });
@@ -113,7 +114,7 @@ export default function AulasListPage() {
                   Professor: {aula.professor || 'Não informado'}
                 </p>
                 <p className="text-sm text-gray-400">
-                  Matéria: {Array.isArray(aula.Materia) ? aula.Materia.join(', ') : aula.Materia || 'Não informado'}
+                  Matéria: {Array.isArray(aula.Materia) ? aula.Materia.join(', ') : (aula.materias || aula.Materia || 'Não informado')}
                 </p>
                 <p className="text-xs text-gray-500 mt-2">
                   {aula.DesAula || 'Sem descrição disponível'}
