@@ -16,33 +16,40 @@ export default function AulasListPage() {
   const materia = params.materia as string;
 
   useEffect(() => {
-    fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
+    if (!year || !course || !materia) return;
+
+    // Extrai o ano numérico, ex: "2" de "2-ano"
+    const ano = year.split('-')[0];
+
+    const apiUrl = new URL('https://apisubaulas.onrender.com/api/v1/aulas/filtrar');
+    apiUrl.searchParams.append('ano', ano);
+    apiUrl.searchParams.append('curso', course);
+    apiUrl.searchParams.append('materia', materia);
+
+    fetch(apiUrl.toString())
       .then((res) => {
         if (!res.ok) {
+           // Se a resposta não for OK, lança um erro para ser pego pelo catch
+           // Isso previne erros de parse de JSON em respostas de erro (ex: 404)
           throw new Error('Falha ao buscar dados da API');
         }
         return res.json();
       })
       .then((data) => {
+        // Garante que o estado seja sempre um array
         if (Array.isArray(data)) {
           setAulas(data);
         } else {
-          console.error('API não retornou um array de aulas:', data);
+          console.error('API não retornou um array de aulas, definindo para vazio:', data);
           setAulas([]);
         }
       })
       .catch((error) => {
         console.error('Erro ao buscar ou processar aulas:', error);
-        setAulas([]);
+        setAulas([]); // Define como array vazio em caso de erro
       })
       .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return <p className="text-white">Carregando aulas...</p>;
-  }
-
-  const aulasFiltradas = aulas; // Removendo todos os filtros por enquanto
+  }, [year, course, materia]);
 
   const handleClick = (aula: Aula) => {
     const id = aula.aulaId || aula._id;
@@ -58,6 +65,10 @@ export default function AulasListPage() {
   const courseFormatted = course.toUpperCase();
   const yearFormatted = year ? year.replace('-', 'º ') : '';
 
+  if (loading) {
+    return <p className="text-white text-center">Carregando aulas...</p>;
+  }
+
   return (
     <div className="flex flex-col text-white">
       <div
@@ -72,8 +83,8 @@ export default function AulasListPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {aulasFiltradas.length > 0 ? (
-          aulasFiltradas.map((aula, index) => (
+        {aulas.length > 0 ? (
+          aulas.map((aula, index) => (
             <Card
               key={`${aula._id}-${index}`}
               className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer flex flex-col justify-between"
@@ -92,12 +103,6 @@ export default function AulasListPage() {
                 <p className="mt-2 text-gray-500 truncate">
                   {aula.DesAula || 'Sem descrição.'}
                 </p>
-                {/* Dados de depuração */}
-                <div className="mt-4 pt-2 border-t border-gray-700 text-gray-500 text-[10px] space-y-1">
-                  <p><strong>Ano Escolar (API):</strong> {aula.anoEscolar}</p>
-                  <p><strong>Cursos (API):</strong> {JSON.stringify(aula.cursos || aula.curso)}</p>
-                  <p><strong>Matéria (API):</strong> {aula.Materia || aula.materias}</p>
-                </div>
               </CardContent>
               <div className="p-4 pt-0 mt-auto">
                 <MoreHorizontal className="text-gray-500" />
@@ -107,10 +112,10 @@ export default function AulasListPage() {
         ) : (
           <div className="col-span-full text-center py-8">
             <p className="text-lg text-gray-400 mb-2">
-              Nenhuma aula encontrada.
+              Nenhuma aula encontrada para este filtro.
             </p>
             <p className="text-sm text-gray-500">
-              Verifique se existem aulas cadastradas para este filtro.
+              Verifique se existem aulas cadastradas com os critérios selecionados.
             </p>
           </div>
         )}
