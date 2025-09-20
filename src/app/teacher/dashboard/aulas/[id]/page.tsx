@@ -36,6 +36,7 @@ async function getAula(id: string): Promise<AulaCompleta | null> {
     }
     const data = await response.json();
     
+    // Assegura que LinkAula seja sempre um array
     if (typeof data.LinkAula === 'string' && data.LinkAula.trim()) {
       try {
         const parsedLinks = JSON.parse(data.LinkAula);
@@ -222,8 +223,10 @@ export default function AulaPage() {
                             const a = document.createElement('a');
                             a.href = urlBlob;
                             a.download = arq.nome;
+                            document.body.appendChild(a);
                             a.click();
                             window.URL.revokeObjectURL(urlBlob);
+                            document.body.removeChild(a);
                           });
                       }
                     }}
