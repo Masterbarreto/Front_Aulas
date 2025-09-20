@@ -73,6 +73,10 @@ export default function GerenciarPage() {
   }, []);
 
   const handleDelete = async (id: string) => {
+    if (!id) {
+      alert('ID da aula não encontrado. Não é possível deletar.');
+      return;
+    }
     if (confirm('Tem certeza de que deseja deletar esta aula?')) {
       try {
         const res = await fetch(
@@ -82,10 +86,15 @@ export default function GerenciarPage() {
           }
         );
 
-        // A resposta 204 (No Content) também é um sucesso
         if (res.ok) {
-          alert('Aula deletada com sucesso!');
-          fetchAulas(); // Re-fetch aulas after deletion
+          // A resposta 204 (No Content) também é um sucesso mas não tem corpo
+          if (res.status !== 204) {
+            const data = await res.json();
+            alert(data.message || 'Aula deletada com sucesso!');
+          } else {
+            alert('Aula deletada com sucesso!');
+          }
+          fetchAulas();
         } else {
           const errorData = await res.json().catch(() => ({ message: 'Falha ao deletar a aula' }));
           throw new Error(errorData.message || 'Falha ao deletar a aula');
@@ -253,7 +262,7 @@ export default function GerenciarPage() {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleDelete(aula.aulaId || aula._id)}
+                    onClick={() => handleDelete(aula._id)}
                   >
                     DELETAR
                   </Button>
