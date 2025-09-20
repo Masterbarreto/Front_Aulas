@@ -82,6 +82,16 @@ export default function GerenciarPage() {
       console.error('ID da aula não encontrado para navegação.');
     }
   };
+  
+  const handleEditClick = (e: React.MouseEvent, aula: Aula) => {
+    e.stopPropagation();
+    const id = aula.aulaId || aula._id;
+    if (id) {
+      router.push(`/teacher/dashboard/aulas/edit/${id}`);
+    } else {
+      console.error('ID da aula não encontrado para edição.');
+    }
+  };
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation(); // Impede que o evento de clique na linha seja disparado
@@ -238,7 +248,7 @@ export default function GerenciarPage() {
               <TableHead className="text-white">CURSO</TableHead>
               <TableHead className="text-white">TURMA</TableHead>
               <TableHead className="text-white">MATÉRIA</TableHead>
-              <TableHead className="text-white">AÇÕES</TableHead>
+              <TableHead className="text-white text-center">AÇÕES</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -268,7 +278,15 @@ export default function GerenciarPage() {
                 </TableCell>
                 <TableCell>{aula.Turma}</TableCell>
                 <TableCell>{aula.materias || aula.Materia || 'N/A'}</TableCell>
-                <TableCell>
+                <TableCell className="flex gap-2 justify-center">
+                   <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => handleEditClick(e, aula)}
+                    disabled={!aula.aulaId && !aula._id}
+                  >
+                    EDITAR
+                  </Button>
                   <Button
                     variant="destructive"
                     size="sm"
