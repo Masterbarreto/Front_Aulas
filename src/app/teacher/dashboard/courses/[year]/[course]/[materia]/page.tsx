@@ -6,15 +6,6 @@ import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 
-// Função para normalizar strings (minúsculas, sem acentos, etc.)
-function normalize(str: string | undefined): string {
-  if (!str) return '';
-  return str
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
-}
-
 export default function AulasListPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,12 +42,7 @@ export default function AulasListPage() {
     return <p className="text-white">Carregando aulas...</p>;
   }
 
-  const aulasFiltradas = aulas.filter((aula) => {
-    // 1. Filtro de Ano
-    const anoMatch = aula.anoEscolar === year?.split('-')[0];
-
-    return anoMatch;
-  });
+  const aulasFiltradas = aulas; // Removendo todos os filtros por enquanto
 
   const handleClick = (aula: Aula) => {
     const id = aula.aulaId || aula._id;
@@ -106,6 +92,12 @@ export default function AulasListPage() {
                 <p className="mt-2 text-gray-500 truncate">
                   {aula.DesAula || 'Sem descrição.'}
                 </p>
+                {/* Dados de depuração */}
+                <div className="mt-4 pt-2 border-t border-gray-700 text-gray-500 text-[10px] space-y-1">
+                  <p><strong>Ano Escolar (API):</strong> {aula.anoEscolar}</p>
+                  <p><strong>Cursos (API):</strong> {JSON.stringify(aula.cursos || aula.curso)}</p>
+                  <p><strong>Matéria (API):</strong> {aula.Materia || aula.materias}</p>
+                </div>
               </CardContent>
               <div className="p-4 pt-0 mt-auto">
                 <MoreHorizontal className="text-gray-500" />
