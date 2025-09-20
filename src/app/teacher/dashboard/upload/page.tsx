@@ -104,13 +104,13 @@ export default function UploadPage() {
     const anoEscolarValue = anoEscolar ? anoEscolar.split('-')[0] : '';
     formData.append('anoEscolar', anoEscolarValue);
     formData.append('curso', curso);
-    formData.append('materias', materia); // Corrigido para 'materias'
+    formData.append('materias', materia);
 
     if (turma === 'all') {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
       formData.append('Turma', JSON.stringify(turmasParaEnviar));
     } else {
-      formData.append('Turma', String(turma));
+      formData.append('Turma', `${turma}`);
     }
     
     formData.append('professor', professor);
