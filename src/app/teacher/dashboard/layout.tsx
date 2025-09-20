@@ -58,7 +58,7 @@ export default function DashboardLayout({
       <aside className="w-64 flex-col border-r border-gray-800 bg-[#111115] p-4 hidden md:flex">
         <div className="mb-8 flex items-center gap-2 p-4">
           <GraduationCap className="h-8 w-8 text-white" />
-          <h1 className="text-xl font-bold">Subaulas</h1>
+          <h1 className="text-xl font-bold">Sub_Aulas</h1>
         </div>
         <nav className="flex flex-col gap-2">
           {navItems.map((item) => (

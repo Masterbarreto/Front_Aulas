@@ -69,7 +69,7 @@ export default function LoginPage() {
         <CardHeader className="items-center text-center">
           <div className="mb-4 flex items-center gap-2">
             <GraduationCap className="h-8 w-8 text-white" />
-            <h1 className="text-xl font-bold">Subaulas</h1>
+            <h1 className="text-xl font-bold">Sub_Aulas</h1>
           </div>
           <CardTitle className="text-2xl">Login Administrativo</CardTitle>
         </CardHeader>

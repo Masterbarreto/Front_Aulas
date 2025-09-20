@@ -7,8 +7,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: 'School App',
-  description: 'Manage your classes, students, and more.',
+  title: 'Sub_Aulas',
+  description: 'Sistema de Gestão de Substituição de Aulas',
 };
 
 export default function RootLayout({
