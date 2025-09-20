@@ -105,6 +105,14 @@ export default function UploadPage() {
     
     formData.append('anoEscolar', anoEscolarValue);
     formData.append('cursos', JSON.stringify([curso]));
+    
+    if (turma === 'all') {
+      const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
+      formData.append('turmas', JSON.stringify(turmasParaEnviar));
+    } else {
+      formData.append('turmas', JSON.stringify([turma]));
+    }
+    
     formData.append('materias', JSON.stringify([materia]));
     formData.append('professor', professor);
     formData.append('titulo', titulo);
@@ -113,19 +121,14 @@ export default function UploadPage() {
     }
     formData.append('horario', horario);
     formData.append('descricao', descricao);
-    formData.append('links', JSON.stringify(structuredLinks.map(l => l.url)));
+
+    const linksParaEnviar = structuredLinks.map(link => link.url);
+    formData.append('links', JSON.stringify(linksParaEnviar));
 
     files.forEach((file) => {
       formData.append('arquivos', file);
     });
 
-    if (turma === 'all') {
-      const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
-      formData.append('turmas', JSON.stringify(turmasParaEnviar));
-    } else {
-      formData.append('turmas', JSON.stringify([turma]));
-    }
-    
     try {
       const res = await fetch(
         'https://apisubaulas.onrender.com/api/v1/aulas',
@@ -134,7 +137,7 @@ export default function UploadPage() {
           body: formData,
         }
       );
-      
+
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({
           message: 'Erro ao ler a resposta da API.',
@@ -143,11 +146,10 @@ export default function UploadPage() {
           errorData.message || `Erro no servidor com status ${res.status}`
         );
       }
-      
+
       await res.json();
       alert('Aula(s) criada(s) com sucesso!');
       handleCancelar();
-
     } catch (error: any) {
       const errorMessage =
         error?.message ||
@@ -192,13 +194,13 @@ export default function UploadPage() {
                     <SelectValue placeholder="Selecione o curso" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#111115] border-gray-700 text-white">
-                    <SelectItem value="ti">TI - Informática</SelectItem>
-                    <SelectItem value="adm">ADM - Administração</SelectItem>
-                    <SelectItem value="mkt">MKT - Marketing</SelectItem>
-                    <SelectItem value="iot">IOT – Internet das Coisas</SelectItem>
-                    <SelectItem value="mmd">MMD – Multimídia</SelectItem>
-                    <SelectItem value="cdd">CDD – Ciências de Dados</SelectItem>
-                    <SelectItem value="ia">IA – Inteligência Artificial</SelectItem>
+                    <SelectItem value="TI - Informática">TI - Informática</SelectItem>
+                    <SelectItem value="ADM - Administração">ADM - Administração</SelectItem>
+                    <SelectItem value="MKT - Marketing">MKT - Marketing</SelectItem>
+                    <SelectItem value="IOT - Internet das Coisas">IOT – Internet das Coisas</SelectItem>
+                    <SelectItem value="MMD - Multimídia">MMD – Multimídia</SelectItem>
+                    <SelectItem value="CDD - Ciências de Dados">CDD – Ciências de Dados</SelectItem>
+                    <SelectItem value="IA - Inteligência Artificial">IA – Inteligência Artificial</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -234,19 +236,19 @@ export default function UploadPage() {
                     <SelectValue placeholder="Selecione a matéria" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#111115] border-gray-700 text-white">
-                    <SelectItem value="portugues">Português</SelectItem>
-                    <SelectItem value="ingles">Inglês</SelectItem>
-                    <SelectItem value="matematica">Matemática</SelectItem>
-                    <SelectItem value="geografia">Geografia</SelectItem>
-                    <SelectItem value="filosofia">Filosofia</SelectItem>
-                    <SelectItem value="fisica">Física</SelectItem>
-                    <SelectItem value="ftp">FTP</SelectItem>
-                    <SelectItem value="artes">Artes</SelectItem>
-                    <SelectItem value="educacao-fisica">Educação Física</SelectItem>
-                    <SelectItem value="historia">História</SelectItem>
-                    <SelectItem value="sociologia">Sociologia</SelectItem>
-                    <SelectItem value="quimica">Química</SelectItem>
-                    <SelectItem value="biologia">Biologia</SelectItem>
+                    <SelectItem value="Português">Português</SelectItem>
+                    <SelectItem value="Inglês">Inglês</SelectItem>
+                    <SelectItem value="Matemática">Matemática</SelectItem>
+                    <SelectItem value="Geografia">Geografia</SelectItem>
+                    <SelectItem value="Filosofia">Filosofia</SelectItem>
+                    <SelectItem value="Física">Física</SelectItem>
+                    <SelectItem value="FTP">FTP</SelectItem>
+                    <SelectItem value="Artes">Artes</SelectItem>
+                    <SelectItem value="Educação Física">Educação Física</SelectItem>
+                    <SelectItem value="História">História</SelectItem>
+                    <SelectItem value="Sociologia">Sociologia</SelectItem>
+                    <SelectItem value="Química">Química</SelectItem>
+                    <SelectItem value="Biologia">Biologia</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
