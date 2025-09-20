@@ -25,6 +25,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
 
 const chartConfig: ChartConfig = {
   aulas: {
@@ -309,13 +310,15 @@ export default function GerenciarPage() {
               >
                 <TableCell>{aula.titulo}</TableCell>
                 <TableCell>
-                  <span
-                    className={
-                      aula.concluida ? 'text-green-400' : 'text-yellow-400'
-                    }
-                  >
-                    {aula.concluida ? 'Concluída' : 'Não Concluída'}
-                  </span>
+                  {aula.concluida ? (
+                    <Badge variant="default" className="bg-green-600/20 text-green-400 border-green-500/30">
+                      Concluída
+                    </Badge>
+                  ) : (
+                    <Badge variant="default" className="bg-yellow-600/20 text-yellow-400 border-yellow-500/30">
+                      Não Concluída
+                    </Badge>
+                  )}
                 </TableCell>
                 <TableCell>{formatarData(aula.DayAula)}</TableCell>
                 <TableCell>{aula.professor}</TableCell>
