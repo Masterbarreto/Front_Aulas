@@ -6,12 +6,6 @@ import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 
-// Função para normalizar strings, removendo espaços, hifens e convertendo para minúsculas.
-function normalize(str?: string): string {
-  if (!str) return '';
-  return str.toLowerCase().replace(/\s+/g, '').replace(/-/g, '');
-}
-
 function capitalize(str: string): string {
   if (!str) return '';
   return str.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
@@ -49,42 +43,11 @@ export default function AulasListPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (!year || !course || !materia) {
-    return <p className="text-white">Parâmetros da URL ausentes.</p>;
-  }
-
   if (loading) {
     return <p className="text-white text-center">Carregando aulas...</p>;
   }
   
-  const yearNumber = year ? year.split('-')[0] : '';
-  
-  // Lógica de filtro robusta no frontend
-  const aulasFiltradas = aulas.filter((aula) => {
-    // 1. Filtro por ano escolar
-    const anoMatch = aula.anoEscolar === yearNumber;
-
-    // 2. Filtro por curso (robusto) - verifica se a sigla da URL está contida no nome do curso
-    const normalizedCourseParam = normalize(course);
-    const cursoMatch =
-      Array.isArray(aula.cursos) &&
-      aula.cursos.some((c) => normalize(c).includes(normalizedCourseParam));
-
-    // 3. Filtro por matéria (robusto) - verifica `Materia` e `materias`
-    const normalizedMateriaParam = normalize(materia);
-    const materiaApi = aula.Materia || aula.materias;
-    let materiaMatch = false;
-    if (typeof materiaApi === 'string') {
-        materiaMatch = normalize(materiaApi) === normalizedMateriaParam;
-    } else if (Array.isArray(materiaApi)) {
-        materiaMatch = materiaApi.some(m => normalize(m) === normalizedMateriaParam);
-    }
-    
-    return anoMatch && cursoMatch && materiaMatch;
-  });
-
-  // Remove duplicatas baseado em título e descrição
-  const aulasUnicas = aulasFiltradas.filter((aula, index, self) =>
+  const aulasUnicas = aulas.filter((aula, index, self) =>
     index === self.findIndex((a) => (
       a.titulo === aula.titulo && 
       a.DesAula === aula.DesAula &&
@@ -101,6 +64,8 @@ export default function AulasListPage() {
   const courseFormatted = course.toUpperCase();
   const yearFormatted = year ? year.replace('-', 'º ') : '';
 
+  const yearNumber = year ? year.split('-')[0] : '';
+
   return (
     <div className="flex flex-col text-white">
       <div
@@ -111,6 +76,19 @@ export default function AulasListPage() {
         <h1 className="text-2xl font-bold">
           Aulas de {materiaCapitalized} – {courseFormatted} ({yearFormatted} Ano)
         </h1>
+      </div>
+      
+      {/* Bloco de depuração */}
+      <div className="bg-red-900/50 border border-red-500 text-white p-4 rounded-md mb-6 text-sm">
+        <h3 className="font-bold text-lg mb-2">Informações de Depuração</h3>
+        <p><strong>Filtros da URL:</strong></p>
+        <ul className="list-disc list-inside">
+          <li>Ano (URL): <strong>{year}</strong> (Número esperado: <strong>{yearNumber}</strong>)</li>
+          <li>Curso (URL): <strong>{course}</strong></li>
+          <li>Matéria (URL): <strong>{materia}</strong></li>
+        </ul>
+        <p className="mt-2"><strong>Total de aulas recebidas da API:</strong> {aulas.length}</p>
+        <p><strong>Total de aulas únicas (antes do filtro):</strong> {aulasUnicas.length}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
@@ -137,6 +115,15 @@ export default function AulasListPage() {
                 <p className="mt-2 text-gray-500 truncate">
                   {aula.DesAula || 'Sem descrição.'}
                 </p>
+                
+                {/* Dados da API para depuração */}
+                <div className="mt-4 pt-2 border-t border-dashed border-gray-600 text-xs text-yellow-300 space-y-1">
+                    <p><strong>Ano (API):</strong> {aula.anoEscolar}</p>
+                    <p><strong>Cursos (API):</strong> {JSON.stringify(aula.cursos)}</p>
+                    <p><strong>Materia (API):</strong> {aula.Materia}</p>
+                    <p><strong>Materias (API):</strong> {JSON.stringify(aula.materias)}</p>
+                </div>
+
               </CardContent>
               <div className="p-4 pt-0 mt-auto">
                 <MoreHorizontal className="text-gray-500" />
