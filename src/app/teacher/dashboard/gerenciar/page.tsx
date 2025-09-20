@@ -82,13 +82,15 @@ export default function GerenciarPage() {
           }
         );
 
-        if (!res.ok) {
+        // A resposta 204 (No Content) também é um sucesso
+        if (res.ok) {
+          alert('Aula deletada com sucesso!');
+          fetchAulas(); // Re-fetch aulas after deletion
+        } else {
           const errorData = await res.json().catch(() => ({ message: 'Falha ao deletar a aula' }));
           throw new Error(errorData.message || 'Falha ao deletar a aula');
         }
 
-        alert('Aula deletada com sucesso!');
-        fetchAulas(); // Re-fetch aulas after deletion
       } catch (error) {
         console.error('Erro ao deletar aula:', error);
         alert(`Erro ao deletar a aula: ${error instanceof Error ? error.message : 'Ocorreu um erro desconhecido.'}`);
