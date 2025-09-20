@@ -60,17 +60,7 @@ export default function GerenciarPage() {
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          const aulasUnicas = data.filter(
-            (aula, index, self) =>
-              index ===
-              self.findIndex(
-                (a) =>
-                  a.titulo === aula.titulo &&
-                  a.DesAula === aula.DesAula &&
-                  a.Turma === aula.Turma
-              )
-          );
-          setAulas(aulasUnicas);
+          setAulas(data); // Exibe todas as aulas retornadas pela API
         } else {
           setAulas([]);
         }
