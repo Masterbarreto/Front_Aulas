@@ -21,36 +21,33 @@ export default function AulasListPage() {
   const materia = params.materia as string;
 
   useEffect(() => {
-    if (!year || !course || !materia) {
-      setLoading(false);
-      return;
-    }
-
-    const yearNumber = year.split('-')[0];
-    const apiUrl = `https://apisubaulas.onrender.com/api/v1/aulas/filtrar?ano=${yearNumber}&curso=${course}&materia=${materia}`;
-
-    fetch(apiUrl)
-      .then((res) => res.json())
+    fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
+      .then((res) => {
+        if (!res.ok) {
+          // Se a resposta não for OK, lança um erro para o catch
+          throw new Error('Falha ao buscar dados da API');
+        }
+        return res.json();
+      })
       .then((data) => {
-        setAulas(Array.isArray(data) ? data : []);
+        // Garante que 'data' seja um array antes de setar o estado
+        if (Array.isArray(data)) {
+          setAulas(data);
+        } else {
+          console.error('API não retornou um array de aulas:', data);
+          setAulas([]);
+        }
       })
       .catch((error) => {
-        console.error('Erro ao buscar aulas filtradas:', error);
+        console.error('Erro ao buscar ou processar aulas:', error);
         setAulas([]);
       })
       .finally(() => setLoading(false));
-  }, [year, course, materia]);
-
-  if (!year || !course || !materia) {
-    return <p className="text-white">Parâmetros da URL ausentes.</p>;
-  }
+  }, []);
 
   if (loading) {
     return <p className="text-white">Carregando aulas...</p>;
   }
-
-  // Com a filtragem no backend, não precisamos mais de aulasFiltradas ou aulasUnicas no frontend.
-  const aulasParaExibir = aulas;
 
   const handleClick = (aula: Aula) => {
     const id = aula.aulaId || aula._id;
@@ -74,8 +71,8 @@ export default function AulasListPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {aulasParaExibir.length > 0 ? (
-          aulasParaExibir.map((aula, index) => (
+        {aulas.length > 0 ? (
+          aulas.map((aula, index) => (
             <Card
               key={`${aula._id}-${index}`}
               className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer flex flex-col justify-between"
@@ -92,7 +89,7 @@ export default function AulasListPage() {
                   Professor: {aula.professor || 'Não informado'}
                 </p>
                 <p className="text-sm text-gray-400">
-                  Matéria: {Array.isArray(aula.Materia) ? aula.Materia.join(', ') : (aula.materias || aula.Materia || 'Não informado')}
+                  Matéria: {Array.isArray(aula.Materia) ? aula.Materia.join(', ') : (aula.Materia || 'Não informado')}
                 </p>
                 <p className="text-xs text-gray-500 mt-2">
                   {aula.DesAula || 'Sem descrição disponível'}
@@ -106,11 +103,10 @@ export default function AulasListPage() {
         ) : (
           <div className="col-span-full text-center py-8">
             <p className="text-lg text-gray-400 mb-2">
-              Nenhuma aula encontrada para este filtro.
+              Nenhuma aula encontrada.
             </p>
             <p className="text-sm text-gray-500">
-              Verifique se existem aulas cadastradas para: <br />
-              <strong>{materiaCapitalized}</strong> no curso <strong>{courseFormatted}</strong> do <strong>{yearFormatted} Ano</strong>
+              Verifique se existem aulas cadastradas.
             </p>
           </div>
         )}
