@@ -83,14 +83,15 @@ export default function GerenciarPage() {
         );
 
         if (!res.ok) {
-          throw new Error('Falha ao deletar a aula');
+          const errorData = await res.json().catch(() => ({ message: 'Falha ao deletar a aula' }));
+          throw new Error(errorData.message || 'Falha ao deletar a aula');
         }
 
         alert('Aula deletada com sucesso!');
         fetchAulas(); // Re-fetch aulas after deletion
       } catch (error) {
         console.error('Erro ao deletar aula:', error);
-        alert('Erro ao deletar a aula.');
+        alert(`Erro ao deletar a aula: ${error instanceof Error ? error.message : 'Ocorreu um erro desconhecido.'}`);
       }
     }
   };
@@ -225,7 +226,7 @@ export default function GerenciarPage() {
           </TableHeader>
           <TableBody>
             {aulas.map((aula, index) => (
-              <TableRow key={`${aula._id}-${index}`} className="border-gray-800">
+              <TableRow key={`${aula.aulaId || aula._id}-${index}`} className="border-gray-800">
                 <TableCell>{aula.titulo}</TableCell>
                 <TableCell>
                   <span
@@ -250,7 +251,7 @@ export default function GerenciarPage() {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleDelete(aula._id)}
+                    onClick={() => handleDelete(aula.aulaId || aula._id)}
                   >
                     DELETAR
                   </Button>
