@@ -19,7 +19,7 @@ import {
   ChartTooltipContent,
   ChartConfig,
 } from '@/components/ui/chart';
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -249,7 +249,7 @@ export default function GerenciarPage() {
               config={barChartConfig}
               className="h-[150px] w-full"
             >
-              <BarChart data={barChartData} margin={{ left: 0, right: 20, top: 10, bottom: 0 }}>
+              <BarChart data={barChartData} margin={{ left: -10, right: 20, top: 10, bottom: -10 }} barGap={4} barCategoryGap="20%">
                 <CartesianGrid
                   vertical={false}
                   strokeDasharray="3 3"
@@ -261,6 +261,12 @@ export default function GerenciarPage() {
                   axisLine={false}
                   tick={{ fill: 'white' }}
                   tickFormatter={(value) => value.substring(0, 3)}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: 'white' }}
+                  width={20}
                 />
                 <ChartTooltip
                   cursor={false}
