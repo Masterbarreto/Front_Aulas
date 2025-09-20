@@ -39,14 +39,17 @@ export default function AulasListPage() {
   const aulasFiltradas = aulas.filter((aula) => {
     const anoMatch = normalize(aula.anoEscolar) === normalize(year);
 
-    // Lógica corrigida para o curso, que pode ser string ou array
+    // Lógica para o curso, que pode ser string ou array
     const normalizedCourse = normalize(course);
-    const cursoMatch = normalize(aula.curso) === normalizedCourse ||
-      (Array.isArray(aula.cursos) && aula.cursos.some(c => normalize(c) === normalizedCourse));
-
+    const cursoMatch = (
+        (typeof aula.curso === 'string' && normalize(aula.curso) === normalizedCourse) ||
+        (Array.isArray(aula.cursos) && aula.cursos.some(c => normalize(c) === normalizedCourse))
+    );
+    
     const materiaMatch = normalize(aula.Materia as string) === normalize(materia);
     
-    return anoMatch && cursoMatch && materiaMatch;
+    // Validando apenas o filtro de ano por enquanto
+    return anoMatch;
   });
   
   const aulasUnicas = aulasFiltradas.filter((aula, index, self) =>
