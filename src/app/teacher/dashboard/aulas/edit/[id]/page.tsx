@@ -174,7 +174,8 @@ export default function EditAulaPage() {
     formData.append('titulo', titulo);
     
     if (diaAula) {
-      formData.append('DayAula', format(diaAula, 'yyyy-MM-dd'));
+      const utcDate = new Date(diaAula.getTime() - diaAula.getTimezoneOffset() * 60000);
+      formData.append('DayAula', utcDate.toISOString().split('T')[0]);
     }
     
     formData.append('Horario', horario || '');
@@ -556,5 +557,3 @@ export default function EditAulaPage() {
     </div>
   );
 }
-
-    
