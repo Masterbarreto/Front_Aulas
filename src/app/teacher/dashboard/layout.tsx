@@ -37,7 +37,7 @@ export default function DashboardLayout({
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
     setIsLoggedIn(false);
-    router.push('/login');
+    router.push('/teacher/dashboard');
   };
 
   const navItems = [
