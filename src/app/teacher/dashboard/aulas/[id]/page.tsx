@@ -8,8 +8,16 @@ import { Label } from '@/components/ui/label';
 import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface Arquivo {
+  _id: string;
   nome: string;
   mimetype: string;
 }
@@ -20,8 +28,8 @@ interface LinkItem {
 }
 
 interface AulaCompleta extends Aula {
-  arquivos?: Arquivo[];
-  arquivosIds?: string[];
+  arquivos: Arquivo[];
+  arquivosIds: string[];
   LinkAula: LinkItem[];
 }
 
@@ -35,7 +43,7 @@ async function getAula(id: string): Promise<AulaCompleta | null> {
       return null;
     }
     const data = await response.json();
-    
+
     // Assegura que LinkAula seja sempre um array
     if (typeof data.LinkAula === 'string' && data.LinkAula.trim()) {
       try {
@@ -48,7 +56,7 @@ async function getAula(id: string): Promise<AulaCompleta | null> {
     } else if (!Array.isArray(data.LinkAula)) {
       data.LinkAula = [];
     }
-    
+
     return data;
   } catch (error) {
     console.error('Error fetching aula:', error);
@@ -67,6 +75,7 @@ export default function AulaPage() {
   const [aula, setAula] = useState<AulaCompleta | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [professor, setProfessor] = useState('');
+  const [turmaParaConcluir, setTurmaParaConcluir] = useState<string>('');
   const router = useRouter();
   const params = useParams();
   const id = params.id ? decodeURIComponent(params.id as string) : '';
@@ -82,36 +91,46 @@ export default function AulaPage() {
   }, [id]);
 
   const handleConcluirClick = async () => {
-    if (!professor) {
-      alert('Por favor, preencha o nome do professor.');
+    if (!professor || !turmaParaConcluir) {
+      alert('Por favor, preencha o nome do professor e a turma.');
       return;
     }
 
     if (!aula) return;
 
-    const turmaDaAula = Array.isArray(aula.Turma) ? aula.Turma.join(', ') : aula.Turma;
-
     try {
-      const response = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${id}/concluir`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ concluida: true, professor, turma: turmaDaAula }), 
-      });
+      const response = await fetch(
+        `https://apisubaulas.onrender.com/api/v1/aulas/${id}/concluir`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            concluida: true,
+            professor,
+            turma: turmaParaConcluir,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Erro ao ler a resposta da API.' }));
-        throw new Error(`Falha ao concluir a aula. Status: ${response.status}. Mensagem: ${errorData.message}`);
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: 'Erro ao ler a resposta da API.' }));
+        throw new Error(
+          `Falha ao concluir a aula. Status: ${response.status}. Mensagem: ${errorData.message}`
+        );
       }
 
       alert('Aula concluída com sucesso!');
       setShowModal(false);
-      if(aula) {
+      if (aula) {
         setAula({ ...aula, concluida: true });
       }
       router.back();
     } catch (err) {
       console.error('Erro ao concluir aula:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Ocorreu um erro desconhecido.';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Ocorreu um erro desconhecido.';
       alert(`Erro ao concluir a aula: ${errorMessage}`);
     }
   };
@@ -119,12 +138,15 @@ export default function AulaPage() {
   const handleDesconcluirClick = async () => {
     if (!id) return;
     try {
-      await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${id}/desconcluir`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      await fetch(
+        `https://apisubaulas.onrender.com/api/v1/aulas/${id}/desconcluir`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
       alert('Aula marcada como não concluída!');
-      if(aula) {
+      if (aula) {
         setAula({ ...aula, concluida: false });
       }
       router.back();
@@ -133,7 +155,7 @@ export default function AulaPage() {
       alert('Erro ao desconcluir a aula!');
     }
   };
-  
+
   if (!aula) {
     return (
       <div className="flex flex-col text-white items-center justify-center h-full">
@@ -145,21 +167,18 @@ export default function AulaPage() {
   const titulo = aula.titulo
     ? aula.titulo.charAt(0).toUpperCase() + aula.titulo.slice(1).toLowerCase()
     : 'Aula';
-  
-  const materia = aula.materias || 'Não informada';
 
+  const materia = aula.materias || 'Não informada';
 
   return (
     <div className="text-white relative">
       <div className="flex items-center gap-4 mb-6">
         <button onClick={() => router.back()}>
-            <ArrowLeft size={32} className="cursor-pointer" />
+          <ArrowLeft size={32} className="cursor-pointer" />
         </button>
         <div>
-            <h1 className="text-3xl font-bold">
-            Aula de {titulo}
-            </h1>
-            <p className="text-gray-400">matéria: {materia}</p>
+          <h1 className="text-3xl font-bold">Aula de {titulo}</h1>
+          <p className="text-gray-400">matéria: {materia}</p>
         </div>
       </div>
 
@@ -183,80 +202,89 @@ export default function AulaPage() {
             <CardTitle className="text-xl">Detalhes da Aula</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4 text-sm">
-            <div className='flex justify-between'>
-                <span className='text-gray-400'>Criador da atividade:</span>
-                <span className='font-medium'>{aula.professor}</span>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Criador da atividade:</span>
+              <span className="font-medium">{aula.professor}</span>
             </div>
-            <div className='flex justify-between'>
-                <span className='text-gray-400'>Data de Criação:</span>
-                <span className='font-medium'>{formatarData(aula.createdAt)}</span>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Data de Criação:</span>
+              <span className="font-medium">{formatarData(aula.createdAt)}</span>
             </div>
-            <div className='flex justify-between'>
-                <span className='text-gray-400'>Dia da Aula:</span>
-                <span className='font-medium'>{formatarData(aula.DayAula)}</span>
+            <div className="flex justify-between">
+              <span className="text-gray-400">Dia da Aula:</span>
+              <span className="font-medium">{formatarData(aula.DayAula)}</span>
             </div>
-           
+
             <div className="border-t border-gray-700 my-2" />
 
             <h3 className="font-semibold mb-2">Links e Arquivos</h3>
             <div className="flex flex-col gap-2">
-              {Array.isArray(aula.arquivos) && aula.arquivos.length > 0 ? (
-                aula.arquivos.map((arq: any, idx: number) => (
-                  <button
-                    key={`arquivo-${idx}`}
-                    className="flex items-center justify-between w-full text-left p-2 rounded-md hover:bg-gray-700"
-                    onClick={() => {
-                      const arquivoId = aula.arquivosIds && aula.arquivosIds[idx];
-                      if (arquivoId) {
-                        fetch(`https://apisubaulas.onrender.com/api/v1/aulas/${arquivoId}/pdf`)
-                          .then(res => res.blob())
-                          .then(blob => {
-                            const urlBlob = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = urlBlob;
-                            a.download = arq.nome;
-                            document.body.appendChild(a);
-                            a.click();
-                            window.URL.revokeObjectURL(urlBlob);
-                            document.body.removeChild(a);
-                          });
-                      }
-                    }}
-                  >
-                    <span className="flex items-center gap-2 text-blue-400">
-                      <FileText size={20} />
-                      {arq.nome}
-                    </span>
-                    <svg width="20" height="20" fill="#fff"><path d="M5 13l4 4 4-4M12 17V7m-4 10V7"/></svg>
-                  </button>
-                ))
-              ) : null }
-
-              {aula.LinkAula.length > 0 ? (
-                  aula.LinkAula.map((link: LinkItem, idx: number) => (
-                      <div
-                          key={`link-${idx}`}
-                          className="cursor-pointer p-3 bg-[#2D2E36] rounded-lg mb-3 flex flex-col gap-2 hover:bg-gray-700"
-                          onClick={() => window.open(link.url, "_blank")}
-                      >
-                          <div className="font-bold text-white">
-                              {link.name}
-                          </div>
-                          <div className="text-gray-400 text-xs break-all">
-                              {link.url}
-                          </div>
-                      </div>
+              {Array.isArray(aula.arquivos) && aula.arquivos.length > 0
+                ? aula.arquivos.map((arq: Arquivo, idx: number) => (
+                    <button
+                      key={`arquivo-${idx}`}
+                      className="flex items-center justify-between w-full text-left p-2 rounded-md hover:bg-gray-700"
+                      onClick={() => {
+                        const arquivoId = arq._id;
+                        if (arquivoId) {
+                          fetch(
+                            `https://apisubaulas.onrender.com/api/v1/aulas/${arquivoId}/pdf`
+                          )
+                            .then((res) => res.blob())
+                            .then((blob) => {
+                              const urlBlob = window.URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = urlBlob;
+                              a.download = arq.nome;
+                              document.body.appendChild(a);
+                              a.click();
+                              window.URL.revokeObjectURL(urlBlob);
+                              document.body.removeChild(a);
+                            });
+                        }
+                      }}
+                    >
+                      <span className="flex items-center gap-2 text-blue-400">
+                        <FileText size={20} />
+                        {arq.nome}
+                      </span>
+                      <svg width="20" height="20" fill="#fff">
+                        <path d="M5 13l4 4 4-4M12 17V7m-4 10V7" />
+                      </svg>
+                    </button>
                   ))
-              ) : null}
+                : null}
 
-              {(!aula.arquivos || aula.arquivos.length === 0) && (!aula.LinkAula || aula.LinkAula.length === 0) && (
-                <p className="text-gray-400 text-xs">Nenhum link ou arquivo disponível</p>
-              )}
+              {aula.LinkAula.length > 0
+                ? aula.LinkAula.map((link: LinkItem, idx: number) => (
+                    <div
+                      key={`link-${idx}`}
+                      className="cursor-pointer p-3 bg-[#2D2E36] rounded-lg mb-3 flex flex-col gap-2 hover:bg-gray-700"
+                      onClick={() => window.open(link.url, '_blank')}
+                    >
+                      <div className="font-bold text-white">{link.name}</div>
+                      <div className="text-gray-400 text-xs break-all">
+                        {link.url}
+                      </div>
+                    </div>
+                  ))
+                : null}
+
+              {(!aula.arquivos || aula.arquivos.length === 0) &&
+                (!aula.LinkAula || aula.LinkAula.length === 0) && (
+                  <p className="text-gray-400 text-xs">
+                    Nenhum link ou arquivo disponível
+                  </p>
+                )}
             </div>
-            
+
             <Button
               className="w-full bg-blue-600 hover:bg-blue-700 mt-4"
-              onClick={() => (aula.concluida ? handleDesconcluirClick() : setShowModal(true))}
+              onClick={() =>
+                aula.concluida
+                  ? handleDesconcluirClick()
+                  : setShowModal(true)
+              }
             >
               {aula.concluida ? 'Desconcluir Aula' : 'Concluir Aula'}
             </Button>
@@ -274,10 +302,15 @@ export default function AulaPage() {
               <X size={24} />
             </button>
             <h2 className="text-2xl font-bold mb-2">Concluir Aula</h2>
-            <p className="text-gray-400 mb-6">Preencha essas informações para Concluir a Aula</p>
+            <p className="text-gray-400 mb-6">
+              Preencha essas informações para Concluir a Aula
+            </p>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="professor-name" className="text-sm font-medium text-gray-300">
+                <Label
+                  htmlFor="professor-name"
+                  className="text-sm font-medium text-gray-300"
+                >
                   Nome de Quem Deu a Aula
                 </Label>
                 <Input
@@ -289,12 +322,39 @@ export default function AulaPage() {
                   className="bg-gray-800 border-gray-700 mt-2"
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="turma" className="text-sm font-medium text-gray-300">
+                  Turma *
+                </Label>
+                <Select value={turmaParaConcluir} onValueChange={setTurmaParaConcluir}>
+                  <SelectTrigger
+                    id="turma"
+                    className="bg-gray-800 border-gray-700 mt-2"
+                  >
+                    <SelectValue placeholder="Selecione a turma" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#111115] border-gray-700 text-white">
+                    <SelectItem value="all">Todas as Turmas</SelectItem>
+                    <SelectItem value="1">Turma 1</SelectItem>
+                    <SelectItem value="2">Turma 2</SelectItem>
+                    <SelectItem value="3">Turma 3</SelectItem>
+                    <SelectItem value="4">Turma 4</SelectItem>
+                    <SelectItem value="5">Turma 5</SelectItem>
+                    <SelectItem value="6">Turma 6</SelectItem>
+                    <SelectItem value="7">Turma 7</SelectItem>
+                    <SelectItem value="8">Turma 8</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="flex justify-end gap-4 mt-8">
               <Button variant="ghost" onClick={() => setShowModal(false)}>
                 Fechar
               </Button>
-              <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleConcluirClick}>
+              <Button
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={handleConcluirClick}
+              >
                 Salvar
               </Button>
             </div>
