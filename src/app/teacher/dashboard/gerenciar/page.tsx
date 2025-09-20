@@ -85,10 +85,10 @@ export default function GerenciarPage() {
             method: 'DELETE',
           }
         );
-
-        if (res.ok) {
-          alert('Aula deletada com sucesso!');
-          fetchAulas();
+        
+        if (res.status === 204 || res.ok) {
+           alert('Aula deletada com sucesso!');
+           fetchAulas();
         } else {
           const errorData = await res.json().catch(() => ({ message: 'Falha ao deletar a aula' }));
           throw new Error(errorData.message || 'Falha ao deletar a aula');
@@ -231,7 +231,7 @@ export default function GerenciarPage() {
           </TableHeader>
           <TableBody>
             {aulas.map((aula, index) => (
-              <TableRow key={`${aula.aulaId || aula._id}-${index}`} className="border-gray-800">
+              <TableRow key={aula._id || index} className="border-gray-800">
                 <TableCell>{aula.titulo}</TableCell>
                 <TableCell>
                   <span
@@ -257,6 +257,7 @@ export default function GerenciarPage() {
                     variant="destructive"
                     size="sm"
                     onClick={() => handleDelete(aula._id)}
+                    disabled={!aula._id}
                   >
                     DELETAR
                   </Button>
