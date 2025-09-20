@@ -38,13 +38,11 @@ export default function AulasListPage() {
 
   const aulasFiltradas = aulas.filter((aula) => {
     const anoMatch = normalize(aula.anoEscolar) === normalize(year);
+    
+    // O campo 'curso' na API pode ser uma string ou um array de strings.
+    const cursoMatch = normalize(aula.curso) === normalize(course) || 
+      (Array.isArray(aula.cursos) && aula.cursos.some(c => normalize(c) === normalize(course)));
 
-    // O campo 'curso' na API pode ser um array de strings.
-    // Verificamos se o 'course' da URL corresponde a algum dos cursos no array.
-    const cursoMatch = Array.isArray(aula.curso) 
-      ? aula.curso.some(c => normalize(c) === normalize(course)) 
-      : normalize(aula.curso) === normalize(course);
-      
     const materiaMatch = normalize(aula.Materia as string) === normalize(materia);
 
     return anoMatch && cursoMatch && materiaMatch;
