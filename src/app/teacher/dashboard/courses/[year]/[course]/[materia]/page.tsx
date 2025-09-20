@@ -56,11 +56,13 @@ export default function AulasListPage() {
   if (loading) {
     return <p className="text-white text-center">Carregando aulas...</p>;
   }
-
+  
+  const yearNumber = year ? year.split('-')[0] : '';
+  
   // Lógica de filtro robusta no frontend
   const aulasFiltradas = aulas.filter((aula) => {
     // 1. Filtro por ano escolar
-    const anoMatch = aula.anoEscolar === year.split('-')[0];
+    const anoMatch = aula.anoEscolar === yearNumber;
 
     // 2. Filtro por curso (robusto)
     const normalizedCourseParam = normalize(course);
@@ -71,10 +73,13 @@ export default function AulasListPage() {
     // 3. Filtro por matéria (robusto)
     const normalizedMateriaParam = normalize(materia);
     const materiaApi = aula.Materia || aula.materias;
-    const materiaMatch =
-      typeof materiaApi === 'string' &&
-      normalize(materiaApi) === normalizedMateriaParam;
-
+    let materiaMatch = false;
+    if (typeof materiaApi === 'string') {
+        materiaMatch = normalize(materiaApi) === normalizedMateriaParam;
+    } else if (Array.isArray(materiaApi)) {
+        materiaMatch = materiaApi.some(m => normalize(m) === normalizedMateriaParam);
+    }
+    
     return anoMatch && cursoMatch && materiaMatch;
   });
 
