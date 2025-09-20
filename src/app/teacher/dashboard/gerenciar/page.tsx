@@ -60,7 +60,7 @@ export default function GerenciarPage() {
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          setAulas(data); // Exibe todas as aulas retornadas pela API
+          setAulas(data);
         } else {
           setAulas([]);
         }
@@ -87,13 +87,7 @@ export default function GerenciarPage() {
         );
 
         if (res.ok) {
-          // A resposta 204 (No Content) também é um sucesso mas não tem corpo
-          if (res.status !== 204) {
-            const data = await res.json();
-            alert(data.message || 'Aula deletada com sucesso!');
-          } else {
-            alert('Aula deletada com sucesso!');
-          }
+          alert('Aula deletada com sucesso!');
           fetchAulas();
         } else {
           const errorData = await res.json().catch(() => ({ message: 'Falha ao deletar a aula' }));
