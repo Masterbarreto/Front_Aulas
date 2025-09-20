@@ -45,7 +45,7 @@ export default function UploadPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [anoEscolar, setAnoEscolar] = useState('');
   const [curso, setCurso] = useState('');
-  const [turma, setTurma] = useState('');
+  const [turma, setTurma] = useState<string>('');
   const [materia, setMateria] = useState('');
   const [professor, setProfessor] = useState('');
   const [titulo, setTitulo] = useState('');
@@ -109,7 +109,7 @@ export default function UploadPage() {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
       formData.append('Turma', JSON.stringify(turmasParaEnviar));
     } else {
-      formData.append('Turma', turma.toString());
+      formData.append('Turma', turma);
     }
     
     formData.append('Materia', materia);
