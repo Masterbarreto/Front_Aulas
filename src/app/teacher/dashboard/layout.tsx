@@ -6,8 +6,6 @@ import {
   FileText,
   LogOut,
   GraduationCap,
-  Users,
-  User,
   Upload,
   Settings,
 } from 'lucide-react';
@@ -28,8 +26,12 @@ export default function DashboardLayout({
     if (typeof window !== 'undefined') {
       const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
       setIsLoggedIn(loggedIn);
+      if (!loggedIn && !pathname.includes('/login')) {
+         // Se não estiver logado e não estiver na página de login, redirecione.
+         // A lógica pode precisar de ajuste dependendo das rotas públicas.
+      }
     }
-  }, []);
+  }, [pathname, router]);
 
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
@@ -47,8 +49,6 @@ export default function DashboardLayout({
   ];
 
   const adminNavItems = [
-    { href: '/teacher/dashboard/turmas', icon: Users, label: 'Turmas' },
-    { href: '/teacher/dashboard/alunos', icon: User, label: 'Alunos' },
     { href: '/teacher/dashboard/upload', icon: Upload, label: 'Upload de Atividades' },
     { href: '/teacher/dashboard/gerenciar', icon: Settings, label: 'Gerenciar Atividades' },
   ];
