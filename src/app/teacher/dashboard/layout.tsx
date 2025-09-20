@@ -24,17 +24,15 @@ export default function DashboardLayout({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
-      setIsLoggedIn(loggedIn);
-      setIsLoading(false); 
+    const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    setIsLoggedIn(loggedIn);
+    setIsLoading(false);
 
-      const protectedRoutes = ['/teacher/dashboard/upload', '/teacher/dashboard/gerenciar'];
-      const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+    const protectedRoutes = ['/teacher/dashboard/upload', '/teacher/dashboard/gerenciar'];
+    const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
 
-      if (!loggedIn && isProtectedRoute) {
-        router.push('/teacher/dashboard');
-      }
+    if (!loggedIn && isProtectedRoute) {
+      router.push('/teacher/dashboard');
     }
   }, [pathname, router]);
 
@@ -60,12 +58,11 @@ export default function DashboardLayout({
   
   const isProtectedRoute = ['/teacher/dashboard/upload', '/teacher/dashboard/gerenciar'].some(route => pathname.startsWith(route));
 
-  const canRenderChildren = !isProtectedRoute || (isProtectedRoute && isLoggedIn);
-
-  if (isLoading && isProtectedRoute) {
+  if (isLoading) {
     return null; 
   }
 
+  const canRenderChildren = !isProtectedRoute || (isProtectedRoute && isLoggedIn);
 
   return (
     <div className="flex min-h-screen w-full bg-[#1C1C24] text-white">
