@@ -18,25 +18,23 @@ export default function AulasListPage() {
   useEffect(() => {
     if (!year || !course || !materia) return;
 
-    // Extrai o ano numérico, ex: "2" de "2-ano"
     const ano = year.split('-')[0];
+    const cursoNormalizado = course.toLowerCase();
+    const materiaNormalizada = materia.toLowerCase();
 
     const apiUrl = new URL('https://apisubaulas.onrender.com/api/v1/aulas/filtrar');
     apiUrl.searchParams.append('ano', ano);
-    apiUrl.searchParams.append('curso', course);
-    apiUrl.searchParams.append('materia', materia);
+    apiUrl.searchParams.append('curso', cursoNormalizado);
+    apiUrl.searchParams.append('materia', materiaNormalizada);
 
     fetch(apiUrl.toString())
       .then((res) => {
         if (!res.ok) {
-           // Se a resposta não for OK, lança um erro para ser pego pelo catch
-           // Isso previne erros de parse de JSON em respostas de erro (ex: 404)
           throw new Error('Falha ao buscar dados da API');
         }
         return res.json();
       })
       .then((data) => {
-        // Garante que o estado seja sempre um array
         if (Array.isArray(data)) {
           setAulas(data);
         } else {
@@ -46,7 +44,7 @@ export default function AulasListPage() {
       })
       .catch((error) => {
         console.error('Erro ao buscar ou processar aulas:', error);
-        setAulas([]); // Define como array vazio em caso de erro
+        setAulas([]);
       })
       .finally(() => setLoading(false));
   }, [year, course, materia]);
