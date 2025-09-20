@@ -35,17 +35,8 @@ export default function AulasListPage() {
     return <p className="text-white">Parâmetros da URL ausentes.</p>;
   }
 
-  const aulasFiltradas = aulas.filter((aula) => {
-    const anoMatch = normalize(year) === "all" || normalize(aula.anoEscolar) === "all" || normalize(aula.anoEscolar) === normalize(year);
-    
-    // O backend retorna `cursos` como um array. Verificamos se o curso da URL está nesse array.
-    const cursoMatch = normalize(course) === "all" || (Array.isArray(aula.cursos) && aula.cursos.some(c => normalize(c) === normalize(course)));
-
-    const materiaMatch = normalize(materia) === "all" || normalize(aula.Materia as string) === "all" || normalize(aula.Materia as string) === normalize(materia);
-
-    return anoMatch && cursoMatch && materiaMatch;
-  });
-
+  // Filtro removido para depuração
+  const aulasFiltradas = aulas;
 
   const aulasUnicas = aulasFiltradas.filter((aula, index, self) =>
     index === self.findIndex((a) => (
