@@ -53,21 +53,9 @@ export default function AulasListPage() {
 
   const aulasFiltradas = aulas.filter((aula) => {
     // 1. Filtro de Ano
-    const yearFromUrl = year ? year.split('-')[0] : '';
-    const anoMatch = aula.anoEscolar === yearFromUrl;
+    const anoMatch = aula.anoEscolar === year?.split('-')[0];
 
-    // 2. Filtro de Curso
-    const courseFromUrl = normalize(course);
-    const cursoMatch =
-      Array.isArray(aula.cursos) &&
-      aula.cursos.some(c => normalize(c.split(' ')[0]) === courseFromUrl);
-
-    // 3. Filtro de Matéria
-    const materiaFromUrl = normalize(materia);
-    const materiaApi = normalize(aula.Materia as string) || normalize(aula.materias as string);
-    const materiaMatch = materiaApi === materiaFromUrl;
-
-    return anoMatch && cursoMatch && materiaMatch;
+    return anoMatch;
   });
 
   const handleClick = (aula: Aula) => {
