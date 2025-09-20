@@ -91,11 +91,11 @@ export default function AulasListPage() {
   });
 
   const aulasUnicas = aulasFiltradas.filter(
-    (aula, index, self) => index === self.findIndex((a) => a._id === aula._id)
+    (aula, index, self) => index === self.findIndex((a) => (a._id || a.aulaId) === (aula._id || aula.aulaId))
   );
 
   const handleCardClick = (aula: Aula) => {
-    const id = aula._id;
+    const id = aula._id || aula.aulaId;
     if (id) {
       router.push(`/teacher/dashboard/aulas/${id}`);
     } else {
