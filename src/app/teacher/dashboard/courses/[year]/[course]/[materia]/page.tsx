@@ -12,7 +12,8 @@ function normalize(str?: string): string {
 
 function capitalize(str: string): string {
   if (!str) return '';
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  // Trata slugs como "educacao-fisica" para "Educacao Fisica"
+  return str.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
 export default function AulasListPage() {
@@ -35,11 +36,14 @@ export default function AulasListPage() {
   }
 
   const aulasFiltradas = aulas.filter((aula) => {
-    const anoMatch = normalize(aula.anoEscolar) === normalize(year);
+    // Ano: compara diretamente sem normalizar para manter o hífen (ex: "2-ano")
+    const anoMatch = aula.anoEscolar === year;
     
+    // Curso: verifica se o curso da URL está no array de cursos da aula
     const cursoArray = Array.isArray(aula.curso) ? aula.curso : [aula.curso];
     const cursoMatch = cursoArray.some(c => normalize(c).includes(normalize(course)));
 
+    // Matéria: normaliza para comparar (ex: "Inglês" com "ingles")
     const materiaMatch = normalize(aula.Materia as string) === normalize(materia);
 
     return anoMatch && cursoMatch && materiaMatch;
@@ -56,7 +60,9 @@ export default function AulasListPage() {
     router.push(`/teacher/dashboard/aulas/${id}`);
   };
   
-  const materiaCapitalized = capitalize(materia.replace('-', ' '));
+  const materiaCapitalized = capitalize(materia);
+  const courseFormatted = course.toUpperCase();
+  const yearFormatted = year ? year.replace('-', 'º ') : '';
 
   return (
     <div className="flex flex-col text-white">
@@ -65,7 +71,7 @@ export default function AulasListPage() {
         onClick={() => router.back()}
       >
         <ArrowLeft className="h-6 w-6" />
-        <h1 className="text-2xl font-bold">Aulas de {materiaCapitalized} – Senac</h1>
+        <h1 className="text-2xl font-bold">Aulas de {materiaCapitalized} – {courseFormatted} ({yearFormatted})</h1>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
