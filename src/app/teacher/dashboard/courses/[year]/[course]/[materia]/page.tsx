@@ -6,7 +6,6 @@ import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 
-// Função de normalização inspirada na aplicação antiga para garantir consistência
 function normalize(str?: string): string {
   if (!str) return '';
   return str.toLowerCase().replace(/\s+/g, '').replace(/-/g, '');
@@ -36,7 +35,6 @@ export default function AulasListPage() {
     return <p className="text-white">Parâmetros da URL ausentes.</p>;
   }
 
-  // Lógica de filtro robusta, inspirada no código antigo
   const aulasFiltradas = aulas.filter((aula) => {
     const anoMatch = normalize(year) === "all" || normalize(aula.anoEscolar) === "all" || normalize(aula.anoEscolar) === normalize(year);
     
