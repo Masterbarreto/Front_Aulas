@@ -104,16 +104,14 @@ export default function UploadPage() {
     const anoEscolarValue = anoEscolar ? anoEscolar.split('-')[0] : '';
     formData.append('anoEscolar', anoEscolarValue);
     
-    // Send as simple strings as per backend validation
     formData.append('curso', curso);
     formData.append('materias', materia);
 
-    // Handle 'Turma' specifically
     if (turma === 'all') {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
       formData.append('Turma', JSON.stringify(turmasParaEnviar));
     } else {
-      formData.append('Turma', String(turma));
+      formData.append('Turma', turma);
     }
     
     formData.append('professor', professor);
@@ -124,8 +122,12 @@ export default function UploadPage() {
     formData.append('Horario', horario);
     formData.append('DesAula', descricao);
 
-    const linksParaEnviar = structuredLinks.map(link => ({ name: link.name, url: link.url }));
-    formData.append('LinkAula', JSON.stringify(linksParaEnviar));
+    if (structuredLinks.length > 0) {
+        const linksParaEnviar = structuredLinks.map(link => ({ name: link.name, url: link.url }));
+        formData.append('LinkAula', JSON.stringify(linksParaEnviar));
+    } else {
+        formData.append('LinkAula', JSON.stringify([]));
+    }
 
     files.forEach((file) => {
       formData.append('arquivos', file);
@@ -144,7 +146,6 @@ export default function UploadPage() {
         const errorData = await res.json().catch(() => ({
           message: 'Não foi possível ler a resposta de erro da API.',
         }));
-        // The actual validation error is often inside errorData.errors or errorData.message
         const specificMessage = Array.isArray(errorData.errors) ? errorData.errors.join(', ') : errorData.message;
         throw new Error(
           specificMessage || `Erro no servidor com status ${res.status}`
