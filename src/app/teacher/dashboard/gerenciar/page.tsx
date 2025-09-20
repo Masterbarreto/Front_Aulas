@@ -25,26 +25,16 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
-const chartData = [
-  { day: 'Seg', aulas: 1 },
-  { day: 'Ter', aulas: 1 },
-  { day: 'Qua', aulas: 1 },
-  { day: 'Qui', aulas: 1 },
-  { day: 'Sex', aulas: 2 },
-  { day: 'Sáb', aulas: 4 },
-];
-
 const chartConfig: ChartConfig = {
   aulas: {
     label: 'Aulas',
     color: 'hsl(var(--chart-1))',
   },
+  value: {
+    label: 'Aulas',
+    color: 'hsl(var(--chart-1))',
+  },
 };
-
-const barChartData = [
-  { materia: 'Português', substituicoes: 2 },
-  { materia: 'Inglês', substituicoes: 2 },
-];
 
 const barChartConfig: ChartConfig = {
   substituicoes: {
@@ -55,19 +45,71 @@ const barChartConfig: ChartConfig = {
 
 export default function GerenciarPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
+  const [areaChartData, setAreaChartData] = useState([]);
+  const [barChartData, setBarChartData] = useState([]);
   const router = useRouter();
 
   const fetchAulas = () => {
-    fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setAulas(data);
-        } else {
-          setAulas([]);
+    Promise.all([
+      fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas').then(
+        (res) => res.json()
+      ),
+      fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas').then(
+        (res) => res.json()
+      ),
+      fetch(
+        'https://apisubaulas.onrender.com/api/v1/graficos/aulas-por-dia'
+      ).then((res) => res.json()),
+      fetch(
+        'https://apisubaulas.onrender.com/api/v1/graficos/top-5-materias'
+      ).then((res) => res.json()),
+    ])
+      .then(
+        ([
+          aulasNaoConcluidasData,
+          aulasConcluidasData,
+          areaData,
+          barData,
+        ]) => {
+          const naoConcluidas = Array.isArray(aulasNaoConcluidasData)
+            ? aulasNaoConcluidasData
+            : [];
+          const concluidas = Array.isArray(aulasConcluidasData)
+            ? aulasConcluidasData
+            : [];
+          setAulas([...naoConcluidas, ...concluidas]);
+
+          if (Array.isArray(areaData)) {
+            const daysOrder = [
+              'Seg',
+              'Ter',
+              'Qua',
+              'Qui',
+              'Sex',
+              'Sáb',
+              'Dom',
+            ];
+            areaData.sort(
+              (a, b) => daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day)
+            );
+            setAreaChartData(areaData);
+          } else {
+            setAreaChartData([]);
+          }
+
+          if (Array.isArray(barData)) {
+            setBarChartData(barData);
+          } else {
+            setBarChartData([]);
+          }
         }
-      })
-      .catch(() => setAulas([]));
+      )
+      .catch((error) => {
+        console.error('Erro ao buscar dados:', error);
+        setAulas([]);
+        setAreaChartData([]);
+        setBarChartData([]);
+      });
   };
 
   useEffect(() => {
@@ -82,7 +124,7 @@ export default function GerenciarPage() {
       console.error('ID da aula não encontrado para navegação.');
     }
   };
-  
+
   const handleEditClick = (e: React.MouseEvent, aula: Aula) => {
     e.stopPropagation();
     const id = aula.aulaId || aula._id;
@@ -107,18 +149,25 @@ export default function GerenciarPage() {
             method: 'DELETE',
           }
         );
-        
+
         if (res.status === 204 || res.ok) {
-           alert('Aula deletada com sucesso!');
-           fetchAulas();
+          alert('Aula deletada com sucesso!');
+          fetchAulas();
         } else {
-          const errorData = await res.json().catch(() => ({ message: 'Falha ao deletar a aula' }));
+          const errorData = await res
+            .json()
+            .catch(() => ({ message: 'Falha ao deletar a aula' }));
           throw new Error(errorData.message || 'Falha ao deletar a aula');
         }
-
       } catch (error) {
         console.error('Erro ao deletar aula:', error);
-        alert(`Erro ao deletar a aula: ${error instanceof Error ? error.message : 'Ocorreu um erro desconhecido.'}`);
+        alert(
+          `Erro ao deletar a aula: ${
+            error instanceof Error
+              ? error.message
+              : 'Ocorreu um erro desconhecido.'
+          }`
+        );
       }
     }
   };
@@ -149,10 +198,7 @@ export default function GerenciarPage() {
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig} className="h-[150px] w-full">
-              <AreaChart
-                data={chartData}
-                margin={{ left: -20, top: 5, right: 20, bottom: -10 }}
-              >
+              <AreaChart data={areaChartData} margin={{ left: 0, right: 20 }}>
                 <defs>
                   <linearGradient id="colorAulas" x1="0" y1="0" x2="0" y2="1">
                     <stop
@@ -178,7 +224,7 @@ export default function GerenciarPage() {
                   content={<ChartTooltipContent indicator="dot" />}
                 />
                 <Area
-                  dataKey="aulas"
+                  dataKey="value"
                   type="natural"
                   fill="url(#colorAulas)"
                   stroke="var(--color-aulas)"
@@ -190,17 +236,16 @@ export default function GerenciarPage() {
         </Card>
         <Card className="bg-[#111115] border-gray-800">
           <CardHeader>
-            <CardTitle>Aulas Com Mais Substituição</CardTitle>
+            <CardTitle className="whitespace-nowrap">
+              Aulas Com Mais Substituição
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <ChartContainer
               config={barChartConfig}
               className="h-[150px] w-full"
             >
-              <BarChart
-                data={barChartData}
-                margin={{ left: -20, top: 5, right: 20, bottom: -10 }}
-              >
+              <BarChart data={barChartData} margin={{ left: 0, right: 20 }}>
                 <CartesianGrid
                   vertical={false}
                   strokeDasharray="3 3"
@@ -253,8 +298,8 @@ export default function GerenciarPage() {
           </TableHeader>
           <TableBody>
             {aulas.map((aula, index) => (
-              <TableRow 
-                key={aula.aulaId || aula._id || index} 
+              <TableRow
+                key={aula.aulaId || aula._id || index}
                 className="border-gray-800 cursor-pointer"
                 onClick={() => handleRowClick(aula)}
               >
@@ -272,14 +317,18 @@ export default function GerenciarPage() {
                 <TableCell>{aula.professor}</TableCell>
                 <TableCell>{aula.anoEscolar}</TableCell>
                 <TableCell>
-                  {Array.isArray(aula.curso)
-                    ? aula.curso.join(', ')
+                  {Array.isArray(aula.cursos)
+                    ? aula.cursos.join(', ')
                     : aula.curso}
                 </TableCell>
-                <TableCell>{aula.Turma}</TableCell>
-                <TableCell>{aula.materias || aula.Materia || 'N/A'}</TableCell>
+                <TableCell>
+                  {Array.isArray(aula.turmas)
+                    ? aula.turmas.join(', ')
+                    : aula.Turma}
+                </TableCell>
+                <TableCell>{Array.isArray(aula.materias) ? aula.materias.join(', ') : aula.materias || aula.Materia || 'N/A'}</TableCell>
                 <TableCell className="flex gap-2 justify-center">
-                   <Button
+                  <Button
                     variant="outline"
                     size="sm"
                     onClick={(e) => handleEditClick(e, aula)}
