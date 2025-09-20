@@ -103,16 +103,21 @@ export default function UploadPage() {
 
     const anoEscolarValue = anoEscolar ? anoEscolar.split('-')[0] : '';
     formData.append('anoEscolar', anoEscolarValue);
+    
+    // Send as simple strings, not arrays
     formData.append('curso', curso);
+    formData.append('Materia', materia);
 
+    // Handle 'Turma' specifically
     if (turma === 'all') {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
+      // Backend expects a JSON string array for multiple values
       formData.append('Turma', JSON.stringify(turmasParaEnviar));
     } else {
+      // Send as a simple string if it's not 'all'
       formData.append('Turma', turma);
     }
     
-    formData.append('Materia', materia);
     formData.append('professor', professor);
     formData.append('titulo', titulo);
     if (diaAula) {
@@ -138,11 +143,14 @@ export default function UploadPage() {
       );
 
       if (!res.ok) {
+        // Improved error handling to get the specific message from the backend
         const errorData = await res.json().catch(() => ({
-          message: 'Erro ao ler a resposta da API.',
+          message: 'Não foi possível ler a resposta de erro da API.',
         }));
+        // The actual validation error is often inside errorData.errors or errorData.message
+        const specificMessage = Array.isArray(errorData.errors) ? errorData.errors.join(', ') : errorData.message;
         throw new Error(
-          errorData.message || `Erro no servidor com status ${res.status}`
+          specificMessage || `Erro no servidor com status ${res.status}`
         );
       }
 
