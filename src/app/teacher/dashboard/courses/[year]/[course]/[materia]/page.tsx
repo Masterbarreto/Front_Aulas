@@ -91,11 +91,11 @@ export default function AulasListPage() {
   });
 
   const aulasUnicas = aulasFiltradas.filter(
-    (aula, index, self) => index === self.findIndex((a) => (a._id || a.aulaId) === (aula._id || aula.aulaId))
+    (aula, index, self) => index === self.findIndex((a) => (a.aulaId || a._id) === (aula.aulaId || aula._id))
   );
 
   const handleCardClick = (aula: Aula) => {
-    const id = aula._id || aula.aulaId;
+    const id = aula.aulaId || aula._id;
     if (id) {
       router.push(`/teacher/dashboard/aulas/${id}`);
     } else {
@@ -142,7 +142,7 @@ export default function AulasListPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {aulasUnicas.map((aula, index) => (
             <Card
-              key={aula._id || aula.aulaId || index}
+              key={aula.aulaId || aula._id || index}
               className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer"
               onClick={() => handleCardClick(aula)}
             >
