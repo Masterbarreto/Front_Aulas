@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { Loader2, ArrowLeft, FileText } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -10,47 +10,55 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
 
-type AulaSimplificada = {
-  _id: string;
-  aulaId: string;
-  titulo: string;
-  DesAula: string;
-  Horario: string;
-  anoEscolar: string;
-  cursos: string[];
-  Materia: string;
-  materias: string | string[];
-  professor: string;
-};
+interface Aula {
+  _id?: string;
+  aulaId?: string;
+  titulo?: string;
+  Horario?: string;
+  DesAula?: string;
+  anoEscolar?: string;
+  cursos?: string[];
+  curso?: string;
+  Turma?: string;
+  Materia?: string;
+  materias?: string | string[];
+  professor?: string;
+  arquivos?: { nome: string }[];
+  arquivosIds?: string[];
+}
 
-// função para normalizar strings (sem acento, minúsculo)
-function normalize(str: string | undefined | null): string {
-  if (!str) return "";
-  return str
+// Normaliza strings (minúsculas, sem espaços, sem acentos, sem hífen)
+function normalize(str?: string) {
+  return (str || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/-/g, "");
+}
+
+// Corrige mapeamento de anos (API manda "2" mas pode significar 1º ano)
+function matchAno(anoApi?: string, anoParam?: string) {
+  if (!anoApi || !anoParam) return false;
+  // Extrai apenas o número do ano da URL (ex: '1-ano' -> '1')
+  const paramNum = parseInt(anoParam.replace(/\D/g, ""), 10);
+  const apiNum = parseInt(anoApi, 10);
+
+  return apiNum === paramNum || apiNum - 1 === paramNum;
 }
 
 export default function AulasListPage() {
   const params = useParams();
   const router = useRouter();
 
-  // Decodifica os parâmetros da URL para exibição
-  const yearDisplay = decodeURIComponent(params.year as string);
-  const courseDisplay = decodeURIComponent(params.course as string);
-  const materiaDisplay = decodeURIComponent(params.materia as string);
-
-  // Normaliza os parâmetros para a lógica de filtro
-  const anoParam = parseInt(yearDisplay.replace(/\D/g, "") || "0", 10);
-  const courseParamNorm = normalize(courseDisplay);
-  const materiaParamNorm = normalize(materiaDisplay);
-
-  const [aulas, setAulas] = useState<AulaSimplificada[]>([]);
+  const [aulas, setAulas] = useState<Aula[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const year = params.year as string;
+  const course = params.course as string;
+  const materia = params.materia as string;
 
   useEffect(() => {
     async function fetchAulas() {
@@ -77,33 +85,38 @@ export default function AulasListPage() {
     fetchAulas();
   }, []);
 
+  // Filtro robusto
   const aulasFiltradas = aulas.filter((aula) => {
-    // 1. Filtro de Ano
-    const anoApi = parseInt(aula.anoEscolar, 10);
-    const anoMatch = anoApi === anoParam;
+    if (!year || !course || !materia) return false;
 
-    // 2. Filtro de Curso
-    const cursoMatch =
-      aula.cursos?.some((c) => normalize(c).includes(courseParamNorm)) ?? false;
+    const anoOk = matchAno(aula.anoEscolar, year);
 
-    // 3. Filtro de Matéria
-    let materiaApiNorm = normalize(aula.Materia);
-    if (!materiaApiNorm && aula.materias) {
-      const materias = Array.isArray(aula.materias)
-        ? aula.materias
-        : [aula.materias];
-      materiaApiNorm = normalize(materias[0]);
+    const cursoApi = Array.isArray(aula.cursos) ? aula.cursos[0] : aula.curso;
+    const cursoOk = normalize(cursoApi).includes(normalize(course));
+
+    const materiaApi = aula.Materia || aula.materias;
+    let materiaOk = false;
+    if (typeof materiaApi === "string") {
+      materiaOk = normalize(materiaApi) === normalize(materia);
+    } else if (Array.isArray(materiaApi)) {
+      materiaOk = materiaApi.some(m => normalize(m) === normalize(materia));
     }
-    const materiaMatch = materiaApiNorm.includes(materiaParamNorm);
 
-    return anoMatch && cursoMatch && materiaMatch;
+    return anoOk && cursoOk && materiaOk;
   });
-
+  
   const aulasUnicas = aulasFiltradas.filter(
     (aula, index, self) =>
       index === self.findIndex((a) => a.aulaId === aula.aulaId)
   );
 
+  const handleCardClick = (aula: Aula) => {
+    const id = aula.aulaId || aula._id;
+    if (id) {
+      router.push(`/teacher/dashboard/aulas/${id}`);
+    }
+  };
+  
   if (loading) {
     return (
       <div className="flex items-center justify-center h-40 text-white">
@@ -125,8 +138,7 @@ export default function AulasListPage() {
       >
         <ArrowLeft className="h-6 w-6" />
         <h1 className="text-2xl font-bold">
-          Aulas de {materiaDisplay} - {courseDisplay.toUpperCase()} ({anoParam}º
-          ano)
+          Aulas de {decodeURIComponent(materia)} - {decodeURIComponent(course).toUpperCase()}
         </h1>
       </div>
 
@@ -143,26 +155,27 @@ export default function AulasListPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {aulasUnicas.map((aula) => (
             <Card
-              key={aula.aulaId}
+              key={aula.aulaId || aula._id}
               className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer"
-              onClick={() =>
-                router.push(`/teacher/dashboard/aulas/${aula.aulaId}`)
-              }
+              onClick={() => handleCardClick(aula)}
             >
               <CardHeader>
-                <CardTitle className="text-lg">{aula.titulo}</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <FileText size={20} />
+                  {aula.titulo || "Tema da Aula"}
+                </CardTitle>
                 <CardDescription className="text-sm text-gray-400 pt-1">
-                  {aula.DesAula}
+                  {aula.DesAula || 'Sem descrição.'}
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Professor:</span>
-                  <span className="font-medium">{aula.professor}</span>
+                  <span className="font-medium">{aula.professor || "N/I"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Horário:</span>
-                  <span className="font-medium">{aula.Horario}</span>
+                  <span className="font-medium">{aula.Horario || "N/I"}</span>
                 </div>
               </CardContent>
             </Card>
