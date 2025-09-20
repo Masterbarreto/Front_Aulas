@@ -19,13 +19,12 @@ export default function AulasListPage() {
     if (!year || !course || !materia) return;
 
     const ano = year.split('-')[0];
-    const cursoNormalizado = course.toLowerCase();
-    const materiaNormalizada = materia.toLowerCase();
+    const cursoUpperCase = course.toUpperCase(); // Enviar o curso em maiúsculas
 
     const apiUrl = new URL('https://apisubaulas.onrender.com/api/v1/aulas/filtrar');
     apiUrl.searchParams.append('ano', ano);
-    apiUrl.searchParams.append('curso', cursoNormalizado);
-    apiUrl.searchParams.append('materia', materiaNormalizada);
+    apiUrl.searchParams.append('curso', cursoUpperCase); // Usar o valor em maiúsculas
+    apiUrl.searchParams.append('materia', materia); // Enviar matéria como está na URL
 
     fetch(apiUrl.toString())
       .then((res) => {
