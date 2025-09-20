@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { GraduationCap } from 'lucide-react';
+import { ArrowLeft, GraduationCap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -65,8 +65,17 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-[#1C1C24] p-4">
-      <Card className="w-full max-w-sm bg-[#111115] border-gray-800 text-white">
-        <CardHeader className="items-center text-center">
+      <Card className="relative w-full max-w-sm bg-[#111115] border-gray-800 text-white">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 left-4 text-gray-400 hover:text-white"
+          onClick={() => router.push('/teacher/dashboard')}
+        >
+          <ArrowLeft className="h-6 w-6" />
+          <span className="sr-only">Voltar</span>
+        </Button>
+        <CardHeader className="items-center text-center pt-16">
           <div className="mb-4 flex items-center gap-2">
             <GraduationCap className="h-8 w-8 text-white" />
             <h1 className="text-xl font-bold">Sub_Aulas</h1>
