@@ -11,46 +11,51 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 
-type AulaSimplificada = {
-  id?: string;
-  titulo: string;
-  descricao: string;
-  horario: string;
-  ano: number;
-  curso: string;
-  materia: string;
-  professor: string;
+type Aula = {
+  _id?: string;
+  aulaId?: string;
+  titulo?: string;
+  Horario?: string;
+  DesAula?: string;
+  anoEscolar?: string;
+  cursos?: string[];
+  curso?: string;
+  Turma?: string;
+  Materia?: string;
+  materias?: string | string[];
+  professor?: string;
 };
 
-// função para normalizar strings (sem acento, minúsculo, sem espaços)
-function normalize(str: string): string {
-  return str
-    ? str
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .replace(/\s+/g, '')
-    : '';
+// Normaliza strings (minúsculas, sem espaços, sem acentos, sem hífen)
+function normalize(str?: string) {
+  return (str || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/-/g, "");
 }
 
-// ajusta ano da API para o ano da URL
-function matchAno(anoApi: number, anoParam: number): boolean {
-  return anoApi === anoParam;
+// Corrige mapeamento de anos (API manda "2" mas pode significar 1º ano)
+function matchAno(anoApi?: string, anoParam?: string) {
+  if (!anoApi || !anoParam) return false;
+  const apiNum = parseInt(anoApi.replace(/\D/g, ''), 10);
+  const paramNum = parseInt(anoParam.replace(/\D/g, ''), 10);
+  return apiNum === paramNum;
 }
+
 
 export default function AulasListPage() {
   const params = useParams();
   const router = useRouter();
 
-  const [aulas, setAulas] = useState<AulaSimplificada[]>([]);
+  const [aulas, setAulas] = useState<Aula[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const year = params.year as string;
   const course = params.course as string;
   const materia = params.materia as string;
-
-  const anoParam = parseInt(year.replace(/\D/g, ''), 10);
 
   useEffect(() => {
     async function fetchAulas() {
@@ -67,20 +72,7 @@ export default function AulasListPage() {
         if (!Array.isArray(data)) {
           throw new Error('A API não retornou um array de aulas.');
         }
-
-        const aulasSimplificadas: AulaSimplificada[] = data.map(
-          (aula: any) => ({
-            id: aula.aulaId,
-            titulo: aula.titulo ?? 'Sem título',
-            descricao: aula.DesAula ?? 'Sem descrição',
-            horario: aula.Horario ?? 'N/I',
-            ano: parseInt(String(aula.anoEscolar || '0').replace(/\D/g, ''), 10),
-            curso: Array.isArray(aula.cursos) ? aula.cursos.join(', ') : aula.curso,
-            materia: Array.isArray(aula.materias) ? aula.materias.join(', ') : aula.Materia,
-            professor: aula.professor ?? 'N/I',
-          })
-        );
-        setAulas(aulasSimplificadas);
+        setAulas(data);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : 'Ocorreu um erro desconhecido.'
@@ -94,21 +86,30 @@ export default function AulasListPage() {
   }, []);
 
   const aulasFiltradas = aulas.filter((aula) => {
-    if (!course || !materia) return false;
+    if (!course || !materia || !year) return false;
 
-    const anoOk = matchAno(aula.ano, anoParam);
-    const cursoOk = normalize(aula.curso).includes(normalize(course as string));
-    const materiaOk = normalize(aula.materia).includes(normalize(materia as string));
+    const anoOk = matchAno(aula.anoEscolar, year);
+    
+    const cursoApi = Array.isArray(aula.cursos) ? aula.cursos.join(' ') : aula.curso;
+    const cursoOk = normalize(cursoApi).includes(normalize(course as string));
 
+    const materiaApi = aula.Materia || aula.materias;
+    let materiaOk = false;
+    if (typeof materiaApi === "string") {
+      materiaOk = normalize(materiaApi) === normalize(materia);
+    } else if (Array.isArray(materiaApi)) {
+      materiaOk = materiaApi.some(m => normalize(m) === normalize(materia));
+    }
+    
     return anoOk && cursoOk && materiaOk;
   });
 
   const aulasUnicas = aulasFiltradas.filter(
-    (aula, index, self) => index === self.findIndex((a) => a.id === aula.id)
+    (aula, index, self) => index === self.findIndex((a) => (a.aulaId || a._id) === (aula.aulaId || a._id))
   );
 
-  const handleCardClick = (aula: AulaSimplificada) => {
-    const id = aula.id;
+  const handleCardClick = (aula: Aula) => {
+    const id = aula._id || aula.aulaId;
     if (id) {
       router.push(`/teacher/dashboard/aulas/${id}`);
     } else {
@@ -155,27 +156,27 @@ export default function AulasListPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {aulasUnicas.map((aula) => (
             <Card
-              key={aula.id}
+              key={aula._id || aula.aulaId}
               className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer"
               onClick={() => handleCardClick(aula)}
             >
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <FileText size={20} />
-                  {aula.titulo}
+                  {aula.titulo || 'Sem Título'}
                 </CardTitle>
                 <CardDescription className="text-sm text-gray-400 pt-1">
-                  {aula.descricao}
+                  {aula.DesAula || 'Sem descrição.'}
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-400">Professor:</span>
-                  <span className="font-medium">{aula.professor}</span>
+                  <span className="font-medium">{aula.professor || 'N/I'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Horário:</span>
-                  <span className="font-medium">{aula.horario}</span>
+                  <span className="font-medium">{aula.Horario || 'N/I'}</span>
                 </div>
               </CardContent>
             </Card>
