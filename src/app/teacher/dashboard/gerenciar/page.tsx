@@ -234,8 +234,8 @@ export default function GerenciarPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {aulas.map((aula) => (
-              <TableRow key={aula._id} className="border-gray-800">
+            {aulas.map((aula, index) => (
+              <TableRow key={`${aula._id}-${index}`} className="border-gray-800">
                 <TableCell>{aula.titulo}</TableCell>
                 <TableCell>
                   <span
