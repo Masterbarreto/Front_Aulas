@@ -131,7 +131,7 @@ export default function UploadPage() {
     
     // Data da aula
     if (diaAula) {
-      const utcDate = new Date(diaAula.getTime() - diaAula.getTimezoneOffset() * 60000);
+      const utcDate = new Date(Date.UTC(diaAula.getFullYear(), diaAula.getMonth(), diaAula.getDate()));
       formData.append('DayAula', utcDate.toISOString().split('T')[0]);
     }
     
