@@ -99,37 +99,58 @@ export default function UploadPage() {
   const handleEnviar = async (e: FormEvent) => {
     e.preventDefault();
 
+    // Validações básicas
+    if (!anoEscolar || !curso || !turma || !materia || !professor || !titulo) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
     const formData = new FormData();
 
+    // Ano Escolar - extrai apenas o número
     const anoEscolarValue = anoEscolar ? anoEscolar.split('-')[0] : '';
     formData.append('anoEscolar', anoEscolarValue);
-    formData.append('curso', curso);
+
+    // Curso - sempre como JSON array (novo formato)
+    formData.append('curso', JSON.stringify([curso]));
+
+    // Matérias - sempre como string simples (uma única matéria)
     formData.append('materias', materia);
 
+    // Turmas - garantir que seja string ou array de strings
     if (turma === 'all') {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
       formData.append('Turma', JSON.stringify(turmasParaEnviar));
     } else {
+      // Garantir que seja string usando template literal
       formData.append('Turma', `${turma}`);
     }
     
     formData.append('professor', professor);
     formData.append('titulo', titulo);
+    
+    // Data da aula
     if (diaAula) {
       formData.append('DayAula', format(diaAula, 'yyyy-MM-dd'));
     }
-    formData.append('Horario', horario);
-    formData.append('DesAula', descricao);
+    
+    formData.append('Horario', horario || '');
+    formData.append('DesAula', descricao || '');
 
+    // Links da aula
     if (structuredLinks.length > 0) {
-        const linksParaEnviar = structuredLinks.map(link => ({ name: link.name, url: link.url }));
-        formData.append('LinkAula', JSON.stringify(linksParaEnviar));
+      const linksParaEnviar = structuredLinks.map(link => ({ 
+        name: link.name, 
+        url: link.url 
+      }));
+      formData.append('LinkAula', JSON.stringify(linksParaEnviar));
     } else {
-        formData.append('LinkAula', JSON.stringify([]));
+      formData.append('LinkAula', JSON.stringify([]));
     }
 
+    // Arquivos - usar o nome correto do campo que o backend espera
     files.forEach((file) => {
-      formData.append('arquivos', file);
+      formData.append('files', file); // Mudou de 'arquivos' para 'files'
     });
 
     try {
@@ -143,27 +164,24 @@ export default function UploadPage() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({
-          message: 'Não foi possível ler a resposta de erro da API.',
+          error: 'Não foi possível ler a resposta de erro da API.',
         }));
-        // The actual validation error is often inside errorData.errors or errorData.message
-        const specificMessage = Array.isArray(errorData.errors) ? errorData.errors.join(', ') : errorData.message;
-        throw new Error(
-          specificMessage || `Erro no servidor com status ${res.status}`
-        );
+        
+        // Tratamento melhorado de erros
+        const specificMessage = errorData.error || errorData.message || 'Erro desconhecido';
+        throw new Error(specificMessage);
       }
 
-      await res.json();
-      alert('Aula(s) criada(s) com sucesso!');
+      const result = await res.json();
+      alert('Aula criada com sucesso!');
+      console.log('Aula criada:', result);
       handleCancelar();
     } catch (error: any) {
-      const errorMessage =
-        error?.message ||
-        'Ocorreu um erro desconhecido.';
+      const errorMessage = error?.message || 'Ocorreu um erro desconhecido.';
       console.error('Erro ao criar aula:', error);
       alert(`Erro ao criar a aula: ${errorMessage}`);
     }
   };
-
 
   return (
     <div className="text-white">
@@ -173,7 +191,7 @@ export default function UploadPage() {
           <div className="lg:col-span-2 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="ano-escolar">Ano Escolar</Label>
+                <Label htmlFor="ano-escolar">Ano Escolar *</Label>
                 <Select value={anoEscolar} onValueChange={setAnoEscolar}>
                   <SelectTrigger
                     id="ano-escolar"
@@ -188,8 +206,9 @@ export default function UploadPage() {
                   </SelectContent>
                 </Select>
               </div>
+              
               <div className="space-y-2">
-                <Label htmlFor="curso">Curso</Label>
+                <Label htmlFor="curso">Curso *</Label>
                 <Select value={curso} onValueChange={setCurso}>
                   <SelectTrigger
                     id="curso"
@@ -208,9 +227,10 @@ export default function UploadPage() {
                   </SelectContent>
                 </Select>
               </div>
+              
               <div className="space-y-2">
-                <Label htmlFor="turma">Turma</Label>
-                <Select value={turma} onValueChange={setTurma}>
+                <Label htmlFor="turma">Turma *</Label>
+                <Select value={turma} onValueChange={(value) => setTurma(value)}>
                   <SelectTrigger
                     id="turma"
                     className="bg-[#111115] border-gray-700"
@@ -230,8 +250,9 @@ export default function UploadPage() {
                   </SelectContent>
                 </Select>
               </div>
+              
               <div className="space-y-2">
-                <Label htmlFor="materia">Matéria</Label>
+                <Label htmlFor="materia">Matéria *</Label>
                 <Select value={materia} onValueChange={setMateria}>
                   <SelectTrigger
                     id="materia"
@@ -310,7 +331,7 @@ export default function UploadPage() {
             <h2 className="text-xl font-bold">Detalhes da Aula</h2>
 
             <div className="space-y-2">
-              <Label htmlFor="nome-professor">Nome do Professor</Label>
+              <Label htmlFor="nome-professor">Nome do Professor *</Label>
               <Input
                 id="nome-professor"
                 placeholder="Digite o nome do professor"
@@ -321,10 +342,10 @@ export default function UploadPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="titulo">Título</Label>
+              <Label htmlFor="titulo">Título *</Label>
               <Input
                 id="titulo"
-                placeholder="Ex: Informática"
+                placeholder="Ex: Aula de Inglês"
                 className="bg-[#1C1C24] border-gray-700"
                 value={titulo}
                 onChange={(e) => setTitulo(e.target.value)}
@@ -454,7 +475,7 @@ export default function UploadPage() {
                   placeholder="https://exemplo.com"
                   value={currentLinkUrl}
                   onChange={(e) => setCurrentLinkUrl(e.target.value)}
-                  className="bg-gray-800 border-ray-700 mt-2"
+                  className="bg-gray-800 border-gray-700 mt-2"
                 />
               </div>
             </div>
