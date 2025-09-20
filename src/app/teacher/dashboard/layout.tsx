@@ -23,13 +23,15 @@ export default function DashboardLayout({
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // No lado do cliente, verifique o localStorage
     if (typeof window !== 'undefined') {
       const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
       setIsLoggedIn(loggedIn);
-      if (!loggedIn && !pathname.includes('/login')) {
-         // Se não estiver logado e não estiver na página de login, redirecione.
-         // A lógica pode precisar de ajuste dependendo das rotas públicas.
+
+      const protectedRoutes = ['/teacher/dashboard/upload', '/teacher/dashboard/gerenciar'];
+      const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+
+      if (!loggedIn && isProtectedRoute) {
+        router.push('/teacher/dashboard');
       }
     }
   }, [pathname, router]);
