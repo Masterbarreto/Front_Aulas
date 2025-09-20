@@ -45,7 +45,7 @@ export default function UploadPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [anoEscolar, setAnoEscolar] = useState('');
   const [curso, setCurso] = useState('');
-  const [turma, setTurma] = useState('');
+  const [turma, setTurma] = useState<string>('');
   const [materia, setMateria] = useState('');
   const [professor, setProfessor] = useState('');
   const [titulo, setTitulo] = useState('');
@@ -103,9 +103,8 @@ export default function UploadPage() {
 
     const anoEscolarValue = anoEscolar ? anoEscolar.split('-')[0] : '';
     formData.append('anoEscolar', anoEscolarValue);
-    
     formData.append('curso', curso);
-    formData.append('Materia', materia);
+    formData.append('materias', materia); // Corrigido para 'materias'
 
     if (turma === 'all') {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
@@ -146,6 +145,7 @@ export default function UploadPage() {
         const errorData = await res.json().catch(() => ({
           message: 'Não foi possível ler a resposta de erro da API.',
         }));
+        // The actual validation error is often inside errorData.errors or errorData.message
         const specificMessage = Array.isArray(errorData.errors) ? errorData.errors.join(', ') : errorData.message;
         throw new Error(
           specificMessage || `Erro no servidor com status ${res.status}`
