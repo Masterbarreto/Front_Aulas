@@ -71,7 +71,7 @@ export default function AulaPage() {
   const [turma, setTurma] = useState('');
   const router = useRouter();
   const params = useParams();
-  const id = params.id as string;
+  const id = params.id ? decodeURIComponent(params.id as string) : '';
 
   useEffect(() => {
     if (!id) return;
