@@ -82,15 +82,32 @@ export default function GerenciarPage() {
           setAulas([...naoConcluidas, ...concluidas]);
 
           if (Array.isArray(relatorioSemanal)) {
-            const formattedSemanal = relatorioSemanal.map((item: any) => ({
-                day: item.dia,
-                value: item.aulas || 0
-            }));
-            setAreaChartData(formattedSemanal as any);
-        }
+            const dayOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            
+            const dayShiftMap: { [key: string]: string } = {
+                'Dom': 'Sáb', 'Seg': 'Dom', 'Ter': 'Seg', 'Qua': 'Ter', 'Qui': 'Qua', 'Sex': 'Qui', 'Sáb': 'Sex'
+            };
+
+            const dataMap = new Map(relatorioSemanal.map(item => [item.dia, item.aulas || 0]));
+            
+            const finalData = dayOrder.map(originalDay => {
+                const shiftedDay = dayShiftMap[originalDay];
+                return {
+                    day: shiftedDay,
+                    value: dataMap.get(originalDay) || 0,
+                };
+            }).sort((a,b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
+
+            setAreaChartData(finalData as any);
+          }
+
 
           if (Array.isArray(topMaterias)) {
-            setBarChartData(topMaterias as any);
+            const formattedTopMaterias = topMaterias.map((item: any) => ({
+              materia: item.materia,
+              substituicoes: item.substituicoes || 0,
+            }));
+            setBarChartData(formattedTopMaterias as any);
           }
 
           if (totalConcluidas && typeof totalConcluidas.total === 'number') {
@@ -170,8 +187,11 @@ export default function GerenciarPage() {
   function formatarData(dataString: string) {
     if (!dataString) return 'Sem data';
     try {
-      const data = parseISO(dataString);
-      return format(data, 'dd/MM/yyyy');
+      // Adicionar o deslocamento de fuso horário local para evitar que a data mude
+      const date = new Date(dataString);
+      const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+      const correctedDate = new Date(date.getTime() + userTimezoneOffset);
+      return format(correctedDate, 'dd/MM/yyyy');
     } catch {
       return 'Data inválida';
     }
@@ -246,6 +266,7 @@ export default function GerenciarPage() {
                   tickLine={false}
                   axisLine={false}
                   tick={{ fill: 'white' }}
+                  tickFormatter={(value) => value.substring(0, 3)}
                 />
                 <ChartTooltip
                   cursor={false}
@@ -343,3 +364,5 @@ export default function GerenciarPage() {
     </div>
   );
 }
+
+    
