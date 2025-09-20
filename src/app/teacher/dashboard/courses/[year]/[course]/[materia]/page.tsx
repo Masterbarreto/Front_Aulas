@@ -7,12 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Aula } from '@/lib/types';
 
 function normalize(str?: string): string {
-  return (str || '').toLowerCase().replace(/\s+/g, '-');
+  return (str || '').toLowerCase().replace(/\s+/g, '');
 }
 
 function capitalize(str: string): string {
   if (!str) return '';
-  // Trata slugs como "educacao-fisica" para "Educacao Fisica"
   return str.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
@@ -39,13 +38,10 @@ export default function AulasListPage() {
     // Ano: compara diretamente para manter o hífen (ex: "2-ano")
     const anoMatch = aula.anoEscolar === year;
     
-    // Curso: verifica se o curso da URL está no array de cursos da aula.
-    // O backend retorna 'cursos' no plural.
-    const cursoArray = Array.isArray(aula.curso) ? aula.curso : [];
-    const cursoMatch = cursoArray.some(c => normalize(c).includes(normalize(course)));
+    // Curso: Compara a string do curso normalizada
+    const cursoMatch = normalize(aula.curso).includes(normalize(course));
 
     // Matéria: normaliza para comparar (ex: "Inglês" com "ingles")
-    // O backend retorna 'Materia'.
     const materiaMatch = normalize(aula.Materia as string) === normalize(materia);
 
     return anoMatch && cursoMatch && materiaMatch;
@@ -73,7 +69,7 @@ export default function AulasListPage() {
         onClick={() => router.back()}
       >
         <ArrowLeft className="h-6 w-6" />
-        <h1 className="text-2xl font-bold">Aulas de {materiaCapitalized} – {courseFormatted} ({yearFormatted})</h1>
+        <h1 className="text-2xl font-bold">Aulas de {materiaCapitalized} – {courseFormatted} ({yearFormatted} Ano)</h1>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
