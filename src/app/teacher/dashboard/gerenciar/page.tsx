@@ -77,7 +77,6 @@ export default function GerenciarPage() {
             : [];
           setAulas([...naoConcluidas, ...concluidas]);
           
-          // Use a contagem de aulas concluídas diretamente
           setAulasConcluidasCount(concluidas.length);
 
           if (Array.isArray(relatorioSemanal)) {
@@ -91,18 +90,6 @@ export default function GerenciarPage() {
               Sáb: 'Sex',
             };
             const displayOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            const dataMap = new Map(
-              relatorioSemanal.map((item) => [item.dia, item.aulas || 0])
-            );
-
-            const finalData = displayOrder.map((day) => ({
-              day: day,
-              value: dataMap.get(
-                Object.keys(dayShiftMap).find(
-                  (key) => dayShiftMap[key] === day
-                )
-              ) || dataMap.get(day) || 0,
-            }));
             
             const reorderedFinalData = relatorioSemanal.map(item => ({
               day: dayShiftMap[item.dia] || item.dia,
