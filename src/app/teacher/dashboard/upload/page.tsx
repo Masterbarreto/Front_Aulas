@@ -102,28 +102,28 @@ export default function UploadPage() {
     const formData = new FormData();
 
     const anoEscolarValue = anoEscolar ? anoEscolar.split('-')[0] : '';
-    
+
     formData.append('anoEscolar', anoEscolarValue);
-    formData.append('cursos', JSON.stringify([curso]));
+    formData.append('curso', JSON.stringify([curso]));
     
     if (turma === 'all') {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
-      formData.append('turmas', JSON.stringify(turmasParaEnviar));
+      formData.append('Turma', JSON.stringify(turmasParaEnviar));
     } else {
-      formData.append('turmas', JSON.stringify([turma]));
+      formData.append('Turma', JSON.stringify([turma]));
     }
     
-    formData.append('materias', JSON.stringify([materia]));
+    formData.append('Materia', JSON.stringify([materia]));
     formData.append('professor', professor);
     formData.append('titulo', titulo);
     if (diaAula) {
-      formData.append('diaAula', format(diaAula, 'yyyy-MM-dd'));
+      formData.append('DayAula', format(diaAula, 'yyyy-MM-dd'));
     }
     formData.append('horario', horario);
     formData.append('descricao', descricao);
 
-    const linksParaEnviar = structuredLinks.map(link => link.url);
-    formData.append('links', JSON.stringify(linksParaEnviar));
+    const linksParaEnviar = structuredLinks.map(link => ({ name: link.name, url: link.url }));
+    formData.append('LinkAula', JSON.stringify(linksParaEnviar));
 
     files.forEach((file) => {
       formData.append('arquivos', file);
