@@ -249,7 +249,11 @@ export default function GerenciarPage() {
                 <TableCell>{formatarData(aula.DayAula)}</TableCell>
                 <TableCell>{aula.professor}</TableCell>
                 <TableCell>{aula.anoEscolar}</TableCell>
-                <TableCell>{Array.isArray(aula.curso) ? aula.curso.join(', ') : aula.curso}</TableCell>
+                <TableCell>
+                  {Array.isArray(aula.curso)
+                    ? aula.curso.join(', ')
+                    : aula.curso}
+                </TableCell>
                 <TableCell>{aula.Turma}</TableCell>
                 <TableCell>
                   {Array.isArray(aula.Materia)
