@@ -23,6 +23,7 @@ import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import type { Aula } from '@/lib/types';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 const chartData = [
   { day: 'Seg', aulas: 1 },
@@ -54,6 +55,7 @@ const barChartConfig: ChartConfig = {
 
 export default function GerenciarPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
+  const router = useRouter();
 
   const fetchAulas = () => {
     fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
@@ -72,7 +74,17 @@ export default function GerenciarPage() {
     fetchAulas();
   }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleRowClick = (aula: Aula) => {
+    const id = aula.aulaId || aula._id;
+    if (id) {
+      router.push(`/teacher/dashboard/aulas/${id}`);
+    } else {
+      console.error('ID da aula não encontrado para navegação.');
+    }
+  };
+
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation(); // Impede que o evento de clique na linha seja disparado
     if (!id) {
       alert('ID da aula não encontrado. Não é possível deletar.');
       return;
@@ -231,7 +243,11 @@ export default function GerenciarPage() {
           </TableHeader>
           <TableBody>
             {aulas.map((aula, index) => (
-              <TableRow key={aula.aulaId || aula._id || index} className="border-gray-800">
+              <TableRow 
+                key={aula.aulaId || aula._id || index} 
+                className="border-gray-800 cursor-pointer"
+                onClick={() => handleRowClick(aula)}
+              >
                 <TableCell>{aula.titulo}</TableCell>
                 <TableCell>
                   <span
@@ -256,7 +272,7 @@ export default function GerenciarPage() {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleDelete(aula.aulaId || aula._id)}
+                    onClick={(e) => handleDelete(e, aula.aulaId || aula._id)}
                     disabled={!aula.aulaId && !aula._id}
                   >
                     DELETAR
