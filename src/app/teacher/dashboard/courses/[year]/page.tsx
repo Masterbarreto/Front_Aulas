@@ -4,41 +4,49 @@ import { ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 
+import imageIot from '@/assets/imageIot.png';
+import imageMmd from '@/assets/imageMmd.png';
+import imageMkt from '@/assets/imageMkt.png';
+import imageAdm from '@/assets/imageAdm.png';
+import imageTi from '@/assets/imageTi.png';
+import imageCdd from '@/assets/imageCdd.png';
+import imageIA from '@/assets/imageIA.png';
+
 const coursesData = [
   {
     id: 'iot',
     title: 'IOT – Internet das Coisas',
-    imageUrl: '/iot.png',
+    image: imageIot,
   },
   {
     id: 'ti',
     title: 'TI – Informática',
-    imageUrl: '/ti.png',
+    image: imageTi,
   },
   {
     id: 'mmd',
     title: 'MMD – Multimídia',
-    imageUrl: '/mmd.png',
+    image: imageMmd,
   },
   {
     id: 'cdd',
     title: 'CDD – Ciências de Dados',
-    imageUrl: '/cdd.png',
+    image: imageCdd,
   },
   {
     id: 'adm',
     title: 'ADM – Administração',
-    imageUrl: '/adm.png',
+    image: imageAdm,
   },
   {
     id: 'mkt',
     title: 'MKT – Marketing',
-    imageUrl: '/mkt.png',
+    image: imageMkt,
   },
   {
     id: 'ia',
     title: 'IA – Inteligência Artificial',
-    imageUrl: '/ia.png',
+    image: imageIA,
   },
 ];
 
@@ -72,7 +80,7 @@ export default function CoursesPage() {
           >
             <div className="relative w-full aspect-video">
               <Image
-                src={course.imageUrl}
+                src={course.image}
                 alt={`Imagem do curso ${course.title}`}
                 fill
                 className="object-cover"
