@@ -32,11 +32,12 @@ export interface AulaConcluida {
 
 export interface Aula {
   _id: string;
+  aulaId?: string;
   anoEscolar: string;
   curso: string;
   titulo: string;
   Turma: string;
-  Materia: string;
+  Materia: string | string[];
   DayAula: string;
   Horario: string;
   DesAula: string;
@@ -44,4 +45,6 @@ export interface Aula {
   concluida: boolean;
   professor?: string;
   createdAt?: string;
+  arquivos?: { nome: string; mimetype: string }[];
+  arquivosIds?: string[];
 }

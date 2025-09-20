@@ -7,72 +7,222 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { AulaConcluida } from '@/lib/types';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartConfig,
+} from '@/components/ui/chart';
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import type { Aula } from '@/lib/types';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Button } from '@/components/ui/button';
+
+const chartData = [
+  { day: 'Seg', aulas: 1 },
+  { day: 'Ter', aulas: 1 },
+  { day: 'Qua', aulas: 1 },
+  { day: 'Qui', aulas: 1 },
+  { day: 'Sex', aulas: 2 },
+  { day: 'Sáb', aulas: 4 },
+];
+
+const chartConfig: ChartConfig = {
+  aulas: {
+    label: 'Aulas',
+    color: 'hsl(var(--chart-1))',
+  },
+};
+
+const barChartData = [
+  { materia: 'Português', substituicoes: 2 },
+  { materia: 'Inglês', substituicoes: 2 },
+];
+
+const barChartConfig: ChartConfig = {
+  substituicoes: {
+    label: 'Substituições',
+    color: 'hsl(var(--destructive))',
+  },
+};
 
 export default function RelatorioPage() {
-  const [aulas, setAulas] = useState<AulaConcluida[]>([]);
+  const [aulas, setAulas] = useState<Aula[]>([]);
   const router = useRouter();
 
-  useEffect(() => {
-    fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas')
+  const fetchAulas = () => {
+    fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
       .then((res) => res.json())
-      .then((data) => setAulas(Array.isArray(data) ? data : []))
+      .then((data) => {
+        if(Array.isArray(data)) {
+          const aulasUnicas = data.filter((aula, index, self) =>
+            index === self.findIndex((a) => (
+              a.titulo === aula.titulo && a.DesAula === aula.DesAula && a.Turma === aula.Turma
+            ))
+          );
+          setAulas(aulasUnicas);
+        } else {
+          setAulas([])
+        }
+      })
       .catch(() => setAulas([]));
+  };
+
+  useEffect(() => {
+    fetchAulas();
   }, []);
 
-  function getAulaDate(aula: AulaConcluida): string {
-    return aula.data || aula.DayAula || aula.dataAula || '';
-  }
+  const handleDelete = async (id: string) => {
+    if (confirm('Tem certeza de que deseja deletar esta aula?')) {
+      try {
+        const res = await fetch(
+          `https://apisubaulas.onrender.com/api/v1/aulas/${id}`,
+          {
+            method: 'DELETE',
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error('Falha ao deletar a aula');
+        }
+
+        alert('Aula deletada com sucesso!');
+        fetchAulas(); // Re-fetch aulas after deletion
+      } catch (error) {
+        console.error('Erro ao deletar aula:', error);
+        alert('Erro ao deletar a aula.');
+      }
+    }
+  };
+
+  const aulasConcluidasCount = useMemo(() => {
+    return aulas.filter((aula) => aula.concluida).length;
+  }, [aulas]);
 
   function formatarData(dataString: string) {
-    if (!dataString) return 'N/A';
-
-    if (dataString.includes('/')) {
-      return dataString.split(' ')[0];
-    }
-
+    if (!dataString) return 'Sem data';
     const data = new Date(dataString);
     if (!isNaN(data.getTime())) {
-      return data.toLocaleDateString('pt-BR', {
-        timeZone: 'UTC',
-      });
+      return new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(data);
     }
-
     return 'Data inválida';
   }
 
-  const handleRowClick = (aulaId: string) => {
-    router.push(`/teacher/dashboard/aulas/${aulaId}`);
-  };
-
   return (
     <div className="flex flex-col text-white">
-      <h1 className="text-3xl font-bold mb-6">Relatório de Aulas Concluídas</h1>
+      <h1 className="text-3xl font-bold mb-6">Relatório de Aulas</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <Card className="bg-[#111115] border-gray-800">
+          <CardHeader>
+            <CardTitle>Relatório De Aulas</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={chartConfig} className="h-[150px] w-full">
+              <AreaChart data={chartData} margin={{ left: -20, top: 5, right: 20, bottom: -10 }}>
+                <defs>
+                  <linearGradient id="colorAulas" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-aulas)" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="var(--color-aulas)" stopOpacity={0.1}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="day" tickLine={false} axisLine={false} tick={{ fill: 'white' }} />
+                <YAxis hide={true} />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="dot" />}
+                />
+                <Area
+                  dataKey="aulas"
+                  type="natural"
+                  fill="url(#colorAulas)"
+                  stroke="var(--color-aulas)"
+                  stackId="a"
+                />
+              </AreaChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+        <Card className="bg-[#111115] border-gray-800">
+          <CardHeader>
+            <CardTitle>Aulas Com Mais Substituição</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={barChartConfig} className="h-[150px] w-full">
+              <BarChart data={barChartData} margin={{ left: -20, top: 5, right: 20, bottom: -10 }}>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <XAxis dataKey="materia" tickLine={false} axisLine={false} tick={{ fill: 'white' }} />
+                <YAxis hide={true} />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel />}
+                />
+                <Bar dataKey="substituicoes" fill="var(--color-substituicoes)" radius={4} />
+              </BarChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+        <Card className="bg-[#111115] border-gray-800 flex flex-col items-center justify-center">
+          <CardHeader>
+            <CardTitle>Concluídas</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center justify-center">
+            <p className="text-6xl font-bold">{aulasConcluidasCount}</p>
+            <p className="text-gray-400">Aulas</p>
+          </CardContent>
+        </Card>
+      </div>
+
       <div className="rounded-lg bg-[#111115] border-gray-800 p-4">
         <Table>
           <TableHeader>
             <TableRow className="border-gray-700 hover:bg-[#111115]">
-              <TableHead className="text-white">AULA</TableHead>
+              <TableHead className="text-white">TÍTULO</TableHead>
               <TableHead className="text-white">STATUS</TableHead>
               <TableHead className="text-white">DATA</TableHead>
               <TableHead className="text-white">PROFESSOR</TableHead>
+              <TableHead className="text-white">ANO ESCOLAR</TableHead>
+              <TableHead className="text-white">CURSO</TableHead>
+              <TableHead className="text-white">TURMA</TableHead>
+              <TableHead className="text-white">MATÉRIA</TableHead>
+              <TableHead className="text-white">AÇÕES</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {aulas.map((aula) => (
               <TableRow
                 key={aula._id}
-                className="border-gray-800 hover:bg-gray-800 cursor-pointer"
-                onClick={() => handleRowClick(aula._id)}
+                className="border-gray-800"
               >
-                <TableCell>{aula.Materia}</TableCell>
+                <TableCell>{aula.titulo}</TableCell>
                 <TableCell>
-                  <span className="text-green-400">Concluída</span>
+                  <span className={aula.concluida ? 'text-green-400' : 'text-yellow-400'}>
+                    {aula.concluida ? 'Concluída' : 'Não Concluída'}
+                  </span>
                 </TableCell>
-                <TableCell>{formatarData(getAulaDate(aula))}</TableCell>
+                <TableCell>{formatarData(aula.DayAula)}</TableCell>
                 <TableCell>{aula.professor}</TableCell>
+                <TableCell>{aula.anoEscolar}</TableCell>
+                <TableCell>{aula.curso}</TableCell>
+                <TableCell>{aula.Turma}</TableCell>
+                <TableCell>{Array.isArray(aula.Materia) ? aula.Materia.join(', ') : aula.Materia}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDelete(aula._id)}
+                  >
+                    DELETAR
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
