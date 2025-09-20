@@ -109,7 +109,7 @@ export default function UploadPage() {
       const turmasParaEnviar = ['1', '2', '3', '4', '5', '6', '7', '8'];
       formData.append('Turma', JSON.stringify(turmasParaEnviar));
     } else {
-      formData.append('Turma', turma);
+      formData.append('Turma', String(turma));
     }
     
     formData.append('Materia', materia);
