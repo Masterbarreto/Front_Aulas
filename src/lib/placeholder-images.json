@@ -3,38 +3,38 @@
   "placeholderImages": [
     {
       "id": "iot",
-      "src": "https://picsum.photos/seed/future-tech/400/225",
-      "data-ai-hint": "future technology"
+      "src": "https://picsum.photos/seed/collaborate-iot/400/225",
+      "data-ai-hint": "smart city"
     },
     {
       "id": "ti",
-      "src": "https://picsum.photos/seed/coding-class/400/225",
-      "data-ai-hint": "coding class"
+      "src": "https://picsum.photos/seed/programmers-working/400/225",
+      "data-ai-hint": "students coding"
     },
     {
       "id": "mmd",
-      "src": "https://picsum.photos/seed/creative-team/400/225",
-      "data-ai-hint": "creative team"
+      "src": "https://picsum.photos/seed/design-studio/400/225",
+      "data-ai-hint": "digital art"
     },
     {
       "id": "cdd",
-      "src": "https://picsum.photos/seed/data-analysis/400/225",
-      "data-ai-hint": "data analysis"
+      "src": "https://picsum.photos/seed/data-dashboard/400/225",
+      "data-ai-hint": "data visualization"
     },
     {
       "id": "adm",
-      "src": "https://picsum.photos/seed/business-meeting/400/225",
-      "data-ai-hint": "business meeting"
+      "src": "https://picsum.photos/seed/team-planning/400/225",
+      "data-ai-hint": "business strategy"
     },
     {
       "id": "mkt",
-      "src": "https://picsum.photos/seed/marketing-strategy/400/225",
-      "data-ai-hint": "marketing strategy"
+      "src": "https://picsum.photos/seed/social-media/400/225",
+      "data-ai-hint": "digital marketing"
     },
     {
       "id": "ia",
-      "src": "https://picsum.photos/seed/ai-robot/400/225",
-      "data-ai-hint": "ai robot"
+      "src": "https://picsum.photos/seed/ai-brain/400/225",
+      "data-ai-hint": "artificial intelligence"
     }
   ]
 }
