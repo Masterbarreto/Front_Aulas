@@ -141,21 +141,13 @@ export default function AulaPage() {
       </div>
     );
   }
-    
-  if (!aula.Materia) {
-    return (
-      <div className="flex flex-col text-white items-center justify-center h-full">
-        <p>Aula não encontrada.</p>
-        <button onClick={() => router.back()} className="mt-4 text-blue-400 hover:underline">
-          Voltar
-        </button>
-      </div>
-    );
-  }
 
   const titulo = aula.titulo
     ? aula.titulo.charAt(0).toUpperCase() + aula.titulo.slice(1).toLowerCase()
     : 'Aula';
+  
+  const materia = aula.materias || 'Não informada';
+
 
   return (
     <div className="text-white relative">
@@ -167,7 +159,7 @@ export default function AulaPage() {
             <h1 className="text-3xl font-bold">
             Aula de {titulo}
             </h1>
-            <p className="text-gray-400">matéria: {Array.isArray(aula.Materia) ? aula.Materia.join(', ') : aula.Materia}</p>
+            <p className="text-gray-400">matéria: {materia}</p>
         </div>
       </div>
 
