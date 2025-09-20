@@ -21,10 +21,10 @@ import {
 } from '@/components/ui/chart';
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import type { Aula } from '@/lib/types';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { format, parseISO, getDay } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 const chartConfig: ChartConfig = {
   aulas: {
@@ -42,6 +42,9 @@ const barChartConfig: ChartConfig = {
 
 export default function GerenciarPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
+  const [areaChartData, setAreaChartData] = useState([]);
+  const [barChartData, setBarChartData] = useState([]);
+  const [aulasConcluidasCount, setAulasConcluidasCount] = useState(0);
   const router = useRouter();
 
   const fetchAulas = () => {
@@ -52,73 +55,61 @@ export default function GerenciarPage() {
       fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas').then(
         (res) => res.json()
       ),
+      fetch(
+        'https://apisubaulas.onrender.com/api/v1/relatorios/relatorio-semanal'
+      ).then((res) => res.json()),
+      fetch(
+        'https://apisubaulas.onrender.com/api/v1/relatorios/materias-mais-substituicoes'
+      ).then((res) => res.json()),
+      fetch(
+        'https://apisubaulas.onrender.com/api/v1/relatorios/total-aulas-concluidas'
+      ).then((res) => res.json()),
     ])
-      .then(([aulasNaoConcluidasData, aulasConcluidasData]) => {
-        const naoConcluidas = Array.isArray(aulasNaoConcluidasData)
-          ? aulasNaoConcluidasData
-          : [];
-        const concluidas = Array.isArray(aulasConcluidasData)
-          ? aulasConcluidasData
-          : [];
-        setAulas([...naoConcluidas, ...concluidas]);
-      })
+      .then(
+        ([
+          aulasNaoConcluidasData,
+          aulasConcluidasData,
+          relatorioSemanal,
+          topMaterias,
+          totalConcluidas,
+        ]) => {
+          const naoConcluidas = Array.isArray(aulasNaoConcluidasData)
+            ? aulasNaoConcluidasData
+            : [];
+          const concluidas = Array.isArray(aulasConcluidasData)
+            ? aulasConcluidasData
+            : [];
+          setAulas([...naoConcluidas, ...concluidas]);
+
+          if (Array.isArray(relatorioSemanal)) {
+            const dayOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            const formattedSemanal = relatorioSemanal
+              .map((item) => ({ day: item.dia, value: item.aulas }))
+              .sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
+            setAreaChartData(formattedSemanal as any);
+          }
+
+          if (Array.isArray(topMaterias)) {
+            setBarChartData(topMaterias as any);
+          }
+
+          if (totalConcluidas && typeof totalConcluidas.total === 'number') {
+            setAulasConcluidasCount(totalConcluidas.total);
+          }
+        }
+      )
       .catch((error) => {
         console.error('Erro ao buscar dados:', error);
         setAulas([]);
+        setAreaChartData([]);
+        setBarChartData([]);
+        setAulasConcluidasCount(0);
       });
   };
 
   useEffect(() => {
     fetchAulas();
   }, []);
-
-  const areaChartData = useMemo(() => {
-    const aulasPorDia: { [key: string]: number } = {
-      Dom: 0,
-      Seg: 0,
-      Ter: 0,
-      Qua: 0,
-      Qui: 0,
-      Sex: 0,
-      Sáb: 0,
-    };
-    const dayMapping = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-
-    aulas.forEach((aula) => {
-      if (aula.createdAt) {
-        try {
-          const date = parseISO(aula.createdAt);
-          const dayOfWeek = getDay(date);
-          const dayName = dayMapping[dayOfWeek];
-          if (dayName) {
-            aulasPorDia[dayName]++;
-          }
-        } catch (e) {
-          console.error('Data inválida:', aula.createdAt);
-        }
-      }
-    });
-
-    return dayMapping.map((day) => ({ day, value: aulasPorDia[day] }));
-  }, [aulas]);
-
-  const barChartData = useMemo(() => {
-    const substituicoesPorMateria: { [key: string]: number } = {};
-
-    aulas
-      .filter((aula) => aula.concluida)
-      .forEach((aula) => {
-        const materia = Array.isArray(aula.materias) ? aula.materias[0] : (aula.materias || aula.Materia || 'N/A') as string;
-        if (materia && materia !== 'N/A') {
-          substituicoesPorMateria[materia] = (substituicoesPorMateria[materia] || 0) + 1;
-        }
-      });
-    
-    return Object.entries(substituicoesPorMateria)
-      .map(([materia, substituicoes]) => ({ materia, substituicoes }))
-      .sort((a, b) => b.substituicoes - a.substituicoes)
-      .slice(0, 5);
-  }, [aulas]);
 
   const handleRowClick = (aula: Aula) => {
     const id = aula.aulaId || aula._id;
@@ -175,10 +166,6 @@ export default function GerenciarPage() {
       }
     }
   };
-
-  const aulasConcluidasCount = useMemo(() => {
-    return aulas.filter((aula) => aula.concluida).length;
-  }, [aulas]);
 
   function formatarData(dataString: string) {
     if (!dataString) return 'Sem data';
