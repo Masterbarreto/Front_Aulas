@@ -42,10 +42,16 @@ interface LinkItem {
   url: string;
 }
 
+interface ExistingFile {
+  _id: string;
+  nome: string;
+  mimetype: string;
+}
+
 export default function EditAulaPage() {
   const [structuredLinks, setStructuredLinks] = useState<LinkItem[]>([]);
   const [files, setFiles] = useState<File[]>([]);
-  const [existingFiles, setExistingFiles] = useState<any[]>([]);
+  const [existingFiles, setExistingFiles] = useState<ExistingFile[]>([]);
   const [anoEscolar, setAnoEscolar] = useState('');
   const [curso, setCurso] = useState('');
   const [turma, setTurma] = useState<string>('');
@@ -112,6 +118,30 @@ export default function EditAulaPage() {
     const newLinks = structuredLinks.filter((_, i) => i !== index);
     setStructuredLinks(newLinks);
   };
+  
+  const handleRemoveExistingFile = async (fileIdToRemove: string) => {
+    if (!fileIdToRemove) {
+      alert('ID do arquivo inválido.');
+      return;
+    }
+    if (confirm('Tem certeza de que deseja remover este arquivo?')) {
+      try {
+        const res = await fetch(`https://apisubaulas.onrender.com/api/v1/aulas/arquivos/${fileIdToRemove}`, {
+          method: 'DELETE',
+        });
+  
+        if (!res.ok) {
+          throw new Error('Falha ao remover o arquivo.');
+        }
+  
+        setExistingFiles((prevFiles) => prevFiles.filter((file) => file._id !== fileIdToRemove));
+        alert('Arquivo removido com sucesso!');
+      } catch (error) {
+        console.error('Erro ao remover arquivo:', error);
+        alert('Erro ao remover o arquivo.');
+      }
+    }
+  };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -155,6 +185,9 @@ export default function EditAulaPage() {
     } else {
       formData.append('LinkAula', JSON.stringify([]));
     }
+
+    const existingFileIds = existingFiles.map((file) => file._id);
+    formData.append('arquivosExistentes', JSON.stringify(existingFileIds));
 
     files.forEach((file) => {
       formData.append('files', file);
@@ -300,13 +333,13 @@ export default function EditAulaPage() {
                 multiple
                 onChange={handleFileChange}
               />
-              <div className="mt-4 text-sm text-gray-300">
+              <div className="mt-4 text-sm text-gray-300 w-full overflow-y-auto max-h-24">
                 {files.length > 0 && (
                   <>
                     <p>{files.length} novo(s) arquivo(s) selecionado(s):</p>
-                    <ul className="list-disc list-inside">
+                    <ul className="list-disc list-inside text-left">
                       {files.map((file, index) => (
-                        <li key={index}>{file.name}</li>
+                        <li key={index} className="truncate">{file.name}</li>
                       ))}
                     </ul>
                   </>
@@ -314,9 +347,23 @@ export default function EditAulaPage() {
                  {existingFiles.length > 0 && (
                   <>
                     <p className='mt-2'>Arquivos existentes:</p>
-                    <ul className="list-disc list-inside">
+                    <ul className="space-y-1">
                       {existingFiles.map((file, index) => (
-                        <li key={index}>{file.nome}</li>
+                        <li key={index} className="flex items-center justify-between gap-2 bg-[#1C1C24] p-2 rounded-md">
+                           <div className="flex items-center gap-2 overflow-hidden">
+                            <FileText size={16} className="text-gray-400 flex-shrink-0" />
+                            <span className="text-sm truncate">{file.nome}</span>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 flex-shrink-0"
+                            onClick={() => handleRemoveExistingFile(file._id)}
+                          >
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        </li>
                       ))}
                     </ul>
                   </>
@@ -425,14 +472,15 @@ export default function EditAulaPage() {
                     key={index}
                     className="flex items-center justify-between gap-2 bg-[#1C1C24] p-2 rounded-md"
                   >
-                    <div className="flex items-center gap-2">
-                      <FileText size={16} className="text-gray-400" />
-                      <span className="text-sm">{link.name}</span>
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <FileText size={16} className="text-gray-400 flex-shrink-0" />
+                      <span className="text-sm truncate">{link.name}</span>
                     </div>
                     <Button
+                      type="button"
                       variant="ghost"
                       size="icon"
-                      className="h-6 w-6"
+                      className="h-6 w-6 flex-shrink-0"
                       onClick={() => handleRemoveLink(index)}
                     >
                       <Trash2 className="h-4 w-4 text-red-500" />
