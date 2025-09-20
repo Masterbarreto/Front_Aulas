@@ -10,11 +10,13 @@ import {
 import { Badge } from '@/components/ui/badge';
 import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function RelatorioPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchAulas() {
@@ -24,7 +26,6 @@ export default function RelatorioPage() {
           throw new Error('Falha ao buscar as aulas concluídas.');
         }
         const data = await response.json();
-        // A API retorna um array diretamente
         setAulas(Array.isArray(data) ? data : []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ocorreu um erro desconhecido.');
@@ -36,6 +37,12 @@ export default function RelatorioPage() {
 
     fetchAulas();
   }, []);
+
+  const handleRowClick = (id: string) => {
+    if (id) {
+      router.push(`/teacher/dashboard/aulas/${id}`);
+    }
+  };
 
   function formatarData(dataString?: string) {
     if (!dataString) return 'Não informado';
@@ -63,7 +70,11 @@ export default function RelatorioPage() {
             <TableBody>
               {aulas.length > 0 ? (
                 aulas.map((aula) => (
-                  <TableRow key={aula._id} className="border-gray-800">
+                  <TableRow 
+                    key={aula._id} 
+                    className="border-gray-800 cursor-pointer"
+                    onClick={() => handleRowClick(aula._id)}
+                  >
                     <TableCell>{aula.titulo}</TableCell>
                     <TableCell>
                       <Badge variant="default" className="bg-green-600/20 text-green-400 border-green-500/30">

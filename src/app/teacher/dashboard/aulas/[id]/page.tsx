@@ -57,7 +57,6 @@ async function getAula(id: string): Promise<AulaCompleta | null> {
       data.LinkAula = [];
     }
     
-    // Garante que `turmas` seja sempre um array
     if (data.Turma && !data.turmas) {
       data.turmas = [String(data.Turma)];
     } else if (!Array.isArray(data.turmas)) {
@@ -136,7 +135,6 @@ export default function AulaPage() {
       if (aula) {
         setAula({ ...aula, concluida: true });
       }
-      router.back();
     } catch (err) {
       console.error('Erro ao concluir aula:', err);
       const errorMessage =
@@ -148,18 +146,22 @@ export default function AulaPage() {
   const handleDesconcluirClick = async () => {
     if (!id) return;
     try {
-      await fetch(
+      const response = await fetch(
         `https://apisubaulas.onrender.com/api/v1/aulas/${id}/desconcluir`,
         {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
         }
       );
+
+      if (!response.ok) {
+         throw new Error('Falha ao desconcluir a aula.');
+      }
+
       alert('Aula marcada como não concluída!');
       if (aula) {
         setAula({ ...aula, concluida: false });
       }
-      router.back();
     } catch (err) {
       console.error('Erro ao desconcluir aula:', err);
       alert('Erro ao desconcluir a aula!');
