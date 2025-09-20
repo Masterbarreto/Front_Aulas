@@ -12,37 +12,38 @@ import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
 
 export default function RelatorioPage() {
-  const [aulasConcluidas, setAulasConcluidas] = useState<Aula[]>([]);
+  const [aulas, setAulas] = useState<Aula[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchAulasConcluidas() {
+    async function fetchAulas() {
       try {
-        const response = await fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas');
+        const response = await fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas');
         if (!response.ok) {
-          throw new Error('Falha ao buscar as aulas concluídas.');
+          throw new Error('Falha ao buscar as aulas.');
         }
         const data = await response.json();
-        setAulasConcluidas(Array.isArray(data) ? data : []);
+        setAulas(Array.isArray(data) ? data : []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ocorreu um erro desconhecido.');
-        setAulasConcluidas([]);
+        setAulas([]);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchAulasConcluidas();
+    fetchAulas();
   }, []);
 
   function formatarData(dataString?: string) {
     if (!dataString) return 'Não informado';
     const data = new Date(dataString);
     if (isNaN(data.getTime())) return 'Data inválida';
-    // Adiciona o fuso horário para garantir que a data seja exibida corretamente
     return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
   }
+  
+  const aulasConcluidas = aulas.filter(aula => aula.concluida);
 
   return (
     <div className="flex flex-col text-white">
