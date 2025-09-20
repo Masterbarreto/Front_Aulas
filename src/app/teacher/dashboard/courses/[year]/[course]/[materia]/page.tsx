@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Loader2 } from "lucide-react";
-import type { Aula } from "@/lib/types";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
+import { ArrowLeft } from "lucide-react";
 
 type AulaSimplificada = {
   _id: string;
@@ -19,14 +19,14 @@ type AulaSimplificada = {
   DesAula: string;
   Horario: string;
   anoEscolar: string;
-  cursos?: string[];
+  cursos: string[];
   Materia: string;
-  materias?: string | string[];
+  materias: string | string[];
   professor: string;
 };
 
-// Função para normalizar strings (remover acentos, converter para minúsculas)
-function normalizeString(str: string | undefined | null): string {
+// função para normalizar strings (sem acento, minúsculo)
+function normalize(str: string | undefined | null): string {
   if (!str) return "";
   return str
     .normalize("NFD")
@@ -37,18 +37,20 @@ function normalizeString(str: string | undefined | null): string {
 export default function AulasListPage() {
   const params = useParams();
   const router = useRouter();
-  const year = params.year as string;
-  const course = params.course as string;
-  const materia = params.materia as string;
+
+  // Decodifica os parâmetros da URL para exibição
+  const yearDisplay = decodeURIComponent(params.year as string);
+  const courseDisplay = decodeURIComponent(params.course as string);
+  const materiaDisplay = decodeURIComponent(params.materia as string);
+
+  // Normaliza os parâmetros para a lógica de filtro
+  const anoParam = parseInt(yearDisplay.replace(/\D/g, "") || "0", 10);
+  const courseParamNorm = normalize(courseDisplay);
+  const materiaParamNorm = normalize(materiaDisplay);
 
   const [aulas, setAulas] = useState<AulaSimplificada[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Extrai o número do ano do parâmetro da URL (ex: "1-ano" -> 1)
-  const anoParam = parseInt(year?.replace(/\D/g, "") || "0", 10);
-  const courseParamNorm = normalizeString(course);
-  const materiaParamNorm = normalizeString(materia);
 
   useEffect(() => {
     async function fetchAulas() {
@@ -82,24 +84,21 @@ export default function AulasListPage() {
 
     // 2. Filtro de Curso
     const cursoMatch =
-      aula.cursos?.some((c) => normalizeString(c).includes(courseParamNorm)) ??
-      false;
+      aula.cursos?.some((c) => normalize(c).includes(courseParamNorm)) ?? false;
 
     // 3. Filtro de Matéria
-    let materiaApiNorm = normalizeString(aula.Materia);
+    let materiaApiNorm = normalize(aula.Materia);
     if (!materiaApiNorm && aula.materias) {
-      if (Array.isArray(aula.materias)) {
-        materiaApiNorm = normalizeString(aula.materias[0]);
-      } else {
-        materiaApiNorm = normalizeString(aula.materias);
-      }
+      const materias = Array.isArray(aula.materias)
+        ? aula.materias
+        : [aula.materias];
+      materiaApiNorm = normalize(materias[0]);
     }
     const materiaMatch = materiaApiNorm.includes(materiaParamNorm);
 
     return anoMatch && cursoMatch && materiaMatch;
   });
 
-  // Remove duplicatas com base no ID da aula
   const aulasUnicas = aulasFiltradas.filter(
     (aula, index, self) =>
       index === self.findIndex((a) => a.aulaId === aula.aulaId)
@@ -126,8 +125,8 @@ export default function AulasListPage() {
       >
         <ArrowLeft className="h-6 w-6" />
         <h1 className="text-2xl font-bold">
-          Aulas de {decodeURIComponent(materia)} - {decodeURIComponent(course).toUpperCase()} (
-          {anoParam}º ano)
+          Aulas de {materiaDisplay} - {courseDisplay.toUpperCase()} ({anoParam}º
+          ano)
         </h1>
       </div>
 
@@ -146,7 +145,9 @@ export default function AulasListPage() {
             <Card
               key={aula.aulaId}
               className="bg-[#111115] border-gray-800 rounded-lg text-white hover:bg-gray-800 transition-colors cursor-pointer"
-              onClick={() => router.push(`/teacher/dashboard/aulas/${aula.aulaId}`)}
+              onClick={() =>
+                router.push(`/teacher/dashboard/aulas/${aula.aulaId}`)
+              }
             >
               <CardHeader>
                 <CardTitle className="text-lg">{aula.titulo}</CardTitle>
