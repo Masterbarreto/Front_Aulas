@@ -19,7 +19,7 @@ import {
   ChartTooltipContent,
   ChartConfig,
 } from '@/components/ui/chart';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -34,9 +34,17 @@ const barChartConfig: ChartConfig = {
   },
 };
 
+const weeklyChartConfig: ChartConfig = {
+  aulas: {
+    label: 'Aulas',
+    color: 'hsl(var(--chart-1))',
+  },
+};
+
 export default function GerenciarPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
   const [barChartData, setBarChartData] = useState<any[]>([]);
+  const [weeklyChartData, setWeeklyChartData] = useState<any[]>([]);
   const [aulasNaoConcluidasCount, setAulasNaoConcluidasCount] = useState(0);
   const [aulasConcluidasCount, setAulasConcluidasCount] = useState(0);
   const router = useRouter();
@@ -46,12 +54,14 @@ export default function GerenciarPage() {
       fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas').then(res => res.json()).catch(() => []),
       fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas').then(res => res.json()).catch(() => []),
       fetch('https://apisubaulas.onrender.com/api/v1/relatorios/materias-mais-substituicoes').then(res => res.json()).catch(() => []),
+      fetch('https://apisubaulas.onrender.com/api/v1/relatorios/relatorio-semanal').then(res => res.json()).catch(() => []),
     ])
       .then(
         ([
           aulasNaoConcluidasData,
           aulasConcluidasData,
           topMaterias,
+          relatorioSemanal,
         ]) => {
           const naoConcluidas = Array.isArray(aulasNaoConcluidasData) ? aulasNaoConcluidasData : [];
           const concluidas = Array.isArray(aulasConcluidasData) ? aulasConcluidasData : [];
@@ -60,7 +70,6 @@ export default function GerenciarPage() {
           setAulasNaoConcluidasCount(naoConcluidas.length);
           setAulasConcluidasCount(concluidas.length);
 
-          // Processar dados do gráfico de barras (Aulas com mais substituição)
           if (Array.isArray(topMaterias)) {
             const formattedTopMaterias = topMaterias.map((item: any) => ({
               materia: item.materia,
@@ -70,12 +79,25 @@ export default function GerenciarPage() {
           } else {
              setBarChartData([]);
           }
+
+          if (Array.isArray(relatorioSemanal)) {
+            const dayOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            const dataMap = new Map(relatorioSemanal.map(item => [item.dia, item.aulas]));
+            const formattedWeeklyData = dayOrder.map(dia => ({
+              day: dia,
+              aulas: dataMap.get(dia) || 0,
+            }));
+            setWeeklyChartData(formattedWeeklyData);
+          } else {
+            setWeeklyChartData([]);
+          }
         }
       )
       .catch((error) => {
         console.error('Erro ao processar os dados das APIs:', error);
         setAulas([]);
         setBarChartData([]);
+        setWeeklyChartData([]);
         setAulasNaoConcluidasCount(0);
         setAulasConcluidasCount(0);
       });
@@ -158,13 +180,49 @@ export default function GerenciarPage() {
       <h1 className="text-3xl font-bold mb-6">Gerenciar Atividades</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Card className="bg-[#111115] border-gray-800 flex flex-col items-center justify-center">
+        <Card className="bg-[#111115] border-gray-800">
           <CardHeader>
-            <CardTitle>Aulas não concluídas</CardTitle>
+            <CardTitle>Relatório Semanal</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center">
-            <p className="text-6xl font-bold">{aulasNaoConcluidasCount}</p>
-            <p className="text-gray-400">Aulas</p>
+          <CardContent>
+            <ChartContainer config={weeklyChartConfig} className="h-[150px] w-full">
+              <AreaChart
+                data={weeklyChartData}
+                margin={{ left: -20, top: 5, right: 20, bottom: -10 }}
+              >
+                <defs>
+                  <linearGradient id="colorAulas" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor="var(--color-aulas)"
+                      stopOpacity={0.8}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="var(--color-aulas)"
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                </defs>
+                <XAxis
+                  dataKey="day"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: 'white' }}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="dot" />}
+                />
+                <Area
+                  dataKey="aulas"
+                  type="natural"
+                  fill="url(#colorAulas)"
+                  stroke="var(--color-aulas)"
+                  stackId="a"
+                />
+              </AreaChart>
+            </ChartContainer>
           </CardContent>
         </Card>
         <Card className="bg-[#111115] border-gray-800">
