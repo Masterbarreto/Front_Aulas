@@ -50,18 +50,22 @@ export default function GerenciarPage() {
 
   const fetchAulas = () => {
     Promise.all([
-      fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas').then(
-        (res) => res.json()
-      ),
-      fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas').then(
-        (res) => res.json()
-      ),
+      fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
+        .then((res) => res.json())
+        .catch(() => []), // Retorna array vazio em caso de erro
+      fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas')
+        .then((res) => res.json())
+        .catch(() => []), // Retorna array vazio em caso de erro
       fetch(
         'https://apisubaulas.onrender.com/api/v1/relatorios/relatorio-semanal'
-      ).then((res) => res.json()),
+      )
+        .then((res) => res.json())
+        .catch(() => []), // Retorna array vazio em caso de erro
       fetch(
         'https://apisubaulas.onrender.com/api/v1/relatorios/materias-mais-substituicoes'
-      ).then((res) => res.json()),
+      )
+        .then((res) => res.json())
+        .catch(() => []), // Retorna array vazio em caso de erro
     ])
       .then(
         ([
@@ -102,7 +106,7 @@ export default function GerenciarPage() {
         }
       )
       .catch((error) => {
-        console.error('Erro ao buscar dados:', error);
+        console.error('Erro ao processar os dados das APIs:', error);
         setAulas([]);
         setAreaChartData([]);
         setBarChartData([]);
