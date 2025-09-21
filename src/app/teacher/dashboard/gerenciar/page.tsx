@@ -68,9 +68,10 @@ export default function GerenciarPage() {
           
           setAulasConcluidasCount(concluidas.length);
 
+          // Processar dados do gráfico de barras (Aulas com mais substituição)
           if (Array.isArray(topMaterias)) {
             const formattedTopMaterias = topMaterias.map((item: any) => ({
-              materia: item.materia.substring(0, 10), // Shorten long names
+              materia: item.materia,
               substituicoes: item.total || 0,
             }));
             setBarChartData(formattedTopMaterias);
@@ -78,6 +79,7 @@ export default function GerenciarPage() {
              setBarChartData([]);
           }
 
+          // Processar dados do gráfico de área (Relatório Semanal)
           if (Array.isArray(relatorioSemanal)) {
             const dayOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
             const dayTranslation: { [key: string]: string } = {
