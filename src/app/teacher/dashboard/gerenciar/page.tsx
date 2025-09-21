@@ -166,10 +166,9 @@ export default function GerenciarPage() {
   function formatarData(dataString: string | undefined) {
     if (!dataString) return 'Sem data';
     try {
-      const date = new Date(dataString);
-      const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-      const correctedDate = new Date(date.getTime() + userTimezoneOffset);
-      return format(correctedDate, 'dd/MM/yyyy');
+      // Adiciona o fuso horário UTC para evitar problemas de conversão
+      const date = new Date(dataString + 'T00:00:00');
+      return format(date, 'dd/MM/yyyy');
     } catch {
       return 'Data inválida';
     }
