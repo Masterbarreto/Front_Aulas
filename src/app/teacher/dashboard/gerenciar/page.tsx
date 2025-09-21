@@ -41,6 +41,16 @@ const barChartConfig: ChartConfig = {
   },
 };
 
+const dayNameMap: { [key: string]: string } = {
+  Domingo: 'Dom',
+  Segunda: 'Seg',
+  Terça: 'Ter',
+  Quarta: 'Qua',
+  Quinta: 'Qui',
+  Sexta: 'Sex',
+  Sábado: 'Sáb',
+};
+
 export default function GerenciarPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
   const [areaChartData, setAreaChartData] = useState([]);
@@ -50,22 +60,18 @@ export default function GerenciarPage() {
 
   const fetchAulas = () => {
     Promise.all([
-      fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
-        .then((res) => res.json())
-        .catch(() => []), 
-      fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas')
-        .then((res) => res.json())
-        .catch(() => []),
+      fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas').then(
+        (res) => res.json()
+      ).catch(() => []),
+      fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas').then(
+        (res) => res.json()
+      ).catch(() => []),
       fetch(
         'https://apisubaulas.onrender.com/api/v1/relatorios/relatorio-semanal'
-      )
-        .then((res) => res.json())
-        .catch(() => []),
+      ).then((res) => res.json()).catch(() => []),
       fetch(
         'https://apisubaulas.onrender.com/api/v1/relatorios/materias-mais-substituicoes'
-      )
-        .then((res) => res.json())
-        .catch(() => []),
+      ).then((res) => res.json()).catch(() => []),
     ])
       .then(
         ([
@@ -86,7 +92,10 @@ export default function GerenciarPage() {
 
           if (Array.isArray(relatorioSemanal)) {
             const daysOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            const apiDataMap = new Map(relatorioSemanal.map(item => [item.dia, item.aulas || 0]));
+            
+            const apiDataMap = new Map(
+              relatorioSemanal.map(item => [dayNameMap[item.dia], item.aulas || 0])
+            );
             
             const formattedData = daysOrder.map(day => ({
               day: day,
