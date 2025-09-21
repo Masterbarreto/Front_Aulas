@@ -19,20 +19,13 @@ import {
   ChartTooltipContent,
   ChartConfig,
 } from '@/components/ui/chart';
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import type { Aula } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
-
-const chartConfig: ChartConfig = {
-  aulas: {
-    label: 'Aulas',
-    color: 'hsl(var(--chart-1))',
-  },
-};
 
 const barChartConfig: ChartConfig = {
   substituicoes: {
@@ -43,22 +36,15 @@ const barChartConfig: ChartConfig = {
 
 export default function GerenciarPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
-  const [areaChartData, setAreaChartData] = useState([]);
   const [barChartData, setBarChartData] = useState([]);
   const [aulasConcluidasCount, setAulasConcluidasCount] = useState(0);
   const router = useRouter();
 
-  const fetchAulas = () => {
+  const fetchPageData = () => {
+    // Focar apenas no que o usuário pediu para corrigir
     Promise.all([
-      fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas').then(
-        (res) => res.json()
-      ).catch(() => []),
-      fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas').then(
-        (res) => res.json()
-      ).catch(() => []),
-      fetch(
-        'https://apisubaulas.onrender.com/api/v1/relatorios/relatorio-semanal'
-      ).then((res) => res.json()).catch(() => []),
+      fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas').then(res => res.json()).catch(() => []),
+      fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas').then(res => res.json()).catch(() => []),
       fetch(
         'https://apisubaulas.onrender.com/api/v1/relatorios/materias-mais-substituicoes'
       ).then((res) => res.json()).catch(() => []),
@@ -67,42 +53,13 @@ export default function GerenciarPage() {
         ([
           aulasNaoConcluidasData,
           aulasConcluidasData,
-          relatorioSemanal,
           topMaterias,
         ]) => {
-          const naoConcluidas = Array.isArray(aulasNaoConcluidasData)
-            ? aulasNaoConcluidasData
-            : [];
-          const concluidas = Array.isArray(aulasConcluidasData)
-            ? aulasConcluidasData
-            : [];
+          const naoConcluidas = Array.isArray(aulasNaoConcluidasData) ? aulasNaoConcluidasData : [];
+          const concluidas = Array.isArray(aulasConcluidasData) ? aulasConcluidasData : [];
           setAulas([...naoConcluidas, ...concluidas]);
           
           setAulasConcluidasCount(concluidas.length);
-
-          if (Array.isArray(relatorioSemanal)) {
-            const daysOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            const dayNameMap: { [key: string]: string } = {
-                Domingo: 'Dom',
-                Segunda: 'Seg',
-                Terça: 'Ter',
-                Quarta: 'Qua',
-                Quinta: 'Qui',
-                Sexta: 'Sex',
-                Sábado: 'Sáb',
-            };
-
-            const apiDataMap = new Map(
-              relatorioSemanal.map(item => [dayNameMap[item.dia] || item.dia, item.aulas || 0])
-            );
-            
-            const formattedData = daysOrder.map(day => ({
-              day: day,
-              aulas: apiDataMap.get(day) || 0,
-            }));
-            
-            setAreaChartData(formattedData as any);
-          }
 
           if (Array.isArray(topMaterias)) {
             const formattedTopMaterias = topMaterias.map((item: any) => ({
@@ -110,20 +67,21 @@ export default function GerenciarPage() {
               substituicoes: item.total || 0,
             }));
             setBarChartData(formattedTopMaterias as any);
+          } else {
+             setBarChartData([]);
           }
         }
       )
       .catch((error) => {
         console.error('Erro ao processar os dados das APIs:', error);
         setAulas([]);
-        setAreaChartData([]);
         setBarChartData([]);
         setAulasConcluidasCount(0);
       });
   };
 
   useEffect(() => {
-    fetchAulas();
+    fetchPageData();
   }, []);
 
   const handleRowClick = (aula: Aula) => {
@@ -162,7 +120,7 @@ export default function GerenciarPage() {
 
         if (res.status === 204 || res.ok) {
           alert('Aula deletada com sucesso!');
-          fetchAulas();
+          fetchPageData();
         } else {
           const errorData = await res
             .json()
@@ -198,49 +156,7 @@ export default function GerenciarPage() {
     <div className="flex flex-col text-white">
       <h1 className="text-3xl font-bold mb-6">Gerenciar Atividades</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Card className="bg-[#111115] border-gray-800">
-          <CardHeader>
-            <CardTitle>Relatório De Aulas</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[150px] w-full">
-              <AreaChart data={areaChartData} margin={{ left: -20, right: 20, top: 10, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorAulas" x1="0" y1="0" x2="0" y2="1">
-                    <stop
-                      offset="5%"
-                      stopColor="var(--color-aulas)"
-                      stopOpacity={0.8}
-                    />
-                    <stop
-                      offset="95%"
-                      stopColor="var(--color-aulas)"
-                      stopOpacity={0.1}
-                    />
-                  </linearGradient>
-                </defs>
-                <XAxis
-                  dataKey="day"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fill: 'white' }}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="dot" />}
-                />
-                <Area
-                  dataKey="aulas"
-                  type="natural"
-                  fill="url(#colorAulas)"
-                  stroke="var(--color-aulas)"
-                  stackId="a"
-                />
-              </AreaChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <Card className="bg-[#111115] border-gray-800">
           <CardHeader>
             <CardTitle>
@@ -270,6 +186,7 @@ export default function GerenciarPage() {
                   axisLine={false}
                   tick={{ fill: 'white' }}
                   width={20}
+                  allowDecimals={false}
                 />
                 <ChartTooltip
                   cursor={false}
