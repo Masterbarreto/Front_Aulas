@@ -4,7 +4,7 @@
 
 ![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)
 ![License](https://img.shields.io/badge/License-MIT-blue)
-![Version](https://img.shields.io/badge/Version-1.0.0-orange)
+![Version](https://img.shields.io/badge/Version-1.5.0-orange)
 
 **Plataforma web para otimizar o processo de substituição de aulas no ambiente educacional.**
 
