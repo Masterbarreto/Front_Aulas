@@ -86,7 +86,7 @@ export default function GerenciarPage() {
             
             const formattedData = daysOrder.map(day => ({
               day: day,
-              value: apiDataMap.get(day) || 0,
+              aulas: apiDataMap.get(day) || 0,
             }));
             
             setAreaChartData(formattedData as any);
@@ -193,7 +193,7 @@ export default function GerenciarPage() {
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig} className="h-[150px] w-full">
-              <AreaChart data={areaChartData} margin={{ left: 0, right: 20, top: 10, bottom: 0 }}>
+              <AreaChart data={areaChartData} margin={{ left: -20, right: 20, top: 10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorAulas" x1="0" y1="0" x2="0" y2="1">
                     <stop
@@ -219,7 +219,7 @@ export default function GerenciarPage() {
                   content={<ChartTooltipContent indicator="dot" />}
                 />
                 <Area
-                  dataKey="value"
+                  dataKey="aulas"
                   type="natural"
                   fill="url(#colorAulas)"
                   stroke="var(--color-aulas)"
