@@ -2,13 +2,11 @@
 
 <div align="center">
 
-![Status](https://img.shields.io/badge/Status-Em%20Produção-brightgreen)
+![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)
 ![License](https://img.shields.io/badge/License-MIT-blue)
-![Version](https://img.shields.io/badge/Version-1.1.0-orange)
+![Version](https://img.shields.io/badge/Version-1.0.0-orange)
 
-**Plataforma web para otimização do processo de substituição de aulas no ambiente educacional do Senac**
-
-[🌐 Visualizar Aplicação](https://sub-aulas.vercel.app/) • [📋 Documentação da API](https://github.com/Masterbarreto/ApiSubAulas) • [🎨 Design System](https://www.figma.com/design/IUSOYtXSlyyjXeI9szk8z7/Projeto-de-Subtição-de-Aulas?node-id=82-2&p=f&t=IHAJcfgFbdfpIGJ8-0)
+**Plataforma web para otimizar o processo de substituição de aulas no ambiente educacional.**
 
 </div>
 
@@ -19,52 +17,47 @@
 - [Sobre o Projeto](#-sobre-o-projeto)
 - [Funcionalidades](#-funcionalidades)
 - [Tecnologias](#-tecnologias)
-- [Arquitetura](#-arquitetura)
 - [Instalação](#-instalação)
 - [Uso](#-uso)
-- [Roadmap](#-roadmap)
-- [Equipe](#-equipe)
-- [Contribuição](#-contribuição)
 - [Licença](#-licença)
 
 ---
 
 ## 🎯 Sobre o Projeto
 
-O **Sub_Aulas** é uma solução tecnológica desenvolvida para modernizar e otimizar o processo de substituição de aulas no ambiente educacional do Senac. O sistema oferece uma interface intuitiva e segura que permite aos professores cadastrar, visualizar e gerenciar aulas disponíveis para substituição de forma eficiente.
+O **Sub_Aulas** é uma solução tecnológica desenvolvida para modernizar e otimizar o processo de substituição de aulas. O sistema oferece uma interface intuitiva e segura que permite aos professores cadastrar, visualizar e gerenciar aulas disponíveis para substituição de forma eficiente.
 
 ### 🔍 Problema Identificado
-- Processo manual e demorado para substituição de aulas
-- Falta de transparência na disponibilidade de substituições
-- Dificuldade no controle administrativo e fiscal
-- Comunicação ineficiente entre professores e coordenação
+- Processo manual e demorado para substituição de aulas.
+- Falta de transparência na disponibilidade de substituições.
+- Dificuldade no controle administrativo e pedagógico.
+- Comunicação ineficiente entre professores e coordenação.
 
 ### 💡 Solução Proposta
 Uma plataforma web centralizada que garante:
-- **Transparência** no processo de substituição
-- **Agilidade** na busca e cadastro de aulas
-- **Controle** administrativo e pedagógico aprimorado
-- **Segurança** através de autenticação robusta
+- **Agilidade** na busca e cadastro de aulas.
+- **Transparência** no processo de substituição.
+- **Controle** administrativo e pedagógico aprimorado.
+- **Segurança** através de um sistema de autenticação robusto.
 
 ---
 
 ## ⚡ Funcionalidades
 
-### 🔐 Autenticação e Segurança
-- Sistema de login seguro para professores
-- Controle de sessões e permissões
-- Roteamento protegido para seções administrativas
+### 🔐 Autenticação e Gestão
+- **Login Administrativo:** Acesso seguro para professores gerenciarem as aulas.
+- **Dashboard Intuitivo:** Visualização de cursos organizados por ano, curso e matéria.
+- **Gerenciamento de Aulas:** Cadastro, edição, exclusão e visualização de todas as aulas.
+- **Conclusão de Aulas:** Permite marcar uma aula como "concluída", registrando o professor que a ministrou.
 
-### 📚 Gestão de Aulas
-- **Cadastro** de aulas disponíveis para substituição com upload de arquivos e links.
-- **Consulta** em tempo real de oportunidades com filtros por ano, curso e matéria.
-- **Edição e exclusão** de aulas.
-- **Marcar aulas como concluídas** para rastreamento.
+### 👨‍🏫 Acesso do Professor
+- **Filtro de Aulas:** Professores podem encontrar aulas por ano, curso e matéria.
+- **Visualização de Detalhes:** Cada aula possui uma página dedicada com descrição, arquivos para download e links externos.
+- **Responsividade:** Design adaptável para desktops, tablets e celulares.
 
-### 📊 Monitoramento e Controle
-- **Relatório de Aulas Concluídas**: Uma visão clara das aulas que já foram ministradas.
-- **Dashboard de Gerenciamento**: Painel com estatísticas e uma tabela completa para gerenciar todas as aulas.
-- **Interface Responsiva**: Design adaptado para desktops, tablets e celulares.
+### 📊 Relatórios e Monitoramento
+- **Relatório de Aulas Concluídas:** Uma tabela para visualizar todas as aulas que já foram aplicadas.
+- **Dashboard de Gerenciamento:** Gráficos e estatísticas sobre as aulas cadastradas, incluindo aulas por dia e as matérias com mais substituições.
 
 ---
 
@@ -80,158 +73,71 @@ O projeto é construído com tecnologias modernas, focando em performance, escal
 - **Componentes UI**: [Shadcn/UI](https://ui.shadcn.com/)
 - **Ícones**: [Lucide React](https://lucide.dev/)
 - **Formulários**: [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/)
+- **Gráficos**: [Recharts](https://recharts.org/)
 
-### Backend
-```
-Node.js       - Runtime JavaScript server-side
-Express.js    - Framework web minimalista e flexível
-MongoDB       - Banco de dados NoSQL escalável
-```
+### Backend (API Externa)
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Banco de Dados**: MongoDB
 
-### Infraestrutura e DevOps
-```
-Firebase Hosting - Hospedagem e deploy do frontend
-Render        - Hospedagem do backend e APIs
-MongoDB Atlas - Banco de dados em nuvem
-Git/GitHub    - Controle de versão e colaboração
-```
-
-### Design e Prototipagem
-```
-Figma         - Design system e prototipagem
-```
----
-
-## 🏗 Arquitetura
-
-```mermaid
-graph TB
-    A[Cliente/Browser] --> B[Frontend - Firebase Hosting]
-    B --> C[API REST - Render]
-    C --> D[MongoDB Atlas]
-    
-    E[Figma] --> F[Design System]
-    G[GitHub] --> H[CI/CD Pipeline]
-    H --> B
-    
-    subgraph "Frontend Stack"
-        B --> I[Next.js/React]
-        I --> J[TypeScript]
-        J --> K[Tailwind CSS]
-    end
-    
-    subgraph "Backend Stack"
-        C --> L[Node.js/Express]
-    end
-    
-    subgraph "Database Layer"
-        D --> M[Collections]
-    end
-```
+### Infraestrutura e Deploy
+- **Hospedagem Frontend**: Firebase App Hosting / Vercel
+- **Hospedagem Backend (API)**: Render
+- **Controle de Versão**: Git & GitHub
 
 ---
 
 ## 🚀 Instalação
 
+Para rodar este projeto localmente, siga os passos abaixo:
+
 ### Pré-requisitos
-```bash
-Node.js >= 18.0.0
-npm >= 9.0.0
-Git >= 2.0
-```
+- Node.js (v18 ou superior)
+- npm, yarn ou pnpm
+- Git
 
-### Configuração do Ambiente
+### Configuração
 
-1. **Clone o repositório do Frontend**
-```bash
-git clone https://github.com/Masterbarreto/Front_Aulas.git
-cd Front_Aulas
-```
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/Masterbarreto/Front_Aulas.git
+   ```
 
-2. **Instale as dependências**
-```bash
-npm install
-```
+2. **Navegue até o diretório do projeto:**
+   ```bash
+   cd Front_Aulas
+   ```
 
-3. **Configure as variáveis de ambiente**
-Crie um arquivo `.env` na raiz do projeto, se necessário. As URLs da API já estão configuradas no código para apontar para o serviço da Render.
+3. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
 
-4. **Execute o projeto**
-```bash
-npm run dev
-```
-A aplicação estará disponível em `http://localhost:3000`.
+4. **Configure as variáveis de ambiente (se necessário):**
+   Crie um arquivo `.env.local` na raiz do projeto se precisar sobrescrever as URLs da API ou outras variáveis.
 
 ---
 
 ## 📖 Uso
 
-### Acesso ao Sistema
-1. Acesse a aplicação localmente (`http://localhost:3000`) ou a versão de produção.
-2. O sistema redireciona para a tela de `Dashboard`.
-3. Use o menu lateral para navegar entre as seções.
+Após a instalação, você pode iniciar o servidor de desenvolvimento:
+
+```bash
+npm run dev
+```
+
+Abra [http://localhost:3000/teacher/dashboard](http://localhost:3000/teacher/dashboard) no seu navegador para ver a aplicação em funcionamento.
 
 ### Login Administrativo
 1. No menu lateral, clique em "Login Administrativo".
-2. Use as credenciais para acessar as funcionalidades de gerenciamento.
+2. Use as credenciais fornecidas para acessar as funcionalidades de gerenciamento.
+3. Após o login, os links "Upload de Atividades" e "Gerenciar Atividades" aparecerão no menu.
 
 ### Gerenciamento de Aulas
 - **Upload**: Na tela "Upload de Atividades", preencha o formulário para criar uma nova aula.
-- **Gerenciar**: Na tela "Gerenciar Atividades", visualize, edite ou delete aulas existentes.
-- **Concluir**: Ao visualizar os detalhes de uma aula, é possível marcá-la como concluída.
+- **Gerenciar**: Na tela "Gerenciar Atividades", visualize todas as aulas em uma tabela, com opções para editar ou deletar.
+- **Detalhes**: Clique em uma aula na tabela para ver seus detalhes, marcar como concluída ou desconcluir.
 
----
-
-## 🗺 Roadmap
-
-### 🎯 Curto Prazo (1-3 meses)
-- [ ] **Sistema de Notificações**
-  - Alertas em tempo real para novas oportunidades.
-- [ ] **Melhoria nos Filtros**
-  - Adicionar mais opções de filtro na busca de aulas.
-
-### 📊 Médio Prazo (3-6 meses)
-- [ ] **Dashboard Analytics Avançado**
-  - Métricas de substituições por professor e curso.
-  - Gráficos de demanda por matéria.
-
-### 🤖 Longo Prazo (6-12 meses)
-- [ ] **App Mobile (PWA)**
-  - Otimizar a aplicação para funcionar como um Progressive Web App.
-- [ ] **Integração com Google Agenda**
-  - Permitir que professores adicionem aulas substituídas à sua agenda.
-
----
-
-## 👥 Equipe
-
-### Desenvolvedores
-<table>
-  <tr>
-    <td align="center">
-      <strong>Pedro Henrique Vieira Barreto</strong><br>
-      <em>Full Stack Developer</em><br>
-      📧 Contato disponível no GitHub
-    </td>
-    <td align="center">
-      <strong>Aloisio Terra Nova Neto</strong><br>
-      <em>Full Stack Developer</em><br>
-      📧 Contato disponível no GitHub
-    </td>
-  </tr>
-</table>
-
----
-
-## 🤝 Contribuição
-
-Contribuições são sempre bem-vindas! Para contribuir:
-
-1. **Fork** o projeto
-2. **Crie** uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** para a branch (`git push origin feature/AmazingFeature`)
-5. **Abra** um Pull Request
 
 ---
 
@@ -243,7 +149,7 @@ Este projeto está sob a licença MIT.
 
 <div align="center">
 
-**Desenvolvido com ❤️ pela equipe Sub_Aulas**
+**Desenvolvido com ❤️**
 
 [⬆️ Voltar ao topo](#sub_aulas---sistema-de-gestão-de-substituição-de-aulas)
 
