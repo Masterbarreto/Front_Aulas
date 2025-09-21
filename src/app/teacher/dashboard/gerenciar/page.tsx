@@ -41,16 +41,6 @@ const barChartConfig: ChartConfig = {
   },
 };
 
-const dayNameMap: { [key: string]: string } = {
-  Domingo: 'Dom',
-  Segunda: 'Seg',
-  Terça: 'Ter',
-  Quarta: 'Qua',
-  Quinta: 'Qui',
-  Sexta: 'Sex',
-  Sábado: 'Sáb',
-};
-
 export default function GerenciarPage() {
   const [aulas, setAulas] = useState<Aula[]>([]);
   const [areaChartData, setAreaChartData] = useState([]);
@@ -92,9 +82,18 @@ export default function GerenciarPage() {
 
           if (Array.isArray(relatorioSemanal)) {
             const daysOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            
+            const dayNameMap: { [key: string]: string } = {
+                Domingo: 'Dom',
+                Segunda: 'Seg',
+                Terça: 'Ter',
+                Quarta: 'Qua',
+                Quinta: 'Qui',
+                Sexta: 'Sex',
+                Sábado: 'Sáb',
+            };
+
             const apiDataMap = new Map(
-              relatorioSemanal.map(item => [dayNameMap[item.dia], item.aulas || 0])
+              relatorioSemanal.map(item => [dayNameMap[item.dia] || item.dia, item.aulas || 0])
             );
             
             const formattedData = daysOrder.map(day => ({
