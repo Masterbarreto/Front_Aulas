@@ -115,7 +115,7 @@ export default function AulaPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             concluida: true,
-            professor,
+            professorConclusao: professor,
             turma: turmaParaConcluir,
           }),
         }
