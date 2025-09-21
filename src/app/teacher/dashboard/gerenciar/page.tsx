@@ -52,20 +52,20 @@ export default function GerenciarPage() {
     Promise.all([
       fetch('https://apisubaulas.onrender.com/api/v1/aulas/MostarAulas')
         .then((res) => res.json())
-        .catch(() => []), // Retorna array vazio em caso de erro
+        .catch(() => []), 
       fetch('https://apisubaulas.onrender.com/api/v1/aulas/AulasConcluidas')
         .then((res) => res.json())
-        .catch(() => []), // Retorna array vazio em caso de erro
+        .catch(() => []),
       fetch(
         'https://apisubaulas.onrender.com/api/v1/relatorios/relatorio-semanal'
       )
         .then((res) => res.json())
-        .catch(() => []), // Retorna array vazio em caso de erro
+        .catch(() => []),
       fetch(
         'https://apisubaulas.onrender.com/api/v1/relatorios/materias-mais-substituicoes'
       )
         .then((res) => res.json())
-        .catch(() => []), // Retorna array vazio em caso de erro
+        .catch(() => []),
     ])
       .then(
         ([
