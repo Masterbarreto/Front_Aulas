@@ -166,9 +166,9 @@ export default function GerenciarPage() {
   function formatarData(dataString: string | undefined) {
     if (!dataString) return 'Sem data';
     try {
-      // Adiciona o fuso horário UTC para evitar problemas de conversão
-      const date = new Date(dataString + 'T00:00:00');
-      return format(date, 'dd/MM/yyyy');
+      const date = new Date(dataString);
+      // Adiciona o fuso horário local para a formatação correta
+      return format(date, 'dd/MM/yyyy', { timeZone: 'America/Sao_Paulo' });
     } catch {
       return 'Data inválida';
     }
