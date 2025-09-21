@@ -81,23 +81,15 @@ export default function GerenciarPage() {
           setAulasConcluidasCount(concluidas.length);
 
           if (Array.isArray(relatorioSemanal)) {
-            const dayShiftMap: { [key: string]: string } = {
-              Dom: 'Sáb',
-              Seg: 'Dom',
-              Ter: 'Seg',
-              Qua: 'Ter',
-              Qui: 'Qua',
-              Sex: 'Qui',
-              Sáb: 'Sex',
-            };
-            const displayOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            const daysOrder = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            const apiDataMap = new Map(relatorioSemanal.map(item => [item.dia, item.aulas || 0]));
             
-            const reorderedFinalData = relatorioSemanal.map(item => ({
-              day: dayShiftMap[item.dia] || item.dia,
-              value: item.aulas || 0,
-            })).sort((a, b) => displayOrder.indexOf(a.day) - displayOrder.indexOf(b.day));
-
-            setAreaChartData(reorderedFinalData as any);
+            const formattedData = daysOrder.map(day => ({
+              day: day,
+              value: apiDataMap.get(day) || 0,
+            }));
+            
+            setAreaChartData(formattedData as any);
           }
 
           if (Array.isArray(topMaterias)) {
@@ -182,7 +174,6 @@ export default function GerenciarPage() {
     if (!dataString) return 'Sem data';
     try {
       const date = new Date(dataString);
-      // Adiciona o deslocamento do fuso horário para garantir que a data não mude.
       const userTimezoneOffset = date.getTimezoneOffset() * 60000;
       const correctedDate = new Date(date.getTime() + userTimezoneOffset);
       return format(correctedDate, 'dd/MM/yyyy');
